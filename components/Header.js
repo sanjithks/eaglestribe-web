@@ -1,62 +1,95 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState } from "react";
+import Link from 'next/link';
+import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+
+const menuItems = [
+  { label: 'Home', href: '/' },
+  { label: 'About Us', href: '/about-us' },
+  { label: 'Rides', href: '/rides' },
+  { label: 'Membership', href: '/membership' },
+  { label: 'Events', href: '/events' },
+  { label: 'Gallery', href: '/gallery' },
+  { label: 'Contact', href: '/contact' },
+];
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  const isActive = (href) => {
+    if (href === '/rides') {
+      return pathname.startsWith('/rides');
+    }
+    return pathname === href;
+  };
 
   return (
-    <header className="sticky top-0 z-50 bg-[--color-background]/80 backdrop-blur-md shadow-md">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <header className="bg-background border-b border-gray-300 sticky top-0 z-50 backdrop-blur-md">
+      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 text-[--color-primary] font-[var(--font-heading)] text-2xl font-bold">
-          <img src="./public/images/logo.png" alt="Eagles Tribe MC" className="h-10 w-auto" />
-          Eagles Tribe MC
+        <Link href="/">
+          <Image
+            src="/images/logo.png"
+            alt="Eagles Tribe MC Logo"
+            width={120}
+            height={60}
+            priority
+          />
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex gap-8 text-sm font-medium text-[--color-foreground]">
-          {["Home", "About Us", "Rides", "Membership", "Events", "Gallery", "Contact"].map((item) => (
+        <nav className="hidden md:flex space-x-8 text-lg font-medium">
+          {menuItems.map(({ label, href }) => (
             <Link
-              key={item}
-              href={`/${item === "Home" ? "" : item.toLowerCase().replace(/\s/g, "")}`}
-              className="hover:text-[--color-primary] transition-colors"
+              key={href}
+              href={href}
+              className={`transition-colors hover:text-primary ${
+                isActive(href) ? 'font-bold text-primary' : 'text-dark-charcoal'
+              }`}
             >
-              {item}
+              {label}
             </Link>
           ))}
         </nav>
 
-        {/* Mobile Menu Toggle */}
+        {/* Mobile Hamburger */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-[--color-foreground] focus:outline-none"
+          className="md:hidden text-dark-charcoal focus:outline-none"
+          aria-label="Toggle Menu"
         >
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            {menuOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
+          {/* Hamburger icon with nice spacing */}
+          <div className="space-y-1">
+            <span className="block w-6 h-0.5 bg-dark-charcoal"></span>
+            <span className="block w-6 h-0.5 bg-dark-charcoal"></span>
+            <span className="block w-6 h-0.5 bg-dark-charcoal"></span>
+          </div>
         </button>
       </div>
 
-      {/* Mobile Nav */}
+      {/* Mobile Dropdown Menu */}
       {menuOpen && (
-        <nav className="md:hidden bg-[--color-background] px-4 pb-4 space-y-2">
-          {["Home", "About Us", "Rides", "Membership", "Events", "Gallery", "Contact"].map((item) => (
+        <div className="md:hidden bg-background shadow-md border-t border-gray-200 py-4 px-6 space-y-4 text-lg">
+          {menuItems.map(({ label, href }) => (
             <Link
-              key={item}
-              href={`/${item === "Home" ? "" : item.toLowerCase().replace(/\s/g, "")}`}
-              className="block text-[--color-foreground] hover:text-[--color-primary] transition-colors"
-              onClick={() => setMenuOpen(false)}
+              key={href}
+              href={href}
+              className={`block transition-colors hover:text-primary ${
+                isActive(href) ? 'font-bold text-primary' : 'text-dark-charcoal'
+              }`}
             >
-              {item}
+              {label}
             </Link>
           ))}
-        </nav>
+        </div>
       )}
     </header>
   );
