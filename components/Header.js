@@ -20,7 +20,7 @@ export default function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="bg-cream sticky top-0 z-50 shadow-lg h-[132px]">
+    <header className="bg-[#fbf3e3] sticky top-0 z-50 shadow-lg h-[132px]">
       <nav className="container mx-auto flex items-center justify-between p-4 text-dark-charcoal relative h-full">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
@@ -34,7 +34,7 @@ export default function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <ul className="hidden md:flex items-center space-x-20 text-lg">
+        <ul className="hidden md:flex items-center space-x-8 text-lg">
           {navLinks.map((link) => (
             <li key={link.name}>
               <Link
@@ -51,7 +51,7 @@ export default function Header() {
           ))}
         </ul>
 
-        {/* Mobile Hamburger Icon */}
+        {/* Hamburger icon */}
         <div className="md:hidden">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -75,7 +75,7 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-[#fbf3e3]/95 backdrop-blur-sm absolute w-full z-40">
           <ul className="flex flex-col items-center space-y-4 py-6 text-lg">
