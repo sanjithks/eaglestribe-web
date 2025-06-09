@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  /* Your custom theme defined using the modern OKLCH format */
+  --color-background: oklch(91.78% 0 0);             /* #E9E9E9 */
+  --color-foreground: oklch(98.41% 0.02 88.33);      /* #FDF7F0 */
+  --color-primary-red: oklch(45.48% 0.14 25.48);     /* #9A2A2A */
+  --color-secondary-brown: oklch(49.52% 0.08 48.47); /* #7A553A */
+  --color-dark-charcoal: oklch(34.12% 0 0);         /* #4A4A4A */
+  --color-cream: oklch(96.34% 0.04 88.24);           /* #fbf3e3 */
+}
