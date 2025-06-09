@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -16,6 +17,7 @@ const navLinks = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="bg-dark-charcoal sticky top-0 z-50 shadow-lg h-[132px]">
@@ -35,7 +37,10 @@ export default function Header() {
         <ul className="hidden md:flex items-center space-x-6 text-lg">
           {navLinks.map((link) => (
             <li key={link.name}>
-              <Link href={link.href} className="hover:text-primary-red transition-colors duration-300">
+              <Link
+                href={link.href}
+                className={`hover:text-primary-red transition-colors duration-300 ${pathname === link.href ? 'font-bold' : ''}`}
+              >
                 {link.name}
               </Link>
             </li>
@@ -45,21 +50,22 @@ export default function Header() {
         {/* Mobile Menu Button */}
         <div className="md:hidden">
           <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
             </svg>
           </button>
         </div>
       </nav>
 
+      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-dark-charcoal/95 backdrop-blur-sm absolute w-full">
+        <div className="md:hidden bg-cream/50 backdrop-blur-sm absolute w-full">
           <ul className="flex flex-col items-center space-y-4 py-6 text-lg">
             {navLinks.map((link) => (
               <li key={link.name}>
-                <Link 
-                  href={link.href} 
-                  className="hover:text-primary-red transition-colors duration-300"
+                <Link
+                  href={link.href}
+                  className={`hover:text-primary-red transition-colors duration-300 ${pathname === link.href ? 'font-bold' : ''}`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.name}
