@@ -1,43 +1,49 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-// This function will run on the server to fetch data from Strapi
+// IMPROVEMENT 1: Added a try...catch block for robust error handling
 async function getRides() {
-  const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
-  // We use Strapi's 'populate' parameter to make sure the 'featured_image' data is included in the response.
-  // We also sort by ride_date in descending order to get the latest rides first.
-  const res = await fetch(`${strapiUrl}/api/rides?populate=featured_image&sort=ride_date:desc`, {
-    // This enables caching for better performance. 'no-store' would fetch fresh data on every request.
-    cache: 'no-store', 
-  });
+  try {
+    const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
+    const res = await fetch(`${strapiUrl}/api/rides?populate=featured_image&sort=ride_date:desc`, {
+      cache: 'no-store', 
+    });
 
-  // Handle errors if the fetch fails
-  if (!res.ok) {
-    throw new Error('Failed to fetch rides from Strapi');
+    // If the response is not ok, throw an error to be caught by the catch block
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.error('Strapi API returned an error:', errorData);
+      throw new Error(`Failed to fetch rides. Status: ${res.status}`);
+    }
+
+    const ridesData = await res.json();
+    return ridesData.data || []; // Ensure we always return an array
+  } catch (error) {
+    // If any error occurs during the fetch, log it for debugging and return an empty array
+    console.error('Error in getRides:', error);
+    return []; // Return an empty array to prevent the page from crashing
   }
-
-  const ridesData = await res.json();
-  return ridesData.data; // Strapi wraps the array in a 'data' object
 }
 
-
-// The RideTile component now needs to handle the Strapi data structure
+// IMPROVEMENT 2: Made the RideTile component "defensive"
 function RideTile({ ride }) {
-    // Destructure attributes for easier access
+    // This check prevents the crash. If ride or ride.attributes is missing, render nothing.
+    if (!ride?.attributes) {
+      return null;
+    }
+
     const { title, description } = ride.attributes;
-    
-    // Get the image URL. Strapi nests image data deeply.
-    // We add a fallback to a placeholder if the image is missing.
+    const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
     const imageUrl = ride.attributes.featured_image?.data?.attributes?.url
-      ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${ride.attributes.featured_image.data.attributes.url}`
-      : "/images/placeholder.png"; // Make sure you have a placeholder image at public/images/placeholder.png
+      ? `${strapiUrl}${ride.attributes.featured_image.data.attributes.url}`
+      : "/images/placeholder.png";
 
     return (
         <div className="bg-foreground rounded-lg shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-2xl">
             <div className="relative h-56 w-full">
                 <Image
                     src={imageUrl}
-                    alt={title}
+                    alt={title || 'Ride image'}
                     layout="fill"
                     objectFit="cover"
                 />
@@ -51,9 +57,7 @@ function RideTile({ ride }) {
     )
 }
 
-// Our page component is now an 'async' function
 export default async function RidesPage() {
-    // We call the getRides function and wait for the data
     const rides = await getRides();
 
     return (
@@ -61,7 +65,6 @@ export default async function RidesPage() {
             <div className="container mx-auto px-6 py-12">
                 <h1 className="text-5xl font-bold text-primary-red mb-12 text-center">Latest Rides</h1>
 
-                {/* We check if there are any rides before trying to display them */}
                 {rides && rides.length > 0 ? (
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                         {rides.map(ride => (
@@ -69,7 +72,7 @@ export default async function RidesPage() {
                         ))}
                     </div>
                 ) : (
-                    <p className="text-center text-lg">No rides have been posted yet. Check back soon!</p>
+                    <p className="text-center text-lg">Could not load rides at this time. Please try again later.</p>
                 )}
                 
                 <div className="mt-20 text-center">
