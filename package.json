@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run tailwind:build && next build",
     "start": "next start",
     "lint": "next lint",
-    "tailwind:build": "tailwindcss -i ./styles/input.css -o ./styles/output.css --watch"
+    "tailwind:dev": "tailwindcss -i ./styles/input.css -o ./styles/output.css --watch",
+    "tailwind:build": "tailwindcss -i ./styles/input.css -o ./styles/output.css --minify"
   },
   "dependencies": {
     "next": "14.2.4",
