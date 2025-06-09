@@ -1,20 +1,26 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 export default function Header() {
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "About Us", path: "/about-us" },
-    { name: "Rides", path: "/rides" },
+    { name: "Rides", path: "/rides", activeMatch: (path) => path.startsWith("/rides") },
     { name: "Membership", path: "/membership" },
     { name: "Events", path: "/events" },
     { name: "Gallery", path: "/gallery" },
     { name: "Contact", path: "/contact" },
   ];
+
+  const isActive = (path, customMatch) => {
+    return customMatch ? customMatch(pathname) : pathname === path;
+  };
 
   return (
     <header className="bg-foreground border-b border-gray-300 sticky top-0 z-50 shadow-md">
@@ -29,23 +35,27 @@ export default function Header() {
             className="w-auto h-12"
             priority
           />
-          <span className="ml-3 text-xl font-bold text-primary hidden sm:inline">Eagles Tribe MC</span>
+          <span className="ml-3 text-xl font-bold text-primary hidden sm:inline">
+            Eagles Tribe MC
+          </span>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-8">
-          {navLinks.map((link) => (
+          {navLinks.map(({ name, path, activeMatch }) => (
             <Link
-              key={link.name}
-              href={link.path}
-              className="text-dark-charcoal hover:text-primary font-medium transition-colors duration-200"
+              key={name}
+              href={path}
+              className={`text-dark-charcoal hover:text-primary font-medium transition-colors duration-200 ${
+                isActive(path, activeMatch) ? "font-bold text-primary" : ""
+              }`}
             >
-              {link.name}
+              {name}
             </Link>
           ))}
         </nav>
 
-        {/* Mobile Hamburger */}
+        {/* Hamburger Toggle */}
         <div className="md:hidden">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -79,18 +89,20 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden bg-foreground border-t border-gray-200 px-4 pb-4">
-          <nav className="flex flex-col space-y-2">
-            {navLinks.map((link) => (
+          <nav className="flex flex-col space-y-3">
+            {navLinks.map(({ name, path, activeMatch }) => (
               <Link
-                key={link.name}
-                href={link.path}
-                className="text-dark-charcoal hover:text-primary font-medium"
+                key={name}
+                href={path}
                 onClick={() => setMenuOpen(false)}
+                className={`text-dark-charcoal hover:text-primary font-medium transition-colors ${
+                  isActive(path, activeMatch) ? "font-bold text-primary" : ""
+                }`}
               >
-                {link.name}
+                {name}
               </Link>
             ))}
           </nav>
