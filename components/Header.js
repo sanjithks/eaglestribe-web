@@ -11,7 +11,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 text-[--color-primary] font-[var(--font-heading)] text-2xl font-bold">
-          <img src="../public/images/logo.png" alt="Eagles Tribe MC" className="h-10 w-auto" />
+          <img src="./public/images/logo.png" alt="Eagles Tribe MC" className="h-10 w-auto" />
           Eagles Tribe MC
         </Link>
 
