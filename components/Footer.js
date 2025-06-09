@@ -1,16 +1,20 @@
 export default function Footer() {
   return (
-    <footer className="bg-primary text-white py-6">
-      <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-        <p className="text-sm text-center md:text-left">
+    <footer className="bg-dark-charcoal text-foreground py-6 mt-12">
+      <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        {/* Copyright */}
+        <div className="text-sm text-center md:text-left">
           © {new Date().getFullYear()} Eagles Tribe MC. All rights reserved.
-        </p>
-        <div className="flex flex-wrap justify-center md:justify-end gap-4 text-sm">
+        </div>
+
+        {/* Social Links */}
+        <div className="flex flex-wrap gap-4 justify-center md:justify-end text-sm">
           <a
             href="https://www.instagram.com/eaglestribemc"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:underline"
+            className="hover:text-accent transition-colors"
           >
             Instagram
           </a>
@@ -18,7 +22,7 @@ export default function Footer() {
             href="https://www.threads.net/@eaglestribemc"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:underline"
+            className="hover:text-accent transition-colors"
           >
             Threads
           </a>
@@ -26,7 +30,7 @@ export default function Footer() {
             href="https://www.youtube.com/@EaglesTribeMC"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:underline"
+            className="hover:text-accent transition-colors"
           >
             YouTube
           </a>
@@ -34,7 +38,7 @@ export default function Footer() {
             href="https://www.tiktok.com/@eaglestribemc"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:underline"
+            className="hover:text-accent transition-colors"
           >
             TikTok
           </a>
@@ -42,11 +46,12 @@ export default function Footer() {
             href="https://www.facebook.com/eaglestribemc"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:underline"
+            className="hover:text-accent transition-colors"
           >
             Facebook
           </a>
         </div>
+
       </div>
     </footer>
   );
