@@ -1,78 +1,49 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
-// Fetch ride data from Strapi
 async function getRides() {
   try {
     const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
-    const res = await fetch(`${strapiUrl}/api/rides`, {
-      cache: 'no-store',
-    });
+    const res = await fetch(`${strapiUrl}/api/rides`, { cache: 'no-store' });
 
     if (!res.ok) {
       const errorData = await res.json();
-      console.error('Strapi API returned an error:', errorData);
+      console.error('Strapi API error:', errorData);
       throw new Error(`Failed to fetch rides. Status: ${res.status}`);
     }
 
-    const ridesData = await res.json();
-    return ridesData.data || [];
+    const data = await res.json();
+    return data.data || [];
   } catch (error) {
-    console.error('Error in getRides:', error);
+    console.error('Fetch error:', error);
     return [];
   }
 }
 
-// Display each ride tile
 function RideTile({ ride }) {
   if (!ride) return null;
 
-  const {
-    title,
-    short_description,
-    detailed_write_up,
-    featured_image, // If you add this field later
-  } = ride;
-
-  const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
-
-  // If featured_image is added later, use this; otherwise use placeholder
-  const imageUrl = featured_image?.url
-    ? `${strapiUrl}${featured_image.url}`
-    : "/images/placeholder.png";
+  const { title, short_description, detailed_write_up } = ride;
 
   const previewText = detailed_write_up
-    ? detailed_write_up.slice(0, 200) + '...'
+    ? detailed_write_up.slice(0, 150) + '...'
     : '';
 
   return (
-    <div className="bg-foreground rounded-lg shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-2xl">
-      <div className="relative h-56 w-full">
-        <Image
-          src={imageUrl}
-          alt={title || 'Ride image'}
-          layout="fill"
-          objectFit="cover"
-        />
-      </div>
-      <div className="p-6">
-        <h3 className="text-2xl font-bold text-secondary-brown mb-2">{title}</h3>
-        <p className="text-dark-charcoal">{short_description}</p>
-        <p className="text-dark-charcoal mt-2 text-sm">{previewText}</p>
-        <button className="mt-4 text-primary-red font-semibold hover:underline">Read More...</button>
-      </div>
+    <div className="bg-foreground rounded-lg shadow-lg p-6 transition-all duration-300 hover:shadow-2xl">
+      <h3 className="text-2xl font-bold text-secondary-brown mb-2">{title}</h3>
+      <p className="text-dark-charcoal mb-2">{short_description}</p>
+      <p className="text-dark-charcoal text-sm">{previewText}</p>
+      <button className="mt-4 text-primary-red font-semibold hover:underline">Read More...</button>
     </div>
   );
 }
 
-// Renders the main rides page
 export default async function RidesPage() {
   let rides = await getRides();
 
-  // Sort by ride_date descending (newest first)
+  // Sort rides by date (descending)
   rides = rides.sort((a, b) => new Date(b.ride_date) - new Date(a.ride_date));
 
-  // Only show latest 3 rides
   const topThreeRides = rides.slice(0, 3);
 
   return (
@@ -87,7 +58,7 @@ export default async function RidesPage() {
             ))}
           </div>
         ) : (
-          <p className="text-center text-lg">Could not load rides at this time. Please try again later.</p>
+          <p className="text-center text-lg">No rides found. Please try again later.</p>
         )}
 
         <div className="mt-20 text-center">
