@@ -20,25 +20,20 @@ export default async function RideDetailPage({ params }) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides`, {
     cache: 'no-store',
   });
-
   const data = await res.json();
-
   const ride = data.data.find((r) => r.documentId === slug);
 
-  if (!ride) {
-    notFound();
-  }
+  if (!ride) notFound();
 
   const { title, ride_date, detailed_write_up } = ride;
 
   return (
-    <div className="bg-background min-h-screen flex flex-col items-center px-6 pt-[132px] pb-24">
-      <div className="max-w-3xl w-full bg-foreground rounded-lg shadow-lg relative overflow-hidden">
-
-        {/* Sticky Title and Date */}
-        <div className="sticky top-[132px] z-20 bg-foreground px-8 pt-8 pb-4 border-b border-gray-300">
-          <h1 className="text-4xl font-bold text-primary-red mb-2">{title}</h1>
-          <p className="text-sm text-dark-charcoal">
+    <div className="bg-background min-h-screen px-4 py-10 flex justify-center">
+      <div className="w-full max-w-4xl bg-foreground rounded-lg shadow-lg overflow-hidden flex flex-col">
+        {/* Sticky Header (Title + Date) */}
+        <div className="bg-foreground px-6 py-4 sticky top-[70px] z-10 border-b border-gray-300">
+          <h1 className="text-3xl font-bold text-primary-red">{title}</h1>
+          <p className="text-sm text-dark-charcoal mt-1">
             {new Date(ride_date).toLocaleDateString('en-GB', {
               day: 'numeric',
               month: 'long',
@@ -47,22 +42,21 @@ export default async function RideDetailPage({ params }) {
           </p>
         </div>
 
-        {/* Scrollable Text Area */}
-        <div className="px-8 py-6 prose prose-lg text-dark-charcoal overflow-y-auto max-h-[70vh]">
+        {/* Scrollable Content */}
+        <div className="flex-grow px-6 py-6 overflow-y-auto max-h-[70vh] prose prose-lg text-dark-charcoal">
           {detailed_write_up.split('\n').map((para, idx) => (
             <p key={idx}>{para}</p>
           ))}
         </div>
 
         {/* Back Button */}
-        <div className="px-8 pb-6 mt-4 text-center">
+        <div className="px-6 py-6 text-center border-t border-gray-200">
           <Link href="/rides">
             <button className="bg-primary-red text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-red-700 transition">
               ← Back to Rides
             </button>
           </Link>
         </div>
-
       </div>
     </div>
   );
