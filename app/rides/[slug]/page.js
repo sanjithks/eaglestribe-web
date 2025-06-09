@@ -44,7 +44,7 @@ export default async function RideDetailPage({ params }) {
 
         <div className="mt-8 text-center">
           <Link href="/rides">
-            <button className="bg-primary-red text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-red-700 transition">
+            <button className="bg-primary-red text-grey py-3 px-6 rounded-lg font-semibold shadow hover:bg-red-700 transition">
               ← Back to Rides
             </button>
           </Link>
