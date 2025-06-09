@@ -1,111 +1,91 @@
-"use client";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+'use client';
+
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import Image from 'next/image';
+
+const navItems = [
+  { label: 'Home', path: '/' },
+  { label: 'About Us', path: '/about-us' },
+  { label: 'Rides', path: '/rides' },
+  { label: 'Membership', path: '/membership' },
+  { label: 'Events', path: '/events' },
+  { label: 'Gallery', path: '/gallery' },
+  { label: 'Contact', path: '/contact' },
+];
 
 export default function Header() {
-  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const pathname = usePathname();
 
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "About Us", path: "/about-us" },
-    { name: "Rides", path: "/rides", activeMatch: (path) => path.startsWith("/rides") },
-    { name: "Membership", path: "/membership" },
-    { name: "Events", path: "/events" },
-    { name: "Gallery", path: "/gallery" },
-    { name: "Contact", path: "/contact" },
-  ];
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  const isActive = (path, customMatch) => {
-    return customMatch ? customMatch(pathname) : pathname === path;
+  const isActive = (path) => {
+    if (path === '/') return pathname === '/';
+    return pathname.startsWith(path);
   };
 
   return (
-    <header className="bg-foreground border-b border-gray-300 sticky top-0 z-50 shadow-md">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-foreground/80 backdrop-blur-md shadow-md">
+      <div className="container mx-auto flex items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/images/logo.png"
-            alt="Eagles Tribe MC"
-            width={50}
-            height={50}
-            className="w-auto h-12"
-            priority
-          />
-          <span className="ml-3 text-xl font-bold text-primary hidden sm:inline">
-            Eagles Tribe MC
-          </span>
+        <Link href="/" className="flex items-center gap-3">
+          <Image src="/images/logo.png" alt="Logo" width={48} height={48} />
+          <span className="text-xl font-bold text-primary hidden sm:inline">Eagles Tribe MC</span>
         </Link>
 
+        {/* Mobile Menu Button */}
+        <button
+          className="md:hidden text-primary focus:outline-none"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          <svg className="w-7 h-7" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fillRule="evenodd"
+              d="M3 5h14M3 10h14M3 15h14"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+
         {/* Desktop Nav */}
-        <nav className="hidden md:flex space-x-8">
-          {navLinks.map(({ name, path, activeMatch }) => (
+        <nav className="hidden md:flex gap-8 text-lg font-medium">
+          {navItems.map((item) => (
             <Link
-              key={name}
-              href={path}
-              className={`text-dark-charcoal hover:text-primary font-medium transition-colors duration-200 ${
-                isActive(path, activeMatch) ? "font-bold text-primary" : ""
+              key={item.path}
+              href={item.path}
+              className={`transition-colors ${
+                isActive(item.path) ? 'font-bold text-primary' : 'text-dark-charcoal hover:text-primary'
               }`}
             >
-              {name}
+              {item.label}
             </Link>
           ))}
         </nav>
-
-        {/* Hamburger Toggle */}
-        <div className="md:hidden">
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="text-dark-charcoal focus:outline-none"
-            aria-label="Toggle menu"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {menuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </button>
-        </div>
       </div>
 
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <div className="md:hidden bg-foreground border-t border-gray-200 px-4 pb-4">
-          <nav className="flex flex-col space-y-3">
-            {navLinks.map(({ name, path, activeMatch }) => (
-              <Link
-                key={name}
-                href={path}
-                onClick={() => setMenuOpen(false)}
-                className={`text-dark-charcoal hover:text-primary font-medium transition-colors ${
-                  isActive(path, activeMatch) ? "font-bold text-primary" : ""
-                }`}
-              >
-                {name}
-              </Link>
-            ))}
-          </nav>
+      {/* Mobile Nav Dropdown */}
+      {menuOpen && isMobile && (
+        <div className="md:hidden bg-foreground/90 backdrop-blur-md shadow-md px-6 py-4 space-y-4">
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              href={item.path}
+              className={`block text-lg ${
+                isActive(item.path) ? 'font-bold text-primary' : 'text-dark-charcoal hover:text-primary'
+              }`}
+              onClick={() => setMenuOpen(false)}
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
       )}
     </header>
