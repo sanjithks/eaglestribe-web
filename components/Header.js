@@ -1,94 +1,99 @@
-'use client';
-
-import Link from 'next/link';
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
-
-const menuItems = [
-  { label: 'Home', href: '/' },
-  { label: 'About Us', href: '/about-us' },
-  { label: 'Rides', href: '/rides' },
-  { label: 'Membership', href: '/membership' },
-  { label: 'Events', href: '/events' },
-  { label: 'Gallery', href: '/gallery' },
-  { label: 'Contact', href: '/contact' },
-];
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const pathname = usePathname();
 
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
-  const isActive = (href) => {
-    if (href === '/rides') {
-      return pathname.startsWith('/rides');
-    }
-    return pathname === href;
-  };
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "About Us", path: "/about-us" },
+    { name: "Rides", path: "/rides" },
+    { name: "Membership", path: "/membership" },
+    { name: "Events", path: "/events" },
+    { name: "Gallery", path: "/gallery" },
+    { name: "Contact", path: "/contact" },
+  ];
 
   return (
-    <header className="bg-background border-b border-gray-300 sticky top-0 z-50 backdrop-blur-md">
-      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-
+    <header className="bg-foreground border-b border-gray-300 sticky top-0 z-50 shadow-md">
+      <div className="container mx-auto flex items-center justify-between px-4 py-3">
         {/* Logo */}
-        <Link href="/">
+        <Link href="/" className="flex items-center">
           <Image
             src="/images/logo.png"
-            alt="Eagles Tribe MC Logo"
-            width={120}
-            height={60}
+            alt="Eagles Tribe MC"
+            width={50}
+            height={50}
+            className="w-auto h-12"
             priority
           />
+          <span className="ml-3 text-xl font-bold text-primary hidden sm:inline">Eagles Tribe MC</span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex space-x-8 text-lg font-medium">
-          {menuItems.map(({ label, href }) => (
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex space-x-8">
+          {navLinks.map((link) => (
             <Link
-              key={href}
-              href={href}
-              className={`transition-colors hover:text-primary ${
-                isActive(href) ? 'font-bold text-primary' : 'text-dark-charcoal'
-              }`}
+              key={link.name}
+              href={link.path}
+              className="text-dark-charcoal hover:text-primary font-medium transition-colors duration-200"
             >
-              {label}
+              {link.name}
             </Link>
           ))}
         </nav>
 
         {/* Mobile Hamburger */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-dark-charcoal focus:outline-none"
-          aria-label="Toggle Menu"
-        >
-          {/* Hamburger icon with nice spacing */}
-          <div className="space-y-1">
-            <span className="block w-6 h-0.5 bg-dark-charcoal"></span>
-            <span className="block w-6 h-0.5 bg-dark-charcoal"></span>
-            <span className="block w-6 h-0.5 bg-dark-charcoal"></span>
-          </div>
-        </button>
+        <div className="md:hidden">
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-dark-charcoal focus:outline-none"
+            aria-label="Toggle menu"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {menuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Mobile Dropdown Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-background shadow-md border-t border-gray-200 py-4 px-6 space-y-4 text-lg">
-          {menuItems.map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`block transition-colors hover:text-primary ${
-                isActive(href) ? 'font-bold text-primary' : 'text-dark-charcoal'
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
+        <div className="md:hidden bg-foreground border-t border-gray-200 px-4 pb-4">
+          <nav className="flex flex-col space-y-2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.path}
+                className="text-dark-charcoal hover:text-primary font-medium"
+                onClick={() => setMenuOpen(false)}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
         </div>
       )}
     </header>
