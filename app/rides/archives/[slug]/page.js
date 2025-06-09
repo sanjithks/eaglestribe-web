@@ -26,7 +26,6 @@ export default async function ArchivedRideDetailPage({ params }) {
   });
 
   const data = await res.json();
-
   const rides = data.data.sort((a, b) => new Date(b.ride_date) - new Date(a.ride_date));
   const archivedRides = rides.slice(3);
   const ride = archivedRides.find((r) => r.documentId === slug);
@@ -36,13 +35,13 @@ export default async function ArchivedRideDetailPage({ params }) {
   const { title, ride_date, detailed_write_up, author } = ride;
 
   return (
-    <div className="bg-background min-h-screen flex flex-col items-center px-6 py-12">
-      <div className="max-w-3xl w-full bg-foreground rounded-lg shadow-lg relative">
-        
-        {/* Sticky Title, Author, and Date */}
-        <div className="sticky top-[80px] z-10 bg-foreground px-6 pt-6 pb-4 border-b border-gray-300">
-          <h1 className="text-4xl font-bold text-primary-red mb-2">{title}</h1>
-          {author && <p className="text-sm italic text-secondary-brown mb-1">By {author}</p>}
+    <div className="bg-background min-h-screen flex flex-col items-center px-4 py-12">
+      <div className="w-full max-w-4xl bg-foreground rounded-xl shadow-xl p-8 relative">
+
+        {/* Sticky Header */}
+        <div className="sticky top-[100px] bg-foreground z-10 pb-4 border-b border-gray-300">
+          <h1 className="text-4xl font-bold text-primary mb-1">{title}</h1>
+          {author && <p className="text-sm text-secondary mb-1">By {author}</p>}
           <p className="text-sm text-dark-charcoal">
             {new Date(ride_date).toLocaleDateString('en-GB', {
               day: 'numeric',
@@ -53,16 +52,16 @@ export default async function ArchivedRideDetailPage({ params }) {
         </div>
 
         {/* Content */}
-        <div className="px-6 py-6 prose prose-lg text-dark-charcoal">
+        <div className="mt-6 prose prose-lg text-dark-charcoal">
           {detailed_write_up?.split('\n').map((para, idx) => (
             <p key={idx}>{para}</p>
           ))}
         </div>
 
-        {/* Back Button */}
-        <div className="px-6 pb-6 text-center border-t border-gray-200">
+        {/* Back button */}
+        <div className="mt-12 text-center border-t border-gray-200 pt-6">
           <Link href="/rides/archives">
-            <button className="mt-4 bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-primary-red transition">
+            <button className="bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-primary transition">
               ← Back to Archives
             </button>
           </Link>
