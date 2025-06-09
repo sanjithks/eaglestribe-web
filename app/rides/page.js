@@ -5,9 +5,10 @@ import Image from 'next/image';
 async function getRides() {
   try {
     const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
-    const res = await fetch(`${strapiUrl}/api/rides?populate=featured_image&sort=ride_date:desc`, {
-      cache: 'no-store',
-    });
+    const res = await fetch(
+      `${strapiUrl}/api/rides?populate[featured_image]=*&populate[gallery]=*&sort=ride_date:desc`,
+      { cache: 'no-store' }
+    );
 
     if (!res.ok) {
       const errorData = await res.json();
@@ -27,11 +28,34 @@ async function getRides() {
 function RideTile({ ride }) {
   if (!ride?.attributes) return null;
 
-  const { title, short_description } = ride.attributes;
+  const {
+    title,
+    short_description,
+    detailed_write_up,
+    featured_image,
+    gallery,
+  } = ride.attributes;
+
   const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
-  const imageUrl = ride.attributes.featured_image?.data?.attributes?.url
-    ? `${strapiUrl}${ride.attributes.featured_image.data.attributes.url}`
-    : "/images/placeholder.png"; // Local placeholder if no image
+
+  const imageUrl = featured_image?.data?.attributes?.url
+    ? `${strapiUrl}${featured_image.data.attributes.url}`
+    : "/images/placeholder.png";
+
+  const previewText = detailed_write_up
+    ? detailed_write_up.slice(0, 200) + '...'
+    : '';
+
+  const galleryImages = gallery?.data?.map((img) => (
+    <Image
+      key={img.id}
+      src={`${strapiUrl}${img.attributes.url}`}
+      alt={img.attributes.name || 'Gallery image'}
+      width={100}
+      height={100}
+      className="rounded-md mr-2"
+    />
+  ));
 
   return (
     <div className="bg-foreground rounded-lg shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-2xl">
@@ -46,6 +70,12 @@ function RideTile({ ride }) {
       <div className="p-6">
         <h3 className="text-2xl font-bold text-secondary-brown mb-2">{title}</h3>
         <p className="text-dark-charcoal">{short_description}</p>
+        <p className="text-dark-charcoal mt-2 text-sm">{previewText}</p>
+        {galleryImages?.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-4">
+            {galleryImages}
+          </div>
+        )}
         <button className="mt-4 text-primary-red font-semibold hover:underline">Read More...</button>
       </div>
     </div>
@@ -56,14 +86,16 @@ function RideTile({ ride }) {
 export default async function RidesPage() {
   const rides = await getRides();
 
+  const topThreeRides = rides.slice(0, 3);
+
   return (
     <div className="bg-background">
       <div className="container mx-auto px-6 py-12">
         <h1 className="text-5xl font-bold text-primary-red mb-12 text-center">Latest Rides</h1>
 
-        {rides.length > 0 ? (
+        {topThreeRides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {rides.map((ride) => (
+            {topThreeRides.map((ride) => (
               <RideTile key={ride.id} ride={ride} />
             ))}
           </div>
@@ -75,12 +107,4 @@ export default async function RidesPage() {
           <h2 className="text-3xl font-bold text-secondary-brown mb-4">Looking for more?</h2>
           <Link
             href="/rides/archives"
-            className="inline-block bg-dark-charcoal text-foreground py-4 px-10 rounded-lg shadow-lg hover:bg-primary-red transition-colors duration-300 text-xl font-bold"
-          >
-            View Ride Archives
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
+            className="inline-block bg-dark-charcoal text-foreground py-4 px-10 rounded-lg shadow-lg hover:bg-primary-red transition-colors duration-300
