@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Fetch ride data from Strapi
+// Fetch ride data from Strapi (basic /rides endpoint without populate)
 async function getRides() {
   try {
     const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
-    const res = await fetch(`${strapiUrl}/api/rides`, { cache: 'no-store' });
+    const res = await fetch(`${strapiUrl}/api/rides`, {
+      cache: 'no-store',
+    });
 
     if (!res.ok) {
       const errorData = await res.json();
@@ -14,31 +16,31 @@ async function getRides() {
     }
 
     const ridesData = await res.json();
-    return (ridesData.data || []).sort((a, b) => {
-      return new Date(b.ride_date || b.attributes?.ride_date) - new Date(a.ride_date || a.attributes?.ride_date);
-    });
+
+    // Sort by ride_date descending
+    const sorted = ridesData.data.sort((a, b) =>
+      new Date(b.ride_date || b.attributes?.ride_date || '') -
+      new Date(a.ride_date || a.attributes?.ride_date || '')
+    );
+
+    return sorted.slice(0, 3); // Only return latest 3 rides
   } catch (error) {
     console.error('Error in getRides:', error);
     return [];
   }
 }
 
-// Display each ride tile
+// Ride tile component
 function RideTile({ ride }) {
-  const rideData = ride.attributes || ride; // fallback if attributes not wrapped
-  if (!rideData) return null;
-
-  const { title, short_description, detailed_write_up } = rideData;
-
-  const previewText = detailed_write_up
-    ? detailed_write_up.slice(0, 200) + '...'
-    : '';
+  const title = ride.title || ride.attributes?.title;
+  const short_description = ride.short_description || ride.attributes?.short_description;
+  const preview = (ride.detailed_write_up || ride.attributes?.detailed_write_up || '').slice(0, 200) + '...';
 
   return (
     <div className="bg-foreground rounded-lg shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-2xl">
-      <div className="relative h-56 w-full">
+      <div className="relative h-56 w-full bg-dark-charcoal">
         <Image
-          src="/images/placeholder.png" // Replace with featured_image if you later enable it
+          src="/images/placeholder.png" // You can replace this with actual image logic later
           alt={title || 'Ride image'}
           layout="fill"
           objectFit="cover"
@@ -47,26 +49,25 @@ function RideTile({ ride }) {
       <div className="p-6">
         <h3 className="text-2xl font-bold text-secondary-brown mb-2">{title}</h3>
         <p className="text-dark-charcoal">{short_description}</p>
-        <p className="text-dark-charcoal mt-2 text-sm">{previewText}</p>
+        <p className="text-dark-charcoal mt-2 text-sm">{preview}</p>
         <button className="mt-4 text-primary-red font-semibold hover:underline">Read More...</button>
       </div>
     </div>
   );
 }
 
-// Main Rides Page
+// Main rides page
 export default async function RidesPage() {
   const rides = await getRides();
-  const topThreeRides = rides.slice(0, 3);
 
   return (
     <div className="bg-background">
       <div className="container mx-auto px-6 py-12">
         <h1 className="text-5xl font-bold text-primary-red mb-12 text-center">Latest Rides</h1>
 
-        {topThreeRides.length > 0 ? (
+        {rides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {topThreeRides.map((ride) => (
+            {rides.map((ride) => (
               <RideTile key={ride.id} ride={ride} />
             ))}
           </div>
