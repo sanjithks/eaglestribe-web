@@ -20,8 +20,8 @@ export default function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 shadow-lg h-[132px] backdrop-blur-md bg-[#fbf3e3]/90">
-      <nav className="container mx-auto flex items-center justify-between p-4 text-dark-charcoal relative h-full">
+    <header className="sticky top-0 z-50 shadow-lg h-[132px] backdrop-blur-md bg-cream/90">
+      <nav className="container mx-auto flex items-center justify-between p-4 text-secondary-brown relative h-full">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
           <Image
