@@ -13,6 +13,7 @@ module.exports = {
         'primary-red': '#9A2A2A',        // Deep Red
         'secondary-brown': '#7A553A',    // Rich Brown
         'dark-charcoal': '#4A4A4A',      // Dark Gray
+        'cream': '#fbf3e3',              // Cream
       },
     },
   },
