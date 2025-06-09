@@ -1,14 +1,12 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
-// Generate static paths
 export async function generateStaticParams() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides`, { cache: 'no-store' });
   const data = await res.json();
   return data.data.map((ride) => ({ slug: ride.documentId }));
 }
 
-// Ride Detail Page
 export default async function RideDetailPage({ params }) {
   const { slug } = params;
   const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides`, { cache: 'no-store' });
@@ -17,16 +15,19 @@ export default async function RideDetailPage({ params }) {
 
   if (!ride) notFound();
 
-  const { title, ride_date, detailed_write_up } = ride;
+  const { title, ride_date, detailed_write_up, author } = ride;
 
   return (
-    <section className="bg-background min-h-screen px-4 py-16 flex justify-center items-start">
-      <div className="w-full max-w-5xl bg-foreground rounded-xl shadow-lg overflow-hidden flex flex-col">
-        
-        {/* Sticky Title + Date */}
-        <div className="sticky top-0 z-20 bg-foreground px-6 pt-6 pb-4 border-b border-gray-300">
-          <h1 className="text-4xl font-extrabold text-primary mb-2">{title}</h1>
-          <p className="text-sm text-dark-charcoal opacity-80">
+    <div className="bg-background min-h-screen flex flex-col items-center px-6 py-12">
+      <div className="max-w-3xl w-full bg-foreground rounded-lg shadow-lg p-8 relative">
+        <div className="mb-6 border-b border-gray-300 pb-4">
+          <h1 className="text-4xl font-bold text-primary-red">{title}</h1>
+          {author && (
+            <p className="text-sm text-highlight italic mb-1">
+              By {typeof author === 'object' ? author.name : author}
+            </p>
+          )}
+          <p className="text-sm text-dark-charcoal">
             {new Date(ride_date).toLocaleDateString('en-GB', {
               day: 'numeric',
               month: 'long',
@@ -35,22 +36,20 @@ export default async function RideDetailPage({ params }) {
           </p>
         </div>
 
-        {/* Body Content */}
-        <div className="px-6 py-8 overflow-y-auto max-h-[70vh] space-y-6 text-lg leading-relaxed text-dark-charcoal">
+        <div className="prose prose-lg text-dark-charcoal">
           {detailed_write_up.split('\n').map((para, idx) => (
             <p key={idx}>{para}</p>
           ))}
         </div>
 
-        {/* Back CTA */}
-        <div className="px-6 py-6 border-t border-gray-200 text-center">
+        <div className="mt-8 text-center">
           <Link href="/rides">
-            <button className="mt-2 inline-block bg-primary text-background font-semibold px-6 py-3 rounded-lg shadow hover:bg-secondary transition duration-300">
+            <button className="bg-primary-red text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-red-700 transition">
               ← Back to Rides
             </button>
           </Link>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
