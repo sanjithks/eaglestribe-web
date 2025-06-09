@@ -1,105 +1,92 @@
-"use client";
-import Link from "next/link";
-import Image from "next/image";
-import { useState } from "react";
+'use client';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'About Us', href: '/about-us' },
+  { label: 'Rides', href: '/rides' },
+  { label: 'Membership', href: '/membership' },
+  { label: 'Events', href: '/events' },
+  { label: 'Gallery', href: '/gallery' },
+  { label: 'Contact', href: '/contact' },
+];
 
 export default function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "About Us", path: "/about-us" },
-    { name: "Rides", path: "/rides" },
-    { name: "Membership", path: "/membership" },
-    { name: "Events", path: "/events" },
-    { name: "Gallery", path: "/gallery" },
-    { name: "Contact", path: "/contact" },
-  ];
+  // Close menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
+  const isActive = (href) => {
+    if (href === '/') return pathname === '/';
+    if (href === '/rides') return pathname.startsWith('/rides');
+    return pathname === href;
+  };
 
   return (
-    <header className="bg-foreground border-b border-gray-300 sticky top-0 z-50 shadow-md">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3">
+    <header className="bg-foreground text-dark-charcoal shadow-md z-50">
+      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/images/logo.png"
-            alt="Eagles Tribe MC"
-            width={50}
-            height={50}
-            className="w-auto h-12"
-            priority
-          />
-          {/* CORRECTED: Changed text-primary to text-primary-red */}
-          <span className="ml-3 text-xl font-bold text-primary-red hidden sm:inline">
-            Eagles Tribe MC
-          </span>
+        <Link href="/" className="flex items-center space-x-2">
+          <Image src="/images/logo.png" alt="Eagles Tribe MC" width={50} height={50} />
+          <span className="text-xl font-bold text-primary">Eagles Tribe MC</span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex space-x-8">
-          {navLinks.map((link) => (
+        {/* Hamburger (Mobile Only) */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="md:hidden text-dark-charcoal focus:outline-none"
+          aria-label="Toggle Menu"
+        >
+          <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M4 6h16M4 12h16M4 18h16"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+
+        {/* Horizontal Menu (Desktop) */}
+        <nav className="hidden md:flex space-x-6 items-center text-lg font-medium">
+          {navItems.map((item) => (
             <Link
-              key={link.name}
-              href={link.path}
-              // CORRECTED: Changed hover:text-primary to hover:text-primary-red
-              className="text-dark-charcoal hover:text-primary-red font-medium transition-colors duration-200"
+              key={item.href}
+              href={item.href}
+              className={`hover:text-primary transition ${
+                isActive(item.href) ? 'font-bold text-primary' : ''
+              }`}
             >
-              {link.name}
+              {item.label}
             </Link>
           ))}
         </nav>
-
-        {/* Hamburger Button - Mobile only */}
-        <div className="md:hidden">
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="text-dark-charcoal focus:outline-none"
-            aria-label="Toggle menu"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {menuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </button>
-        </div>
       </div>
 
-      {/* Mobile Dropdown */}
-      {menuOpen && (
-        <div className="md:hidden bg-foreground border-t border-gray-200 px-4 pb-4">
-          <nav className="flex flex-col space-y-3 pt-3">
-            {navLinks.map((link) => (
+      {/* Mobile Menu (Dropdown) */}
+      {isOpen && (
+        <nav className="md:hidden bg-foreground border-t border-gray-200 shadow-inner">
+          <div className="flex flex-col px-6 py-4 space-y-3 text-lg font-medium">
+            {navItems.map((item) => (
               <Link
-                key={link.name}
-                href={link.path}
-                // CORRECTED: Changed hover:text-primary to hover:text-primary-red
-                className="text-dark-charcoal hover:text-primary-red font-medium transition-colors"
-                onClick={() => setMenuOpen(false)} // close on link click
+                key={item.href}
+                href={item.href}
+                className={`hover:text-primary transition ${
+                  isActive(item.href) ? 'font-bold text-primary' : ''
+                }`}
               >
-                {link.name}
+                {item.label}
               </Link>
             ))}
-          </nav>
-        </div>
+          </div>
+        </nav>
       )}
     </header>
   );
