@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 
 export const metadata = {
   title: "Eagles Tribe MC",
-  description: "A website for the Eagles Tribe Motorcycle Club",
+  description: "A website dedicated for the Eagles Tribe Motorcycle Club",
 };
 
 export default function RootLayout({ children }) {
