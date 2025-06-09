@@ -1,8 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 
 const navLinks = [
@@ -17,38 +16,28 @@ const navLinks = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const pathname = usePathname();
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 bg-dark-charcoal shadow-lg">
-      <nav className="container mx-auto flex items-center justify-between px-4 py-3 md:py-4 h-[100px] md:h-[132px] text-foreground">
-        
+    <header className="bg-dark-charcoal sticky top-0 z-50 shadow-lg h-[132px]">
+      <nav className="container mx-auto flex items-center justify-between p-4 text-foreground relative h-full">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+        <Link href="/" className="flex-shrink-0">
           <Image
             src="/images/logo.png"
             alt="Eagles Tribe MC Logo"
-            width={80}
-            height={80}
+            width={100}
+            height={100}
             priority
-            className="object-contain"
           />
         </Link>
 
-        {/* Desktop Links */}
-        <ul className="hidden md:flex items-center gap-6 text-lg">
+        {/* Desktop Navigation Links */}
+        <ul className="hidden md:flex items-center space-x-10 text-lg">
           {navLinks.map((link) => (
             <li key={link.name}>
               <Link
                 href={link.href}
-                className={`transition-colors duration-300 hover:text-primary-red ${
-                  pathname === link.href ? 'text-primary-red font-bold' : ''
-                }`}
+                className="hover:text-primary-red transition-colors duration-300"
               >
                 {link.name}
               </Link>
@@ -56,36 +45,41 @@ export default function Header() {
           ))}
         </ul>
 
-        {/* Mobile Toggle Button */}
+        {/* Mobile Menu Button */}
         <div className="md:hidden">
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+            className="focus:outline-none"
+          >
+            {/* Classic hamburger icon */}
+            <svg className="w-8 h-8 text-foreground" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M3 5h14a1 1 0 100-2H3a1 1 0 000 2zm14 4H3a1 1 0 100 2h14a1 1 0 100-2zm0 6H3a1 1 0 100 2h14a1 1 0 100-2z"
+                clipRule="evenodd"
+              />
             </svg>
           </button>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Panel */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          isMenuOpen ? 'max-h-[500px] py-4' : 'max-h-0'
-        } bg-dark-charcoal/95 backdrop-blur-sm`}
+        className={`md:hidden absolute top-full left-0 w-full transition-all duration-300 ease-in-out transform ${
+          isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+        } bg-[#fbf3e3]/95 backdrop-blur-md py-6 text-lg flex flex-col items-center space-y-4 z-40`}
       >
-        <ul className="flex flex-col items-center space-y-4 text-lg">
-          {navLinks.map((link) => (
-            <li key={link.name}>
-              <Link
-                href={link.href}
-                className={`hover:text-primary-red transition ${
-                  pathname === link.href ? 'text-primary-red font-bold' : ''
-                }`}
-              >
-                {link.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        {navLinks.map((link) => (
+          <Link
+            key={link.name}
+            href={link.href}
+            className="hover:text-primary-red transition-colors duration-300"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            {link.name}
+          </Link>
+        ))}
       </div>
     </header>
   );
