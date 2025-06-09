@@ -18,8 +18,8 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="bg-dark-charcoal sticky top-0 z-50 shadow-lg h-[132px]">
-      <nav className="container mx-auto flex items-center justify-between p-4 text-foreground relative h-full">
+    <header className="bg-[#fbf3e3] sticky top-0 z-50 shadow-lg h-[132px]">
+      <nav className="container mx-auto flex items-center justify-between px-6 py-4 text-dark-charcoal h-full">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
           <Image
@@ -31,29 +31,25 @@ export default function Header() {
           />
         </Link>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop Navigation */}
         <ul className="hidden md:flex items-center space-x-10 text-lg">
           {navLinks.map((link) => (
             <li key={link.name}>
-              <Link
-                href={link.href}
-                className="hover:text-primary-red transition-colors duration-300"
-              >
+              <Link href={link.href} className="hover:text-primary-red transition-colors duration-300">
                 {link.name}
               </Link>
             </li>
           ))}
         </ul>
 
-        {/* Mobile Menu Button */}
+        {/* Hamburger Menu Button for Mobile */}
         <div className="md:hidden">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
             className="focus:outline-none"
           >
-            {/* Classic hamburger icon */}
-            <svg className="w-8 h-8 text-foreground" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-8 h-8 text-dark-charcoal" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
                 d="M3 5h14a1 1 0 100-2H3a1 1 0 000 2zm14 4H3a1 1 0 100 2h14a1 1 0 100-2zm0 6H3a1 1 0 100 2h14a1 1 0 100-2z"
@@ -64,23 +60,24 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Mobile Menu Panel */}
-      <div
-        className={`md:hidden absolute top-full left-0 w-full transition-all duration-300 ease-in-out transform ${
-          isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
-        } bg-[#fbf3e3]/95 backdrop-blur-md py-6 text-lg flex flex-col items-center space-y-4 z-40`}
-      >
-        {navLinks.map((link) => (
-          <Link
-            key={link.name}
-            href={link.href}
-            className="hover:text-primary-red transition-colors duration-300"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            {link.name}
-          </Link>
-        ))}
-      </div>
+      {/* Mobile Dropdown Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-[#fbf3e3]/95 backdrop-blur-md w-full absolute top-[132px] left-0 z-40 shadow-inner transition">
+          <ul className="flex flex-col items-center space-y-6 py-6 text-lg">
+            {navLinks.map((link) => (
+              <li key={link.name}>
+                <Link
+                  href={link.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="hover:text-primary-red transition-colors duration-300"
+                >
+                  {link.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </header>
   );
 }
