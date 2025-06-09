@@ -29,7 +29,8 @@ export default function Header() {
             className="w-auto h-12"
             priority
           />
-          <span className="ml-3 text-xl font-bold text-primary hidden sm:inline">
+          {/* CORRECTED: Changed text-primary to text-primary-red */}
+          <span className="ml-3 text-xl font-bold text-primary-red hidden sm:inline">
             Eagles Tribe MC
           </span>
         </Link>
@@ -40,7 +41,8 @@ export default function Header() {
             <Link
               key={link.name}
               href={link.path}
-              className="text-dark-charcoal hover:text-primary font-medium transition-colors duration-200"
+              // CORRECTED: Changed hover:text-primary to hover:text-primary-red
+              className="text-dark-charcoal hover:text-primary-red font-medium transition-colors duration-200"
             >
               {link.name}
             </Link>
@@ -84,12 +86,13 @@ export default function Header() {
       {/* Mobile Dropdown */}
       {menuOpen && (
         <div className="md:hidden bg-foreground border-t border-gray-200 px-4 pb-4">
-          <nav className="flex flex-col space-y-3">
+          <nav className="flex flex-col space-y-3 pt-3">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.path}
-                className="text-dark-charcoal hover:text-primary font-medium transition-colors"
+                // CORRECTED: Changed hover:text-primary to hover:text-primary-red
+                className="text-dark-charcoal hover:text-primary-red font-medium transition-colors"
                 onClick={() => setMenuOpen(false)} // close on link click
               >
                 {link.name}
