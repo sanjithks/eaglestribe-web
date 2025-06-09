@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
 // Fetch ride data from Strapi
 async function getRides() {
@@ -25,34 +24,24 @@ async function getRides() {
 
 // Display each ride tile
 function RideTile({ ride }) {
-  if (!ride) return null;
-
-  const { id, title, short_description } = ride;
+  const { title, short_description, documentId } = ride;
 
   return (
-    <div className="bg-foreground rounded-lg shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-2xl">
-      <div className="relative h-56 w-full bg-gray-300 flex items-center justify-center text-dark-charcoal text-xl font-bold">
-        {title}
-      </div>
+    <Link href={`/rides/${documentId}`} className="block bg-foreground rounded-lg shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-2xl">
       <div className="p-6">
         <h3 className="text-2xl font-bold text-secondary-brown mb-2">{title}</h3>
         <p className="text-dark-charcoal">{short_description}</p>
-        <Link
-          href={`/rides/${id}`}
-          className="mt-4 inline-block text-primary-red font-semibold hover:underline"
-        >
-          Read More...
-        </Link>
+        <p className="mt-4 text-primary-red font-semibold hover:underline">Read More...</p>
       </div>
-    </div>
+    </Link>
   );
 }
 
-// Main rides page
+// Renders the main rides page
 export default async function RidesPage() {
   let rides = await getRides();
 
-  // Sort by ride_date descending
+  // Sort by ride_date descending (newest first)
   rides = rides.sort((a, b) => new Date(b.ride_date) - new Date(a.ride_date));
 
   // Only show latest 3 rides
