@@ -6,7 +6,7 @@ async function getRides() {
   try {
     const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_API_URL;
     const res = await fetch(
-      `${strapiUrl}/api/rides?populate[featured_image]=*&populate[gallery]=*&sort=ride_date:desc`,
+      `${strapiUrl}/api/rides?populate[featured_image]=*&sort=ride_date:desc`,
       { cache: 'no-store' }
     );
 
