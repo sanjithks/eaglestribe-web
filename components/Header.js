@@ -30,7 +30,7 @@ export default function Header() {
     customMatch ? customMatch(pathname) : pathname === path;
 
   return (
-    <header className="backdrop-blur-sm bg-foreground/80 shadow-md border-b border-gray-300 sticky top-0 z-50">
+    <header className="backdrop-blur-sm bg-foreground/90 shadow-md border-b border-gray-300 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link href="/" className="flex items-center">
