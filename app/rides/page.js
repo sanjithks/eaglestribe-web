@@ -20,7 +20,10 @@ function RideTile({ ride }) {
   const { title, short_description, documentId } = ride;
 
   return (
-    <Link href={`/rides/${documentId}`} className="block bg-foreground rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all">
+    <Link
+      href={`/rides/${documentId}`}
+      className="block bg-foreground rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all"
+    >
       <h3 className="text-2xl font-bold text-secondary-brown mb-2">{title}</h3>
       <p className="text-dark-charcoal">{short_description}</p>
       <p className="mt-4 text-primary-red font-semibold hover:underline">Read More...</p>
@@ -30,13 +33,16 @@ function RideTile({ ride }) {
 
 // Main rides page
 export default async function RidesPage() {
-  const rides = (await getRides()).sort((a, b) => new Date(b.ride_date) - new Date(a.ride_date));
+  const rides = (await getRides()).sort(
+    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
+  );
   const topThreeRides = rides.slice(0, 3);
 
   return (
     <div className="bg-background">
       <div className="container mx-auto px-6 py-12">
         <h1 className="text-5xl font-bold text-primary-red mb-12 text-center">Latest Rides</h1>
+
         {topThreeRides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {topThreeRides.map((ride) => (
@@ -47,11 +53,12 @@ export default async function RidesPage() {
           <p className="text-center">No rides available right now.</p>
         )}
 
+        {/* Archives link */}
         <div className="mt-20 text-center">
           <h2 className="text-3xl font-bold text-secondary-brown mb-4">Looking for more?</h2>
           <Link
             href="/rides/archives"
-            className="inline-block bg-dark-charcoal text-foreground py-4 px-10 rounded-lg shadow-lg hover:bg-primary-red transition text-xl font-bold"
+            className="inline-block bg-dark-charcoal text-foreground py-4 px-10 rounded-lg shadow-lg hover:bg-primary-red transition-colors duration-300 text-xl font-bold"
           >
             View Ride Archives
           </Link>
