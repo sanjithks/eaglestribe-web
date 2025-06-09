@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 
 const navLinks = [
@@ -16,59 +17,76 @@ const navLinks = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
 
   return (
-    <header className="bg-dark-charcoal sticky top-0 z-50 shadow-lg h-[132px]">
-      <nav className="container mx-auto flex items-center justify-between p-4 text-foreground relative h-full">
+    <header className="sticky top-0 z-50 bg-dark-charcoal shadow-lg">
+      <nav className="container mx-auto flex items-center justify-between px-4 py-3 md:py-4 h-[100px] md:h-[132px] text-foreground">
+        
         {/* Logo */}
-        <Link href="/" className="flex-shrink-0">
+        <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
           <Image
             src="/images/logo.png"
             alt="Eagles Tribe MC Logo"
-            width={100}
-            height={100}
+            width={80}
+            height={80}
             priority
+            className="object-contain"
           />
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <ul className="hidden md:flex items-center space-x-6 text-lg">
+        {/* Desktop Links */}
+        <ul className="hidden md:flex items-center gap-6 text-lg">
           {navLinks.map((link) => (
             <li key={link.name}>
-              <Link href={link.href} className="hover:text-primary-red transition-colors duration-300">
+              <Link
+                href={link.href}
+                className={`transition-colors duration-300 hover:text-primary-red ${
+                  pathname === link.href ? 'text-primary-red font-bold' : ''
+                }`}
+              >
                 {link.name}
               </Link>
             </li>
           ))}
         </ul>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Toggle Button */}
         <div className="md:hidden">
           <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </div>
       </nav>
 
-      {isMenuOpen && (
-        <div className="md:hidden bg-dark-charcoal/95 backdrop-blur-sm absolute w-full">
-          <ul className="flex flex-col items-center space-y-4 py-6 text-lg">
-            {navLinks.map((link) => (
-              <li key={link.name}>
-                <Link 
-                  href={link.href} 
-                  className="hover:text-primary-red transition-colors duration-300"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {/* Mobile Menu */}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isMenuOpen ? 'max-h-[500px] py-4' : 'max-h-0'
+        } bg-dark-charcoal/95 backdrop-blur-sm`}
+      >
+        <ul className="flex flex-col items-center space-y-4 text-lg">
+          {navLinks.map((link) => (
+            <li key={link.name}>
+              <Link
+                href={link.href}
+                className={`hover:text-primary-red transition ${
+                  pathname === link.href ? 'text-primary-red font-bold' : ''
+                }`}
+              >
+                {link.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     </header>
   );
 }
