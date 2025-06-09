@@ -22,6 +22,7 @@ export default async function RideDetailPage({ params }) {
   });
 
   const data = await res.json();
+
   const ride = data.data.find((r) => r.documentId === slug);
 
   if (!ride) {
@@ -31,11 +32,11 @@ export default async function RideDetailPage({ params }) {
   const { title, ride_date, detailed_write_up } = ride;
 
   return (
-    <div className="bg-background min-h-screen flex flex-col items-center px-6 py-12 relative">
-      <div className="max-w-3xl w-full bg-foreground rounded-lg shadow-lg p-8 relative">
-        
+    <div className="bg-background min-h-screen flex flex-col items-center px-6 pt-[132px] pb-24">
+      <div className="max-w-3xl w-full bg-foreground rounded-lg shadow-lg relative overflow-hidden">
+
         {/* Sticky Title and Date */}
-        <div className="sticky top-0 bg-foreground z-10 pb-4 border-b border-gray-300">
+        <div className="sticky top-[132px] z-20 bg-foreground px-8 pt-8 pb-4 border-b border-gray-300">
           <h1 className="text-4xl font-bold text-primary-red mb-2">{title}</h1>
           <p className="text-sm text-dark-charcoal">
             {new Date(ride_date).toLocaleDateString('en-GB', {
@@ -46,24 +47,22 @@ export default async function RideDetailPage({ params }) {
           </p>
         </div>
 
-        {/* Scrollable Content */}
-        <div className="mt-6 max-h-[70vh] overflow-y-auto prose prose-lg text-dark-charcoal">
+        {/* Scrollable Text Area */}
+        <div className="px-8 py-6 prose prose-lg text-dark-charcoal overflow-y-auto max-h-[70vh]">
           {detailed_write_up.split('\n').map((para, idx) => (
             <p key={idx}>{para}</p>
           ))}
         </div>
-      </div>
 
-      {/* Spacer to avoid footer overlap */}
-      <div className="h-20" />
+        {/* Back Button */}
+        <div className="px-8 pb-6 mt-4 text-center">
+          <Link href="/rides">
+            <button className="bg-primary-red text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-red-700 transition">
+              ← Back to Rides
+            </button>
+          </Link>
+        </div>
 
-      {/* Floating Back Button */}
-      <div className="fixed bottom-6 inset-x-0 flex justify-center z-40">
-        <Link href="/rides">
-          <button className="bg-primary-red text-white py-3 px-6 rounded-lg font-semibold shadow-lg hover:bg-red-700 transition">
-            ← Back to Rides
-          </button>
-        </Link>
       </div>
     </div>
   );
