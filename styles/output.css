@@ -52,12 +52,6 @@
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
-    --color-background: oklch(91.78% 0 0);
-    --color-foreground: oklch(98.41% 0.02 88.33);
-    --color-primary-red: oklch(45.48% 0.14 25.48);
-    --color-secondary-brown: oklch(49.52% 0.08 48.47);
-    --color-dark-charcoal: oklch(34.12% 0 0);
-    --color-cream: oklch(96.34% 0.04 88.24);
   }
 }
 @layer base {
@@ -447,26 +441,8 @@
   .bg-\[\#fbf3e3\] {
     background-color: #fbf3e3;
   }
-  .bg-background {
-    background-color: var(--color-background);
-  }
   .bg-black {
     background-color: var(--color-black);
-  }
-  .bg-cream\/90 {
-    background-color: color-mix(in srgb, oklch(96.34% 0.04 88.24) 90%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-cream) 90%, transparent);
-    }
-  }
-  .bg-dark-charcoal {
-    background-color: var(--color-dark-charcoal);
-  }
-  .bg-foreground {
-    background-color: var(--color-foreground);
-  }
-  .bg-primary-red {
-    background-color: var(--color-primary-red);
   }
   .bg-white {
     background-color: var(--color-white);
@@ -590,23 +566,11 @@
     --tw-tracking: var(--tracking-wider);
     letter-spacing: var(--tracking-wider);
   }
-  .text-dark-charcoal {
-    color: var(--color-dark-charcoal);
-  }
-  .text-foreground {
-    color: var(--color-foreground);
-  }
   .text-gray-400 {
     color: var(--color-gray-400);
   }
   .text-gray-500 {
     color: var(--color-gray-500);
-  }
-  .text-primary-red {
-    color: var(--color-primary-red);
-  }
-  .text-secondary-brown {
-    color: var(--color-secondary-brown);
   }
   .text-white {
     color: var(--color-white);
@@ -679,31 +643,10 @@
       }
     }
   }
-  .hover\:bg-primary-red {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-primary-red);
-      }
-    }
-  }
   .hover\:bg-red-700 {
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-red-700);
-      }
-    }
-  }
-  .hover\:bg-secondary-brown {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-secondary-brown);
-      }
-    }
-  }
-  .hover\:text-primary-red {
-    &:hover {
-      @media (hover: hover) {
-        color: var(--color-primary-red);
       }
     }
   }
@@ -720,16 +663,6 @@
         --tw-shadow: 0 25px 50px -12px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
         box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
       }
-    }
-  }
-  .focus\:border-primary-red {
-    &:focus {
-      border-color: var(--color-primary-red);
-    }
-  }
-  .focus\:ring-primary-red {
-    &:focus {
-      --tw-ring-color: var(--color-primary-red);
     }
   }
   .focus\:outline-none {
@@ -789,6 +722,73 @@
     @media (width >= 64rem) {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+  }
+}
+@layer theme {
+  :root {
+    --font-heading: "Playfair Display", serif;
+    --font-body: "Inter", sans-serif;
+    --color-background: oklch(97.5% 0.01 85);     /* Creamy Beige */
+    --color-foreground: oklch(20% 0.02 50);       /* Deep Charcoal */
+    --color-primary: oklch(60% 0.23 25);          /* Muted Deep Red */
+    --color-secondary: oklch(75% 0.15 55);        /* Warm Sand */
+    --color-accent: oklch(92% 0.07 150);          /* Soft Sky Blue */
+    --color-highlight: oklch(90% 0.12 120);       /* Mint Glow */
+  }
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+  }
+}
+@layer base {
+  h1 {
+    font-size: 3rem;
+    font-weight: 800;
+  }
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+}
+@layer utilities {
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
+  .text-primary {
+    color: var(--color-primary);
+  }
+  .bg-secondary {
+    background-color: var(--color-secondary);
+  }
+  .text-secondary {
+    color: var(--color-secondary);
+  }
+  .bg-accent {
+    background-color: var(--color-accent);
+  }
+  .text-accent {
+    color: var(--color-accent);
+  }
+  .bg-highlight {
+    background-color: var(--color-highlight);
+  }
+  .text-highlight {
+    color: var(--color-highlight);
   }
 }
 @property --tw-space-y-reverse {

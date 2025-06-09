@@ -17,44 +17,49 @@ async function getRides() {
   }
 }
 
-// Ride tile component
+// Ride Tile component
 function RideTile({ ride }) {
   const { title, short_description, documentId } = ride;
 
   return (
-    <Link href={`/rides/${documentId}`} className="block bg-foreground rounded-lg shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-2xl">
+    <Link
+      href={`/rides/${documentId}`}
+      className="block bg-foreground rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300"
+    >
       <div className="p-6">
-        <h3 className="text-2xl font-bold text-secondary-brown mb-2">{title}</h3>
-        <p className="text-dark-charcoal">{short_description}</p>
-        <p className="mt-4 text-primary-red font-semibold hover:underline">Read More...</p>
+        <h3 className="text-2xl font-bold text-secondary mb-2 group-hover:text-primary transition-colors">
+          {title}
+        </h3>
+        <p className="text-dark-charcoal text-base">{short_description}</p>
+        <p className="mt-4 text-primary font-semibold hover:underline">Read More...</p>
       </div>
     </Link>
   );
 }
 
-// Archive page
+// Archive Page
 export default async function ArchivesPage() {
   let rides = await getRides();
 
-  // Sort by date descending
+  // Sort newest to oldest and exclude latest 3
   rides = rides.sort((a, b) => new Date(b.ride_date) - new Date(a.ride_date));
-
-  // Skip the latest 3
   const archiveRides = rides.slice(3);
 
   return (
-    <div className="bg-background">
-      <div className="container mx-auto px-6 py-12">
-        <h1 className="text-4xl font-bold text-primary-red mb-10 text-center">Ride Archives</h1>
+    <div className="bg-background min-h-screen">
+      <div className="container mx-auto px-6 py-16">
+        <h1 className="text-5xl font-bold text-primary text-center mb-12">Ride Archives</h1>
 
         {archiveRides.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             {archiveRides.map((ride) => (
               <RideTile key={ride.id} ride={ride} />
             ))}
           </div>
         ) : (
-          <p className="text-center text-lg">No archived rides found.</p>
+          <p className="text-center text-lg text-dark-charcoal opacity-75">
+            No archived rides found.
+          </p>
         )}
       </div>
     </div>

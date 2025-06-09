@@ -22,11 +22,11 @@ function RideTile({ ride }) {
   return (
     <Link
       href={`/rides/${documentId}`}
-      className="block bg-foreground rounded-lg shadow-lg p-6 hover:shadow-2xl transition-all"
+      className="block bg-foreground rounded-xl shadow-md p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary"
     >
-      <h3 className="text-2xl font-bold text-secondary-brown mb-2">{title}</h3>
-      <p className="text-dark-charcoal">{short_description}</p>
-      <p className="mt-4 text-primary-red font-semibold hover:underline">Read More...</p>
+      <h3 className="text-2xl font-bold text-secondary mb-2">{title}</h3>
+      <p className="text-foreground text-opacity-80">{short_description}</p>
+      <p className="mt-4 text-primary font-semibold hover:underline">Read More...</p>
     </Link>
   );
 }
@@ -39,9 +39,9 @@ export default async function RidesPage() {
   const topThreeRides = rides.slice(0, 3);
 
   return (
-    <div className="bg-background">
-      <div className="container mx-auto px-6 py-12">
-        <h1 className="text-5xl font-bold text-primary-red mb-12 text-center">Latest Rides</h1>
+    <section className="bg-background text-foreground px-6 py-16 min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-5xl font-extrabold text-primary text-center mb-16">Latest Rides</h1>
 
         {topThreeRides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -50,20 +50,19 @@ export default async function RidesPage() {
             ))}
           </div>
         ) : (
-          <p className="text-center">No rides available right now.</p>
+          <p className="text-center text-lg text-dark-charcoal">No rides available right now.</p>
         )}
 
-        {/* Archives link */}
         <div className="mt-20 text-center">
-          <h2 className="text-3xl font-bold text-secondary-brown mb-4">Looking for more?</h2>
+          <h2 className="text-3xl font-bold text-secondary mb-4">Looking for more?</h2>
           <Link
             href="/rides/archives"
-            className="inline-block bg-dark-charcoal text-foreground py-4 px-10 rounded-lg shadow-lg hover:bg-primary-red transition-colors duration-300 text-xl font-bold"
+            className="inline-block bg-dark-charcoal text-background py-4 px-10 rounded-lg shadow-md hover:bg-primary transition duration-300 text-xl font-bold"
           >
             View Ride Archives
           </Link>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

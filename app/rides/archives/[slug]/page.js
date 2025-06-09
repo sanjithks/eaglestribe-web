@@ -32,18 +32,17 @@ export default async function ArchivedRideDetailPage({ params }) {
   const archivedRides = rides.slice(3);
   const ride = archivedRides.find((r) => r.documentId === slug);
 
-  if (!ride) {
-    notFound();
-  }
+  if (!ride) notFound();
 
   const { title, ride_date, detailed_write_up } = ride;
 
   return (
-    <div className="bg-background min-h-screen flex flex-col items-center px-6 py-12">
-      <div className="max-w-3xl w-full bg-foreground rounded-lg shadow-lg p-8 relative">
-        {/* Fixed Title and Date */}
-        <div className="sticky top-[140px] bg-foreground z-10 pb-4 border-b border-gray-300">
-          <h1 className="text-4xl font-bold text-primary-red mb-2">{title}</h1>
+    <div className="bg-background min-h-screen flex flex-col items-center px-4 py-12">
+      <div className="w-full max-w-4xl bg-foreground rounded-xl shadow-xl overflow-hidden flex flex-col">
+        
+        {/* Sticky Title & Date */}
+        <div className="sticky top-0 z-10 bg-foreground px-6 pt-6 pb-4 border-b border-gray-300">
+          <h1 className="text-4xl font-bold text-primary mb-2">{title}</h1>
           <p className="text-sm text-dark-charcoal">
             {new Date(ride_date).toLocaleDateString('en-GB', {
               day: 'numeric',
@@ -53,17 +52,17 @@ export default async function ArchivedRideDetailPage({ params }) {
           </p>
         </div>
 
-        {/* Scrollable Write-up */}
-        <div className="mt-6 max-h-[70vh] overflow-y-auto prose prose-lg text-dark-charcoal">
+        {/* Scrollable content */}
+        <div className="px-6 py-6 overflow-y-auto max-h-[70vh] prose prose-lg text-dark-charcoal">
           {detailed_write_up?.split('\n').map((para, idx) => (
             <p key={idx}>{para}</p>
           ))}
         </div>
 
-        {/* Back to Archives Button */}
-        <div className="mt-8 text-center">
+        {/* Back button */}
+        <div className="px-6 pb-6 mt-auto text-center border-t border-gray-200">
           <Link href="/rides/archives">
-            <button className="bg-primary-red text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-red-700 transition">
+            <button className="mt-4 bg-primary text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-secondary transition">
               ← Back to Archives
             </button>
           </Link>

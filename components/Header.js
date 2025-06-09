@@ -1,100 +1,62 @@
 "use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-
-const navLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'About Us', href: '/about-us' },
-  { name: 'Rides', href: '/rides' },
-  { name: 'Membership', href: '/membership' },
-  { name: 'Events', href: '/events' },
-  { name: 'Gallery', href: '/gallery' },
-  { name: 'Contact', href: '/contact' },
-];
+import Link from "next/link";
+import { useState } from "react";
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 shadow-lg h-[132px] backdrop-blur-md bg-cream/90">
-      <nav className="container mx-auto flex items-center justify-between p-4 text-secondary-brown relative h-full">
+    <header className="sticky top-0 z-50 bg-[--color-background]/80 backdrop-blur-md shadow-md">
+      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex-shrink-0">
-          <Image
-            src="/images/logo.png"
-            alt="Eagles Tribe MC Logo"
-            width={100}
-            height={100}
-            priority
-          />
+        <Link href="/" className="flex items-center gap-2 text-[--color-primary] font-[var(--font-heading)] text-2xl font-bold">
+          <img src="/logo.png" alt="Eagles Tribe MC" className="h-10 w-auto" />
+          Eagles Tribe MC
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <ul className="hidden md:flex items-center space-x-6 text-lg">
-          {navLinks.map((link) => {
-            const isActive =
-              link.href === '/rides'
-                ? pathname.startsWith('/rides')
-                : pathname === link.href;
-            return (
-              <li key={link.name}>
-                <Link
-                  href={link.href}
-                  className={`hover:text-primary-red transition-colors duration-300 ${
-                    isActive ? 'font-bold' : ''
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex gap-8 text-sm font-medium text-[--color-foreground]">
+          {["Home", "About Us", "Rides", "Membership", "Events", "Gallery", "Contact"].map((item) => (
+            <Link
+              key={item}
+              href={`/${item === "Home" ? "" : item.toLowerCase().replace(/\s/g, "")}`}
+              className="hover:text-[--color-primary] transition-colors"
+            >
+              {item}
+            </Link>
+          ))}
+        </nav>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16m-7 6h7"
-              />
-            </svg>
-          </button>
-        </div>
-      </nav>
+        {/* Mobile Menu Toggle */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden text-[--color-foreground] focus:outline-none"
+        >
+          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            {menuOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
+      </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-[#fbf3e3] backdrop-blur-sm absolute w-full">
-          <ul className="flex flex-col items-center space-y-4 py-6 text-lg text-dark-charcoal">
-            {navLinks.map((link) => {
-              const isActive =
-                link.href === '/rides'
-                  ? pathname.startsWith('/rides')
-                  : pathname === link.href;
-              return (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className={`hover:text-primary-red transition-colors duration-300 ${
-                      isActive ? 'font-bold' : ''
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+      {/* Mobile Nav */}
+      {menuOpen && (
+        <nav className="md:hidden bg-[--color-background] px-4 pb-4 space-y-2">
+          {["Home", "About Us", "Rides", "Membership", "Events", "Gallery", "Contact"].map((item) => (
+            <Link
+              key={item}
+              href={`/${item === "Home" ? "" : item.toLowerCase().replace(/\s/g, "")}`}
+              className="block text-[--color-foreground] hover:text-[--color-primary] transition-colors"
+              onClick={() => setMenuOpen(false)}
+            >
+              {item}
+            </Link>
+          ))}
+        </nav>
       )}
     </header>
   );
