@@ -40,7 +40,7 @@ export default function Header() {
         >
           {/* This new path has a more exponential curve */}
           <path
-            d="M0 70 C 300 70, 600 220, 720 220 C 840 220, 1140 70, 1440 70 V 0 H 0 Z"
+            d="M0 40 C 600 40, 700 220, 720 220 C 740 220, 840 40, 1440 40 V 0 H 0 Z"
             className="fill-current text-foreground/95"
           />
         </svg>
@@ -53,7 +53,7 @@ export default function Header() {
       {/* --- Desktop Layout --- */}
       <div className="relative z-10 w-full max-w-7xl mx-auto hidden md:grid grid-cols-3 items-center h-full px-6">
         {/* Left Navigation - Adjusted padding and text color */}
-        <nav className="flex justify-around items-start pt-6">
+        <nav className="flex justify-around items-start pt-4">
           {leftLinks.map(({ name, path }) => (
             <Link key={name} href={path} className={`font-medium transition-colors duration-300 ${isActive(path) ? "text-accent font-bold" : "text-white/80 hover:text-white"}`}>
               {name}
@@ -76,7 +76,7 @@ export default function Header() {
         </div>
 
         {/* Right Navigation - Adjusted padding and text color */}
-        <nav className="flex justify-around items-start pt-6">
+        <nav className="flex justify-around items-start pt-4">
           {rightLinks.map(({ name, path }) => (
             <Link key={name} href={path} className={`font-medium transition-colors duration-300 ${isActive(path) ? "text-accent font-bold" : "text-white/80 hover:text-white"}`}>
               {name}
