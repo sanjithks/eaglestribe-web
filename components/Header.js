@@ -23,6 +23,7 @@ export default function Header() {
   const isActive = (path) => pathname === path;
 
   useEffect(() => {
+    // Close mobile menu on route change
     setIsMenuOpen(false);
   }, [pathname]);
 
@@ -39,28 +40,28 @@ export default function Header() {
             xmlns="http://www.w3.org/2000/svg"
           >
             <defs>
-              <linearGradient id="headerBarGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="oklch(50% 0 0)" />
-                <stop offset="100%" stopColor="oklch(40% 0 0)" />
-              </linearGradient>
+                <filter id="dropshadow" height="130%">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+                    <feOffset dx="0" dy="4" result="offsetblur"/>
+                    <feComponentTransfer>
+                      <feFuncA type="linear" slope="0.5"/>
+                    </feComponentTransfer>
+                    <feMerge> 
+                      <feMergeNode/>
+                      <feMergeNode in="SourceGraphic"/> 
+                    </feMerge>
+                </filter>
             </defs>
-            {/* Main Path for the integrated shape */}
-            <path
-              d="M0 40 H 580 C 610 40, 640 80, 640 112 C 640 144, 610 184, 580 184 H 860 C 830 184, 800 144, 800 112 C 800 80, 830 40, 860 40 H 1440 V 0 H 0 Z"
-              className="fill-current text-foreground/95"
-              filter="url(#dropshadow)"
-            />
-             <filter id="dropshadow" height="130%">
-                <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-                <feOffset dx="2" dy="2" result="offsetblur"/>
-                <feComponentTransfer>
-                  <feFuncA type="linear" slope="0.5"/>
-                </feComponentTransfer>
-                <feMerge> 
-                  <feMergeNode/>
-                  <feMergeNode in="SourceGraphic"/> 
-                </feMerge>
-            </filter>
+
+            {/* Combined solid shape */}
+            <g filter="url(#dropshadow)">
+                {/* Central Circle */}
+                <circle cx="720" cy="96" r="96" className="fill-current text-foreground/95" />
+                {/* Left Handlebar */}
+                <path d="M0 0 H 624 C 624 0, 624 96, 720 96 C 624 96, 624 192, 624 192 H 0 Z"  className="fill-current text-foreground/95" />
+                {/* Right Handlebar */}
+                <path d="M1440 0 H 816 C 816 0, 816 96, 720 96 C 816 96, 816 192, 816 192 H 1440 Z"  className="fill-current text-foreground/95" />
+            </g>
           </svg>
         </div>
 
@@ -79,9 +80,9 @@ export default function Header() {
         </div>
 
         {/* Menu Links - Positioned on the "handlebar" areas */}
-        <div className="absolute top-0 left-0 w-full h-24 z-10">
+        <div className="absolute top-0 left-0 w-full h-48 z-10">
           <div className="w-full max-w-7xl h-full mx-auto grid grid-cols-[1fr_320px_1fr] items-center px-6">
-            <nav className="flex justify-around items-center">
+            <nav className="flex justify-around items-center h-full">
               {leftLinks.map(({ name, path }) => (
                 <Link key={name} href={path} className={`font-body font-semibold text-lg transition-all duration-300 ${isActive(path) ? "text-accent scale-110" : "text-white/70 hover:text-white"}`}>
                   {name}
@@ -89,7 +90,7 @@ export default function Header() {
               ))}
             </nav>
             <div></div> {/* Empty spacer for the logo area */}
-            <nav className="flex justify-around items-center">
+            <nav className="flex justify-around items-center h-full">
               {rightLinks.map(({ name, path }) => (
                 <Link key={name} href={path} className={`font-body font-semibold text-lg transition-all duration-300 ${isActive(path) ? "text-accent scale-110" : "text-white/70 hover:text-white"}`}>
                   {name}
