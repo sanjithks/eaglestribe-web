@@ -9,7 +9,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "About Us", path: "/about-us" },
+    { name: "About You", path: "/about-us" },
     { name: "Rides", path: "/rides" },
     { name: "Membership", path: "/membership" },
     { name: "Events", path: "/events" },
