@@ -21,24 +21,24 @@ export default function Header() {
   const isActive = (path) => pathname === path;
 
   return (
-    <header className="relative w-full h-48 flex items-start pt-8">
-      {/* Symmetrical Wavy SVG Background */}
+    <header className="relative w-full h-48 flex items-center justify-center">
+      {/* Symmetrical Wavy SVG Background with a Peak */}
       <div className="absolute top-0 left-0 w-full h-full z-0">
         <svg
           className="w-full h-full"
-          viewBox="0 0 1440 190"
+          viewBox="0 0 1440 180"
           preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M0 80 C 150 80, 250 130, 450 130 C 650 130, 650 40, 720 40 C 790 40, 790 130, 990 130 C 1190 130, 1290 80, 1440 80 V 0 H 0 Z"
+            d="M0 60 C 250 60, 400 120, 720 120 C 1040 120, 1190 60, 1440 60 V 0 H 0 Z"
             className="fill-current text-foreground/95"
           />
         </svg>
       </div>
 
       {/* Grid Layout for Nav and Logo */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-3 items-center px-6">
+      <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-3 items-center h-full px-6">
         {/* Left Navigation */}
         <nav className="flex justify-around items-center">
           {leftLinks.map(({ name, path }) => (
@@ -56,15 +56,15 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Center Logo - Positioned to sit in the dip */}
-        <div className="relative flex justify-center items-center h-40">
-           <Link href="/" className="absolute -top-12">
+        {/* Center Logo - Positioned higher up, to be covered by the wave */}
+        <div className="flex justify-center items-start h-full pt-4">
+          <Link href="/">
             <Image
-              src="/images/logo.png"
+              src="/images/logo.png" // Make sure you have your logo in the /public/images/ folder
               alt="Eagles Tribe MC Logo"
-              width={160}
-              height={160}
-              className="w-40 h-40 object-contain hover-scale transition-transform duration-300"
+              width={100}
+              height={100}
+              className="w-28 h-28 object-contain hover-scale transition-transform duration-300"
               priority
             />
           </Link>
