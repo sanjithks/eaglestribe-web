@@ -27,80 +27,63 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="relative w-full h-48 md:h-64">
-      {/* Glossy SVG Background - Desktop */}
-      <div className="absolute top-0 left-0 w-full h-full z-0 hidden md:block">
-        <svg
-          className="w-full h-full drop-shadow-lg"
-          viewBox="0 0 1440 240" // Increased viewBox height for circular shape
-          preserveAspectRatio="xMidYMid meet" // Ensures aspect ratio is met
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <linearGradient id="handlebarGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#282828" />
-              <stop offset="100%" stopColor="#1a1a1a" />
-            </linearGradient>
-             <radialGradient id="headlightGradient">
-              <stop offset="20%" stopColor="oklch(90% 0.12 120)" />
-              <stop offset="100%" stopColor="var(--color-secondary)" />
-            </radialGradient>
-          </defs>
+    <header className="relative w-full h-24 md:h-40">
+      {/* --- Desktop Layout Container --- */}
+      <div className="relative w-full h-full hidden md:block">
+        {/* SVG Background Shape */}
+        <div className="absolute top-0 left-0 w-full h-28 z-0">
+          <svg className="w-full h-full" viewBox="0 0 1440 112" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M0 0 H 600 C 600 0, 580 112, 720 112 C 860 112, 840 0, 840 0 H 1440 V 112 H 0 V 0 Z"
+              className="fill-current text-foreground/95"
+            />
+          </svg>
+        </div>
 
-          {/* Handlebars */}
-          <path
-            d="M0 100 H 500 C 550 100, 570 50, 600 50 H 840 C 870 50, 890 100, 940 100 H 1440 V 0 H 0 Z"
-            fill="url(#handlebarGradient)"
-          />
-          {/* Headlight Casing */}
-          <circle cx="720" cy="120" r="120" fill="url(#handlebarGradient)" />
-           {/* Headlight Glass */}
-          <circle cx="720" cy="120" r="100" fill="url(#headlightGradient)" stroke="#ffffff" strokeOpacity="0.5" />
-        </svg>
-      </div>
-
-       {/* Mobile background */}
-      <div className="absolute top-0 left-0 w-full h-24 z-0 bg-foreground/95 md:hidden" />
-
-
-      {/* --- Desktop Layout --- */}
-      <div className="relative z-10 w-full max-w-7xl h-full mx-auto hidden md:grid grid-cols-[1fr_auto_1fr] items-start pt-6 px-6">
-        {/* Left Navigation */}
-        <nav className="flex justify-around items-center h-20">
-          {leftLinks.map(({ name, path }) => (
-            <Link key={name} href={path} className={`font-body font-semibold text-lg transition-all duration-300 ${isActive(path) ? "text-white scale-110" : "text-white/70 hover:text-white"}`}>
-              {name}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Center Logo */}
-        <div className="flex justify-center items-center h-full">
-          <Link href="/" className="hover-scale z-20">
+        {/* Logo - Centered and positioned */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 z-20">
+          <Link href="/" className="hover-scale">
             <Image
               src="/images/logo.png"
               alt="Eagles Tribe MC Logo"
               width={180}
               height={180}
-              className="w-48 h-48 object-contain drop-shadow-xl"
+              className="w-full h-full object-contain drop-shadow-xl"
               priority
             />
           </Link>
         </div>
 
-        {/* Right Navigation */}
-        <nav className="flex justify-around items-center h-20">
-          {rightLinks.map(({ name, path }) => (
-            <Link key={name} href={path} className={`font-body font-semibold text-lg transition-all duration-300 ${isActive(path) ? "text-white scale-110" : "text-white/70 hover:text-white"}`}>
-              {name}
-            </Link>
-          ))}
-        </nav>
+        {/* Menu Links - Absolutely positioned */}
+        <div className="absolute top-0 left-0 w-full h-28 z-10">
+          <div className="w-full max-w-7xl h-full mx-auto grid grid-cols-[1fr_220px_1fr] items-center px-6">
+            {/* Left Navigation */}
+            <nav className="flex justify-around items-center">
+              {leftLinks.map(({ name, path }) => (
+                <Link key={name} href={path} className={`font-body font-semibold text-lg transition-all duration-300 ${isActive(path) ? "text-white scale-110" : "text-white/70 hover:text-white"}`}>
+                  {name}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Empty space for the logo */}
+            <div></div>
+
+            {/* Right Navigation */}
+            <nav className="flex justify-around items-center">
+              {rightLinks.map(({ name, path }) => (
+                <Link key={name} href={path} className={`font-body font-semibold text-lg transition-all duration-300 ${isActive(path) ? "text-white scale-110" : "text-white/70 hover:text-white"}`}>
+                  {name}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </div>
       </div>
 
 
       {/* --- Mobile Layout --- */}
-      <div className="relative z-10 w-full mx-auto flex md:hidden justify-between items-center h-24 px-6">
+      <div className="relative z-10 w-full mx-auto flex md:hidden justify-between items-center h-24 px-6 bg-foreground/95">
         <Link href="/">
           <Image src="/images/logo.png" alt="Eagles Tribe MC Logo" width={64} height={64} className="w-16 h-16 object-contain" priority />
         </Link>
