@@ -2,59 +2,52 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
 
 export default function Header() {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
   const navLinks = [
-    { name: "Home", path: "/" },
     { name: "About Us", path: "/about-us" },
-    { name: "Rides", path: "/rides", activeMatch: (path) => path.startsWith("/rides") },
+    { name: "Rides", path: "/rides" },
     { name: "Membership", path: "/membership" },
     { name: "Events", path: "/events" },
     { name: "Gallery", path: "/gallery" },
     { name: "Contact", path: "/contact" },
   ];
 
-  const isActive = (path, customMatch) =>
-    customMatch ? customMatch(pathname) : pathname === path;
+  // Split the links for the two sides of the logo
+  const leftLinks = navLinks.slice(0, 3);
+  const rightLinks = navLinks.slice(3);
+
+  const isActive = (path) => pathname === path;
 
   return (
-    <header className="backdrop-blur-sm bg-foreground/98 shadow-md border-b border-gray-300 sticky top-0 z-50">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3">
-        {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/images/logo.png"
-            alt="Eagles Tribe MC"
-            width={50}
-            height={50}
-            className="w-auto h-12"
-            priority
+    <header className="relative w-full h-48 flex items-center justify-center">
+      {/* Wavy SVG Background */}
+      <div className="absolute top-0 left-0 w-full h-full z-0">
+        <svg
+          className="w-full h-full"
+          viewBox="0 0 1440 190"
+          preserveAspectRatio="none"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0 118L53.625 113.167C107.25 108.333 214.5 98.6667 321.75 103.833C429 109 536.25 129 643.5 139C750.75 149 858 149 965.25 134.167C1072.5 119.333 1179.75 89.6667 1287 74.8333C1394.25 60 1440 60 1440 60V0H0V118Z"
+            className="fill-current text-foreground/90"
           />
-          <span className="ml-3 text-xl font-bold text-primary hidden sm:inline">
-            Eagles Tribe MC
-          </span>
-        </Link>
+        </svg>
+      </div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-8">
-          {navLinks.map(({ name, path, activeMatch }) => (
+      {/* Grid Layout for Nav and Logo */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-3 items-center px-6">
+        {/* Left Navigation */}
+        <nav className="flex justify-around">
+          {leftLinks.map(({ name, path }) => (
             <Link
               key={name}
               href={path}
-              className={`text-dark-charcoal hover:text-primary transition-colors duration-200 font-medium ${
-                isActive(path, activeMatch) ? "font-bold text-primary" : ""
+              className={`font-medium text-background transition-colors duration-300 hover:text-accent ${
+                isActive(path) ? "font-bold text-accent" : ""
               }`}
             >
               {name}
@@ -62,59 +55,34 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Hamburger Button */}
-        <div className="md:hidden">
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="text-dark-charcoal focus:outline-none"
-            aria-label="Toggle menu"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {menuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </button>
+        {/* Center Logo */}
+        <div className="flex justify-center">
+          <Link href="/">
+            <Image
+              src="/images/logo.png"
+              alt="Eagles Tribe MC Logo"
+              width={160}
+              height={160}
+              className="w-40 h-40 object-contain hover-scale"
+            />
+          </Link>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      {menuOpen && isMobile && (
-        <div className="md:hidden bg-foreground/95 border-t border-gray-200 px-4 pb-4">
-          <nav className="flex flex-col space-y-3">
-            {navLinks.map(({ name, path, activeMatch }) => (
-              <Link
-                key={name}
-                href={path}
-                onClick={() => setMenuOpen(false)}
-                className={`text-dark-charcoal hover:text-primary font-medium transition ${
-                  isActive(path, activeMatch) ? "font-bold text-primary" : ""
-                }`}
-              >
-                {name}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
+        {/* Right Navigation */}
+        <nav className="flex justify-around">
+          {rightLinks.map(({ name, path }) => (
+            <Link
+              key={name}
+              href={path}
+              className={`font-medium text-background transition-colors duration-300 hover:text-accent ${
+                isActive(path) ? "font-bold text-accent" : ""
+              }`}
+            >
+              {name}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </header>
   );
 }

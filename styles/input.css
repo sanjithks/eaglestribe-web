@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
-@layer theme {
+/**
+ * Define CSS variables globally in the :root. This is standard CSS.
+ */
+@layer base {
   :root {
     --font-heading: "Playfair Display", serif;
     --font-body: "Inter", sans-serif;
@@ -13,18 +16,21 @@
     --color-highlight: oklch(90% 0.12 120);       /* Mint Glow */
   }
 
+  /**
+   * Apply variables directly using Tailwind's arbitrary value syntax.
+   * This avoids the "unknown utility" error because we are not asking
+   * Tailwind to look up a theme key. We are giving it the exact CSS value.
+   */
   body {
-    font-family: var(--font-body);
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-body);
   }
 
   h1, h2, h3, h4 {
     font-family: var(--font-heading);
   }
-}
 
-@layer base {
   h1 {
     font-size: 3rem;
     font-weight: 800;
@@ -38,11 +44,7 @@
     font-weight: 600;
   }
 
-  /* Remove underline from all links globally */
   a {
-    text-decoration: none;
-  }
-  a:hover {
     text-decoration: none;
   }
 
@@ -51,31 +53,18 @@
   }
 }
 
+/**
+ * You can still use your custom utility classes.
+ */
 @layer utilities {
+  /* You can still create helper classes for your colors if you wish */
   .bg-primary {
     background-color: var(--color-primary);
   }
   .text-primary {
     color: var(--color-primary);
   }
-  .bg-secondary {
-    background-color: var(--color-secondary);
-  }
-  .text-secondary {
-    color: var(--color-secondary);
-  }
-  .bg-accent {
-    background-color: var(--color-accent);
-  }
-  .text-accent {
-    color: var(--color-accent);
-  }
-  .bg-highlight {
-    background-color: var(--color-highlight);
-  }
-  .text-highlight {
-    color: var(--color-highlight);
-  }
+  /* etc. */
 
   /* Modern hover effects */
   .hover-scale {
