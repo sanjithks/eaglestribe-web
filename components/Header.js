@@ -38,8 +38,9 @@ export default function Header() {
           preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg"
         >
+          {/* This new path has a more exponential curve */}
           <path
-            d="M0 60 C 400 60, 500 220, 720 220 C 940 220, 1040 60, 1440 60 V 0 H 0 Z"
+            d="M0 70 C 300 70, 600 220, 720 220 C 840 220, 1140 70, 1440 70 V 0 H 0 Z"
             className="fill-current text-foreground/95"
           />
         </svg>
@@ -51,10 +52,10 @@ export default function Header() {
 
       {/* --- Desktop Layout --- */}
       <div className="relative z-10 w-full max-w-7xl mx-auto hidden md:grid grid-cols-3 items-center h-full px-6">
-        {/* Left Navigation */}
-        <nav className="flex justify-around items-start pt-12">
+        {/* Left Navigation - Adjusted padding and text color */}
+        <nav className="flex justify-around items-start pt-6">
           {leftLinks.map(({ name, path }) => (
-            <Link key={name} href={path} className={`font-medium transition-colors duration-300 ${isActive(path) ? "text-accent font-bold" : "text-background/80 hover:text-white"}`}>
+            <Link key={name} href={path} className={`font-medium transition-colors duration-300 ${isActive(path) ? "text-accent font-bold" : "text-white/80 hover:text-white"}`}>
               {name}
             </Link>
           ))}
@@ -68,16 +69,16 @@ export default function Header() {
               alt="Eagles Tribe MC Logo"
               width={180}
               height={180}
-              className="w-44 h-44 object-contain hover-scale transition-transform duration-300"
+              className="w-44 h-44 object-contain transition-transform duration-300 hover:scale-110"
               priority
             />
           </Link>
         </div>
 
-        {/* Right Navigation */}
-        <nav className="flex justify-around items-start pt-12">
+        {/* Right Navigation - Adjusted padding and text color */}
+        <nav className="flex justify-around items-start pt-6">
           {rightLinks.map(({ name, path }) => (
-            <Link key={name} href={path} className={`font-medium transition-colors duration-300 ${isActive(path) ? "text-accent font-bold" : "text-background/80 hover:text-white"}`}>
+            <Link key={name} href={path} className={`font-medium transition-colors duration-300 ${isActive(path) ? "text-accent font-bold" : "text-white/80 hover:text-white"}`}>
               {name}
             </Link>
           ))}
@@ -100,7 +101,7 @@ export default function Header() {
         </Link>
         
         {/* Mobile Hamburger Button */}
-        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-background focus:outline-none" aria-label="Toggle menu">
+        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white focus:outline-none" aria-label="Toggle menu">
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             {isMenuOpen ? (
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -114,9 +115,9 @@ export default function Header() {
       {/* Mobile Menu Panel */}
       {isMenuOpen && (
         <div className="absolute top-24 left-0 w-full bg-foreground/95 md:hidden z-20">
-          <nav className="flex flex-col items-center gap-2 p-4 border-t border-background/20">
+          <nav className="flex flex-col items-center gap-2 p-4 border-t border-white/20">
             {navLinks.map(({ name, path }) => (
-              <Link key={name} href={path} className={`w-full text-center py-3 rounded-md font-medium transition-colors duration-300 ${isActive(path) ? "text-foreground bg-accent" : "text-background/80 hover:bg-background/10"}`}>
+              <Link key={name} href={path} className={`w-full text-center py-3 rounded-md font-medium transition-colors duration-300 ${isActive(path) ? "text-foreground bg-accent" : "text-white/80 hover:bg-white/10"}`}>
                 {name}
               </Link>
             ))}
