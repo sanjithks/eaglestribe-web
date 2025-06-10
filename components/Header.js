@@ -13,7 +13,7 @@ export default function Header() {
     { name: "Rides", path: "/rides" },
     { name: "Membership", path: "/membership" },
     { name: "Events", path: "/events" },
-    { name: "Gallery", path: "/gallery" },
+    { name: "Gallery", path:="/gallery" },
     { name: "Contact", path: "/contact" },
   ];
 
@@ -27,40 +27,48 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="relative w-full h-24 md:h-40">
+    <header className="relative w-full h-32 md:h-48 drop-shadow-xl">
       {/* --- Desktop Layout Container --- */}
       <div className="relative w-full h-full hidden md:block">
-        {/* SVG Background Shape */}
-        <div className="absolute top-0 left-0 w-full h-28 z-0">
-          <svg className="w-full h-full" viewBox="0 0 1440 112" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        {/* SVG Background Shape with Glassy Effect */}
+        <div className="absolute top-0 left-0 w-full h-full z-0">
+          <svg className="w-full h-full" viewBox="0 0 1440 192" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="glassyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="var(--color-foreground)" stopOpacity="0.95" />
+                <stop offset="100%" stopColor="oklch(15% 0.02 50)" stopOpacity="0.95" />
+              </linearGradient>
+            </defs>
             <path
-              d="M0 0 H 600 C 600 0, 580 112, 720 112 C 860 112, 840 0, 840 0 H 1440 V 112 H 0 V 0 Z"
-              className="fill-current text-foreground/95"
+              d="M0 80 H 550 C 575 80, 575 162, 720 162 C 865 162, 865 80, 890 80 H 1440 V 0 H 0 Z"
+              fill="url(#glassyGradient)"
+              stroke="oklch(100% 0 0 / 0.1)"
+              strokeWidth="2"
             />
           </svg>
         </div>
 
         {/* Logo - Centered and positioned */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 z-20">
-          <Link href="/" className="hover-scale">
+        <div className="absolute top-[105px] left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 z-20 transition-transform duration-300 ease-in-out hover:scale-110">
+          <Link href="/">
             <Image
               src="/images/logo.png"
               alt="Eagles Tribe MC Logo"
               width={180}
               height={180}
-              className="w-full h-full object-contain drop-shadow-xl"
+              className="w-full h-full object-contain drop-shadow-2xl"
               priority
             />
           </Link>
         </div>
 
         {/* Menu Links - Absolutely positioned */}
-        <div className="absolute top-0 left-0 w-full h-28 z-10">
-          <div className="w-full max-w-7xl h-full mx-auto grid grid-cols-[1fr_220px_1fr] items-center px-6">
+        <div className="absolute top-0 left-0 w-full h-24 z-10">
+          <div className="w-full max-w-7xl h-full mx-auto grid grid-cols-[1fr_280px_1fr] items-center px-6">
             {/* Left Navigation */}
             <nav className="flex justify-around items-center">
               {leftLinks.map(({ name, path }) => (
-                <Link key={name} href={path} className={`font-body font-semibold text-lg transition-all duration-300 ${isActive(path) ? "text-white scale-110" : "text-white/70 hover:text-white"}`}>
+                <Link key={name} href={path} className={`font-body font-semibold text-lg transition-all duration-300 ${isActive(path) ? "text-accent scale-110" : "text-white/70 hover:text-white"}`}>
                   {name}
                 </Link>
               ))}
@@ -72,7 +80,7 @@ export default function Header() {
             {/* Right Navigation */}
             <nav className="flex justify-around items-center">
               {rightLinks.map(({ name, path }) => (
-                <Link key={name} href={path} className={`font-body font-semibold text-lg transition-all duration-300 ${isActive(path) ? "text-white scale-110" : "text-white/70 hover:text-white"}`}>
+                <Link key={name} href={path} className={`font-body font-semibold text-lg transition-all duration-300 ${isActive(path) ? "text-accent scale-110" : "text-white/70 hover:text-white"}`}>
                   {name}
                 </Link>
               ))}
