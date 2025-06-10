@@ -17,90 +17,95 @@ export default function Header() {
     { name: "Contact", path: "/contact" },
   ];
 
-  const leftLinks = navLinks.slice(0, 3);
-  const rightLinks = navLinks.slice(3);
+  // Symmetrically split links for the desktop layout
+  const leftLinks = navLinks.slice(0, navLinks.length / 2);
+  const rightLinks = navLinks.slice(navLinks.length / 2);
 
   const isActive = (path) => pathname === path;
 
+  // Close mobile menu on route change
   useEffect(() => {
-    // Close mobile menu on route change
     setIsMenuOpen(false);
   }, [pathname]);
 
   return (
-    <header className="relative w-full h-32 md:h-48">
-      {/* --- Desktop Layout Container --- */}
-      <div className="relative w-full h-full hidden md:block">
-        {/* SVG Background Shape */}
-        <div className="absolute top-0 left-0 w-full h-full z-0">
-          <svg
-            className="w-full h-full"
-            viewBox="0 0 1440 192"
-            preserveAspectRatio="xMidYMid meet"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <linearGradient id="goldGradient" x1="0%" y1="50%" x2="100%" y2="50%">
-                <stop offset="0%" stopColor="#b8860b" />
-                <stop offset="50%" stopColor="#ffd700" />
-                <stop offset="100%" stopColor="#b8860b" />
-              </linearGradient>
-            </defs>
-            {/* Top bar */}
-            <path d="M762 129C813 79 848 34 903 24H1440V-10H901C828-4 822 32 809 28L733 98Z" fill="black"/>
-            <path d="M836 141C854 116 895 75 936 76H1440V47H975C941 49 904 40 873 59L776 143Z" fill="black"/>
-            <path d="M696 177 640 123C607 97 580 56 535 49 465 46 394 48 0 52V80L425 75C464 77 505 68 542 84 573 101 596 129 619 150L459 148 497 179Z" fill="black"/>
-            <path d="M680 229C743 234 807 210 852 165H762L661 72C541-35 594 9 1 0V35L431 33C485 36 544 24 591 56 646 102 698 152 751 201H584C612 217 645 227 678 230Z" fill="black"/>
-          </svg>
+    <header className="relative w-full h-40 md:h-56">
+      {/* Symmetrical Wavy SVG Background - This is for desktop */}
+      <div className="absolute top-0 left-0 w-full h-full z-0 hidden md:block drop-shadow-lg">
+        <svg
+          className="w-full h-full"
+          viewBox="0 0 1440 220"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <linearGradient id="glassyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              {/* Using your --color-primary (Muted Deep Red) for the gradient */}
+              <stop offset="0%" stopColor="var(--color-primary)" />
+              <stop offset="100%" stopColor="oklch(50% 0.23 25)" />
+            </linearGradient>
+          </defs>
+          
+          {/* A single, corrected path to create the V-shape */}
+          <path
+            d="M0 60 L 650 60 L 720 130 L 790 60 H 1440 V 0 H 0 Z"
+            fill="url(#glassyGradient)"
+          />
+          {/* Subtle top highlight for the glassy effect */}
+           <path
+            d="M0 60 L 650 60 L 720 130 L 790 60"
+            fill="none"
+            stroke="oklch(100% 0 0 / 0.2)"
+            strokeWidth="2"
+          />
+        </svg>
+      </div>
+      
+      {/* Mobile background */}
+      <div className="absolute top-0 left-0 w-full h-full z-0 bg-primary md:hidden" />
+
+
+      {/* --- Desktop Layout --- */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto hidden md:grid grid-cols-[1fr_auto_1fr] items-center h-full px-6">
+        {/* Left Navigation */}
+        <nav className="flex justify-around items-start pt-6">
+          {leftLinks.map(({ name, path }) => (
+            <Link key={name} href={path} className={`font-medium transition-colors duration-300 ${isActive(path) ? "text-white font-bold scale-110" : "text-white/80 hover:text-white"}`}>
+              {name}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Center Logo */}
+        <div className="flex justify-center items-center">
+          <Link href="/">
+            <Image
+              src="/images/logo.png"
+              alt="Eagles Tribe MC Logo"
+              width={180}
+              height={180}
+              className="w-44 h-44 object-contain transition-transform duration-300 hover:scale-110"
+              priority
+            />
+          </Link>
         </div>
 
-        {/* Menu Links - Positioned on top of the SVG */}
-        <div className="absolute top-0 left-0 w-full h-full z-10">
-          <div className="w-full max-w-7xl h-full mx-auto grid grid-cols-[1fr_1fr] items-center px-24">
-            {/* Left Navigation */}
-            <nav className="flex flex-col items-start gap-3">
-              {leftLinks.map(({ name, path }, index) => (
-                <Link
-                  key={name}
-                  href={path}
-                  style={{ transform: `translateX(${index * 40}px)` }}
-                  className={`font-body font-semibold text-lg transition-all duration-300 ${
-                    isActive(path)
-                      ? "text-white scale-110"
-                      : "text-white/80 hover:text-white"
-                  }`}
-                >
-                  {name}
-                </Link>
-              ))}
-            </nav>
-
-            {/* Right Navigation */}
-            <nav className="flex flex-col items-end gap-3">
-              {rightLinks.map(({ name, path }, index) => (
-                <Link
-                  key={name}
-                  href={path}
-                  style={{ transform: `translateX(-${index * 40}px)` }}
-                  className={`font-body font-semibold text-lg transition-all duration-300 ${
-                    isActive(path)
-                      ? "text-white scale-110"
-                      : "text-white/80 hover:text-white"
-                  }`}
-                >
-                  {name}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        </div>
+        {/* Right Navigation */}
+        <nav className="flex justify-around items-start pt-6">
+          {rightLinks.map(({ name, path }) => (
+            <Link key={name} href={path} className={`font-medium transition-colors duration-300 ${isActive(path) ? "text-white font-bold scale-110" : "text-white/80 hover:text-white"}`}>
+              {name}
+            </Link>
+          ))}
+        </nav>
       </div>
 
+
       {/* --- Mobile Layout --- */}
-      <div className="relative z-10 w-full mx-auto flex md:hidden justify-between items-center h-24 px-6 bg-foreground/95">
+      <div className="relative z-10 w-full mx-auto flex md:hidden justify-between items-center h-24 px-6 bg-primary">
         <Link href="/">
           <Image
-            src="/images/logo.png" // Assuming you might want a logo on mobile
+            src="/images/logo.png"
             alt="Eagles Tribe MC Logo"
             width={64}
             height={64}
@@ -108,32 +113,13 @@ export default function Header() {
             priority
           />
         </Link>
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="text-white focus:outline-none"
-          aria-label="Toggle menu"
-        >
-          <svg
-            className="w-8 h-8"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+        
+        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white focus:outline-none" aria-label="Toggle menu">
+          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             {isMenuOpen ? (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             ) : (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16m-7 6h7"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
             )}
           </svg>
         </button>
@@ -141,18 +127,10 @@ export default function Header() {
 
       {/* Mobile Menu Panel */}
       {isMenuOpen && (
-        <div className="absolute top-24 left-0 w-full bg-foreground/95 md:hidden z-20 shadow-lg">
-          <nav className="flex flex-col items-center gap-2 p-4 border-t border-white/20">
+        <div className="absolute top-24 left-0 w-full bg-foreground/95 md:hidden z-20">
+          <nav className="flex flex-col items-center gap-2 p-4 border-t border-background/20">
             {navLinks.map(({ name, path }) => (
-              <Link
-                key={name}
-                href={path}
-                className={`w-full text-center py-3 rounded-md font-body font-medium transition-colors duration-300 ${
-                  isActive(path)
-                    ? "text-primary bg-white"
-                    : "text-white/80 hover:bg-white/10"
-                }`}
-              >
+              <Link key={name} href={path} className={`w-full text-center py-3 rounded-md font-medium transition-colors duration-300 ${isActive(path) ? "text-foreground bg-accent" : "text-background/80 hover:bg-background/10"}`}>
                 {name}
               </Link>
             ))}
