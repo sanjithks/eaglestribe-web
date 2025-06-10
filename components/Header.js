@@ -32,8 +32,8 @@ export default function Header() {
       <div className="absolute top-0 left-0 w-full h-full z-0 hidden md:block">
         <svg
           className="w-full h-full drop-shadow-lg"
-          viewBox="0 0 1440 220"
-          preserveAspectRatio="none"
+          viewBox="0 0 1440 240" // Increased viewBox height for circular shape
+          preserveAspectRatio="xMidYMid meet" // Ensures aspect ratio is met
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
@@ -41,7 +41,7 @@ export default function Header() {
               <stop offset="0%" stopColor="#282828" />
               <stop offset="100%" stopColor="#1a1a1a" />
             </linearGradient>
-            <radialGradient id="headlightGradient">
+             <radialGradient id="headlightGradient">
               <stop offset="20%" stopColor="oklch(90% 0.12 120)" />
               <stop offset="100%" stopColor="var(--color-secondary)" />
             </radialGradient>
@@ -49,13 +49,13 @@ export default function Header() {
 
           {/* Handlebars */}
           <path
-            d="M0 80 H 500 C 550 80, 570 30, 600 30 H 840 C 870 30, 890 80, 940 80 H 1440 V 0 H 0 Z"
+            d="M0 100 H 500 C 550 100, 570 50, 600 50 H 840 C 870 50, 890 100, 940 100 H 1440 V 0 H 0 Z"
             fill="url(#handlebarGradient)"
           />
           {/* Headlight Casing */}
-          <circle cx="720" cy="115" r="100" fill="url(#handlebarGradient)" />
-          {/* Headlight Glass */}
-          <circle cx="720" cy="115" r="85" fill="url(#headlightGradient)" stroke="#ffffff" strokeOpacity="0.5" />
+          <circle cx="720" cy="120" r="120" fill="url(#handlebarGradient)" />
+           {/* Headlight Glass */}
+          <circle cx="720" cy="120" r="100" fill="url(#headlightGradient)" stroke="#ffffff" strokeOpacity="0.5" />
         </svg>
       </div>
 
@@ -64,7 +64,7 @@ export default function Header() {
 
 
       {/* --- Desktop Layout --- */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto hidden md:grid grid-cols-[1fr_auto_1fr] items-center h-full px-6">
+      <div className="relative z-10 w-full max-w-7xl h-full mx-auto hidden md:grid grid-cols-[1fr_auto_1fr] items-start pt-6 px-6">
         {/* Left Navigation */}
         <nav className="flex justify-around items-center h-20">
           {leftLinks.map(({ name, path }) => (
@@ -80,9 +80,9 @@ export default function Header() {
             <Image
               src="/images/logo.png"
               alt="Eagles Tribe MC Logo"
-              width={160}
-              height={160}
-              className="w-40 h-40 object-contain drop-shadow-xl"
+              width={180}
+              height={180}
+              className="w-48 h-48 object-contain drop-shadow-xl"
               priority
             />
           </Link>
@@ -97,6 +97,7 @@ export default function Header() {
           ))}
         </nav>
       </div>
+
 
       {/* --- Mobile Layout --- */}
       <div className="relative z-10 w-full mx-auto flex md:hidden justify-between items-center h-24 px-6">
