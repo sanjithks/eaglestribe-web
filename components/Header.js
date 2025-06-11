@@ -31,12 +31,10 @@ export default function Header() {
       {/* --- Desktop Layout --- */}
       <div className="relative w-full h-full hidden md:block">
         {/* SVG background with center cropping */}
-        <div className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden drop-shadow-lg">
-          <div className="w-[1440px] h-full mx-auto relative">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1440px] h-full z-0 overflow-hidden drop-shadow-lg">
+          <div className="w-full h-full mx-auto relative">
             <svg
-              className="absolute top-0 left-1/2 -translate-x-1/2 h-full"
-              width="1440"
-              height="320"
+              className="absolute top-0 left-0 w-full h-full"
               viewBox="0 0 1440 320"
               preserveAspectRatio="xMidYMid slice"
               xmlns="http://www.w3.org/2000/svg"
