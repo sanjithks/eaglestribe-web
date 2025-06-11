@@ -47,10 +47,10 @@ export default function Header() {
               </linearGradient>
             </defs>
             {/* Applying the gold gradient to all four paths */}
-            <path d="M762 129C813 79 848 34 903 24H1440V-10H901C828-4 822 32 809 28L733 98Z" fill="url(#goldGradient)"/>
-            <path d="M836 141C854 116 895 75 936 76H1440V47H975C941 49 904 40 873 59L776 143Z" fill="url(#goldGradient)"/>
-            <path d="M696 177 640 123C607 97 580 56 535 49 465 46 394 48 0 52V80L425 75C464 77 505 68 542 84 573 101 596 129 619 150L459 148 497 179Z" fill="url(#goldGradient)"/>
-            <path d="M680 229C743 234 807 210 852 165H762L661 72C541-35 594 9 1 0V35L431 33C485 36 544 24 591 56 646 102 698 152 751 201H584C612 217 645 227 678 230Z" fill="url(#goldGradient)"/>
+            <path d="M764 150C849 53 840 51 1000 40H1440V0H1000C816 14 816 25 733 117Z" fill="url(#goldGradient)"/>
+            <path d="M838 162C886 104 892 103 1000 100H1440V60H1000C867 68 868 67 782 163Z" fill="url(#goldGradient)"/>
+            <path d="M695 197C599 82 598 78 440 61H0V100H440C576 112 578 120 616 163H459L497 198Z" fill="url(#goldGradient)"/>
+            <path d="M565 215C699 317 807 229 877 186H762C656 54 650 27 440 0H0V40H440C658 55 623 97 731 216Z" fill="url(#goldGradient)"/>
           </svg>
         </div>
 
