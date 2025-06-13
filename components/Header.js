@@ -33,12 +33,12 @@ export default function Header() {
       {/* --- Desktop Layout --- */}
       <div className="relative w-full h-full hidden md:block">
         
-        {/* This div clips the oversized SVG */}
         <div className="absolute inset-0 overflow-hidden z-0">
           <svg
-            /* This combination of classes locks the SVG's size and centers it */
             className="absolute top-1/2 left-1/2 h-auto w-[4000px] max-w-none -translate-x-1/2 -translate-y-1/2"
-            viewBox="0 0 4000 800" 
+            viewBox="0 0 4000 800"
+            // This attribute tells the SVG to stretch and listen only to the CSS classes.
+            preserveAspectRatio="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <defs>
@@ -148,6 +148,8 @@ export default function Header() {
                     ? "text-white bg-primary-red font-bold"
                     : "text-dark-charcoal hover:bg-black/5"
                 }`}
+                // This line was missing in the code you sent before, I've re-added it
+                onClick={() => setIsMenuOpen(false)} 
               >
                 {name}
               </Link>
