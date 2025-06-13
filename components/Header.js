@@ -45,7 +45,7 @@ export default function Header() {
         </div>
 
         {/* SVG + Navigation in same container */}
-        <div className="absolute top-60 left-0 w-full h-[450px] z-0 overflow-hidden">
+        <div className="absolute top-10 left-0 w-full h-[450px] z-0 overflow-hidden">
           {/* SVG */}
           <div className="absolute inset-0 flex justify-center">
             <svg
@@ -69,7 +69,7 @@ export default function Header() {
           </div>
 
           {/* Menu inside the SVG container */}
-          <div className="absolute top-[60px] w-full flex justify-between items-center px-8 max-w-6xl mx-auto z-10">
+          <div className="absolute top-[10px] w-full flex justify-between items-center px-8 max-w-6xl mx-auto z-10">
             <nav className="flex items-center gap-8">
               {leftLinks.map(({ name, path }) => (
                 <Link
