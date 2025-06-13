@@ -27,7 +27,7 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="relative w-full h-[240px] text-dark-charcoal overflow-hidden">
+    <header className="relative w-full h-[200px] text-dark-charcoal overflow-hidden">
       {/* --- Desktop Layout --- */}
       <div className="relative w-full h-full hidden md:block">
         {/* Logo at top-left */}
@@ -69,7 +69,7 @@ export default function Header() {
           </div>
 
           {/* Menu inside the SVG container */}
-          <div className="absolute top-[75px] w-full flex justify-between items-center px-8 max-w-6xl mx-auto z-10">
+          <div className="absolute top-[40px] w-full flex justify-between items-center px-8 max-w-6xl mx-auto z-10">
             <nav className="flex items-center gap-8">
               {leftLinks.map(({ name, path }) => (
                 <Link
