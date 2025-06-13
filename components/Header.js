@@ -49,7 +49,7 @@ export default function Header() {
           {/* SVG */}
           <div className="absolute inset-0 flex justify-center">
             <svg
-              className="w-[4000px] h-[450px] shrink-0"
+              className="w-[4000px] h-[70px] shrink-0"
               viewBox="0 0 4000 800"
               preserveAspectRatio="none"
               xmlns="http://www.w3.org/2000/svg"
