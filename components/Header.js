@@ -52,8 +52,8 @@ export default function Header() {
           </svg>
         </div>
 
-        {/* Logo Centered */}
-        <div className="absolute top-[225px] left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+        {/* Logo on the Left */}
+        <div className="absolute top-1/2 left-8 -translate-y-1/2 z-20">
           <Link href="/">
             <Image
               src="/images/logo.png"
@@ -68,7 +68,7 @@ export default function Header() {
 
         {/* Navigation Links */}
         <div className="absolute top-0 left-0 w-full h-full z-10">
-          <div className="w-full max-w-6xl h-full mx-auto flex justify-between items-center px-8">
+          <div className="w-full max-w-6xl h-full mx-auto flex justify-end items-center px-8">
             <nav className="flex items-center gap-8">
               {leftLinks.map(({ name, path }) => (
                 <Link
@@ -83,8 +83,6 @@ export default function Header() {
                   {name}
                 </Link>
               ))}
-            </nav>
-            <nav className="flex items-center gap-8">
               {rightLinks.map(({ name, path }) => (
                 <Link
                   key={name}
