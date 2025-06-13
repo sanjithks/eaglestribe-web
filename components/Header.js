@@ -27,22 +27,22 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="relative w-full h-[120px] text-dark-charcoal overflow-visible">
-      {/* Floating large logo (desktop only) */}
-      <div className="absolute top-0 left-6 z-30 hidden md:block">
+    <header className="relative w-full h-[180px] text-dark-charcoal overflow-visible">
+      {/* Logo floating top-left */}
+      <div className="absolute top-4 left-6 z-30 hidden md:block">
         <Link href="/">
           <Image
             src="/images/logo.png"
             alt="Eagles Tribe MC Logo"
-            width={300}
-            height={300}
+            width={150}
+            height={150}
             className="object-contain drop-shadow-lg"
             priority
           />
         </Link>
       </div>
 
-      {/* Shared SVG background */}
+      {/* SVG background always visible */}
       <div className="absolute top-5 left-0 w-full h-[450px] z-0 overflow-hidden">
         <div className="absolute inset-0 flex justify-center">
           <svg
@@ -66,9 +66,10 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Desktop Menu */}
-      <div className="hidden md:flex absolute top-[40px] w-full justify-between items-center px-8 max-w-6xl mx-auto z-10">
-        <nav className="flex items-center gap-8 pl-[200px]">
+      {/* Desktop menu layout */}
+      <div className="hidden md:flex absolute top-[40px] w-full px-8 max-w-screen-2xl mx-auto z-10">
+        {/* Left nav: Right of logo */}
+        <nav className="flex items-center gap-8 ml-[180px]">
           {leftLinks.map(({ name, path }) => (
             <Link
               key={name}
@@ -83,7 +84,8 @@ export default function Header() {
             </Link>
           ))}
         </nav>
-        <nav className="flex items-center gap-8 pr-[100px]">
+        {/* Right nav: starts after center + 100px */}
+        <nav className="flex items-center gap-12 ml-auto pr-8">
           {rightLinks.map(({ name, path }) => (
             <Link
               key={name}
@@ -100,8 +102,9 @@ export default function Header() {
         </nav>
       </div>
 
-      {/* Mobile Header */}
+      {/* Mobile layout with logo and hamburger */}
       <div className="md:hidden relative z-30 w-full flex justify-between items-center h-24 px-6">
+        {/* SVG stays in background */}
         <div className="absolute inset-0 -top-[60px] z-0">
           <svg
             className="w-[4000px] h-[450px] shrink-0"
@@ -123,17 +126,19 @@ export default function Header() {
           </svg>
         </div>
 
+        {/* Mobile Logo */}
         <Link href="/">
           <Image
             src="/images/logo.png"
             alt="Eagles Tribe MC Logo"
-            width={80}
-            height={80}
+            width={150}
+            height={150}
             className="w-20 h-20 object-contain relative z-10"
             priority
           />
         </Link>
 
+        {/* Hamburger toggle */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="text-dark-charcoal relative z-10 focus:outline-none"
@@ -149,7 +154,7 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Drawer */}
       {isMenuOpen && (
         <div className="md:hidden absolute top-24 left-0 w-full bg-foreground z-20 shadow-lg border-t">
           <nav className="flex flex-col items-center gap-1 p-4">
