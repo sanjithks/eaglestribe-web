@@ -45,7 +45,7 @@ export default function Header() {
         </div>
 
         {/* SVG + Navigation in same container */}
-        <div className="absolute top-0 left-0 w-full h-[450px] z-0 overflow-hidden">
+        <div className="absolute top-60 left-0 w-full h-[450px] z-0 overflow-hidden">
           {/* SVG */}
           <div className="absolute inset-0 flex justify-center">
             <svg
