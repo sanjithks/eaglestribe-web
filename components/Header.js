@@ -28,39 +28,33 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    // We add a class here to ensure text color is dark by default
     <header className="relative w-full h-32 md:h-48 text-dark-charcoal">
 
       {/* --- Desktop Layout --- */}
       <div className="relative w-full h-full hidden md:block">
         
-        {/* SVG background container */}
-        <div className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden">
-          {/* FIX #1: SVG Centering
-            We use flexbox on this inner div to robustly center the SVG content,
-            and scale it to ensure it covers the area without being distorted.
-          */}
-          <div className="w-full h-full flex justify-center items-center">
-            <svg
-              className="w-auto h-full max-w-none" // SVG scales by height, allowing width to overflow
-              viewBox="0 0 1440 192" // Adjusted viewBox height to better match aspect ratio
-              preserveAspectRatio="xMidYMid slice"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <linearGradient id="goldGradient" x1="0%" y1="50%" x2="100%" y2="50%">
-                  <stop offset="0%" stopColor="#b8860b" />
-                  <stop offset="50%" stopColor="#ffd700" />
-                  <stop offset="100%" stopColor="#b8860b" />
-                </linearGradient>
-              </defs>
-               {/* Note: SVG path data can be very complex. This CSS approach is the most reliable way to center it. */}
-              <path d="M2045 113C2110 41 2102 39 2198 30H4052V0H2195C2084 11 2084 20 2023 89Z" fill="url(#goldGradient)" />
-              <path d="M2101 122C2137 78 2141 78 2200 78H4052V48H2198C2123 51 2123 51 2059 123Z" fill="url(#goldGradient)" />
-              <path d="M1979 143C1922 62 1901 50 1804 48H0V78H1805C1859 77 1873 74 1921 116H1790L1819 144Z" fill="url(#goldGradient)" />
-              <path d="M1894 164C1997 239 2078 173 2131 140H2044C1964 41 1973 0 1835 0H0V30H1835C1937 35 1939 47 2017 162Z" fill="url(#goldGradient)" />
-            </svg>
-          </div>
+        {/* FIX #1: The container that creates the "window" by clipping the oversized SVG */}
+        <div className="absolute inset-0 overflow-hidden z-0">
+          <svg
+            // FIX #2: The SVG is set to its native width and then centered
+            className="absolute top-1/2 left-1/2 h-auto w-[4000px] max-w-none -translate-x-1/2 -translate-y-1/2"
+            // FIX #3: The viewBox is updated to match the SVG's native dimensions
+            viewBox="0 0 4000 800" // You can adjust the height (800) to change the vertical view
+            preserveAspectRatio="xMidYMid meet"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <linearGradient id="goldGradient" x1="0%" y1="50%" x2="100%" y2="50%">
+                <stop offset="0%" stopColor="#b8860b" />
+                <stop offset="50%" stopColor="#ffd700" />
+                <stop offset="100%" stopColor="#b8860b" />
+              </linearGradient>
+            </defs>
+            <path d="M2045 113C2110 41 2102 39 2198 30H4052V0H2195C2084 11 2084 20 2023 89Z" fill="url(#goldGradient)" />
+            <path d="M2101 122C2137 78 2141 78 2200 78H4052V48H2198C2123 51 2123 51 2059 123Z" fill="url(#goldGradient)" />
+            <path d="M1979 143C1922 62 1901 50 1804 48H0V78H1805C1859 77 1873 74 1921 116H1790L1819 144Z" fill="url(#goldGradient)" />
+            <path d="M1894 164C1997 239 2078 173 2131 140H2044C1964 41 1973 0 1835 0H0V30H1835C1937 35 1939 47 2017 162Z" fill="url(#goldGradient)" />
+          </svg>
         </div>
 
         {/* Logo positioned absolutely in the center */}
@@ -71,7 +65,7 @@ export default function Header() {
                     alt="Eagles Tribe MC Logo"
                     width={100}
                     height={100}
-                    className="w-24 h-24 md:w-32 md:h-32 object-contain transition-transform hover:scale-110"
+                    className="w-24 h-24 md:w-32 md:h-32 object-contain transition-transform hover:scale-110 drop-shadow-lg"
                     priority
                 />
             </Link>
@@ -116,7 +110,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* --- Mobile Layout --- */}
+      {/* --- Mobile Layout (No changes needed here) --- */}
       <div className="md:hidden relative z-30 w-full flex justify-between items-center h-24 px-6 bg-foreground shadow-md">
         <Link href="/">
           <Image
@@ -143,7 +137,7 @@ export default function Header() {
         </button>
       </div>
 
-      {/* --- Mobile Menu Panel --- */}
+      {/* --- Mobile Menu Panel (No changes needed here) --- */}
       {isMenuOpen && (
         <div className="md:hidden absolute top-24 left-0 w-full bg-foreground z-20 shadow-lg border-t">
           <nav className="flex flex-col items-center gap-1 p-4">
