@@ -29,7 +29,7 @@ export default function Header() {
   return (
     <header className="relative w-full h-[180px] text-dark-charcoal overflow-visible">
       {/* Logo floating top-left */}
-      <div className="absolute top-4 left-6 z-30 hidden md:block">
+      <div className="absolute top-10 left-6 z-30 hidden md:block">
         <Link href="/">
           <Image
             src="/images/logo.png"
@@ -67,7 +67,7 @@ export default function Header() {
       </div>
 
       {/* Desktop menu layout */}
-      <div className="hidden md:flex absolute top-[40px] w-full px-8 max-w-screen-2xl mx-auto z-10">
+      <div className="hidden md:flex absolute top-[20px] w-full px-8 max-w-screen-2xl mx-auto z-10">
         {/* Left nav: Right of logo */}
         <nav className="flex items-center gap-8 ml-[180px]">
           {leftLinks.map(({ name, path }) => (
@@ -131,8 +131,8 @@ export default function Header() {
           <Image
             src="/images/logo.png"
             alt="Eagles Tribe MC Logo"
-            width={150}
-            height={150}
+            width={120}
+            height={120}
             className="w-20 h-20 object-contain relative z-10"
             priority
           />
