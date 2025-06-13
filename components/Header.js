@@ -28,7 +28,7 @@ export default function Header() {
 
   return (
     <header className="relative w-full h-[120px] text-dark-charcoal overflow-visible">
-      {/* Logo floats above header (hidden on mobile) */}
+      {/* Floating large logo (desktop only) */}
       <div className="absolute top-0 left-6 z-30 hidden md:block">
         <Link href="/">
           <Image
@@ -36,13 +36,13 @@ export default function Header() {
             alt="Eagles Tribe MC Logo"
             width={300}
             height={300}
-            className="w-[150px] h-[150px] object-contain drop-shadow-lg"
+            className="object-contain drop-shadow-lg"
             priority
           />
         </Link>
       </div>
 
-      {/* SVG background stays on all devices */}
+      {/* Shared SVG background */}
       <div className="absolute top-5 left-0 w-full h-[450px] z-0 overflow-hidden">
         <div className="absolute inset-0 flex justify-center">
           <svg
@@ -66,9 +66,9 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Desktop + Tablet Menu */}
+      {/* Desktop Menu */}
       <div className="hidden md:flex absolute top-[40px] w-full justify-between items-center px-8 max-w-6xl mx-auto z-10">
-        <nav className="flex items-center gap-8 pl-[180px]">
+        <nav className="flex items-center gap-8 pl-[200px]">
           {leftLinks.map(({ name, path }) => (
             <Link
               key={name}
@@ -100,9 +100,8 @@ export default function Header() {
         </nav>
       </div>
 
-      {/* Mobile Header with SVG and Hamburger */}
+      {/* Mobile Header */}
       <div className="md:hidden relative z-30 w-full flex justify-between items-center h-24 px-6">
-        {/* SVG still showing in background */}
         <div className="absolute inset-0 -top-[60px] z-0">
           <svg
             className="w-[4000px] h-[450px] shrink-0"
@@ -150,7 +149,7 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Mobile Menu Panel */}
+      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden absolute top-24 left-0 w-full bg-foreground z-20 shadow-lg border-t">
           <nav className="flex flex-col items-center gap-1 p-4">

@@ -1,7 +1,8 @@
 // app/layout.js
-import "../styles/output.css"; // Import compiled Tailwind CSS
+import "../styles/output.css"; // Tailwind CSS output
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ViewportSize from "@/components/ViewportSize"; // Debug tool (can be removed later)
 
 export const metadata = {
   title: "Eagles Tribe MC",
@@ -14,7 +15,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@500;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap"
           rel="stylesheet"
         />
       </head>
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
         <Header />
         <main className="flex-grow">{children}</main>
         <Footer />
+        <ViewportSize /> {/* 👈 Remove this once you're done checking viewport size */}
       </body>
     </html>
   );
