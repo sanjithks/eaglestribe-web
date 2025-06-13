@@ -28,15 +28,15 @@ export default function Header() {
 
   return (
     <header className="relative w-full h-[120px] text-dark-charcoal overflow-visible">
-      {/* Logo floats above header */}
-      <div className="absolute top-0 left-6 z-30">
+      {/* Logo floats above header (hidden on mobile) */}
+      <div className="absolute top-0 left-6 z-30 hidden md:block">
         <Link href="/">
           <Image
             src="/images/logo.png"
             alt="Eagles Tribe MC Logo"
             width={300}
             height={300}
-            className="w-[150px] h-[150px] md:w-[150px] md:h-[150px] object-contain drop-shadow-lg"
+            className="w-[150px] h-[150px] object-contain drop-shadow-lg"
             priority
           />
         </Link>
@@ -68,7 +68,7 @@ export default function Header() {
 
       {/* Desktop + Tablet Menu */}
       <div className="hidden md:flex absolute top-[40px] w-full justify-between items-center px-8 max-w-6xl mx-auto z-10">
-        <nav className="flex items-center gap-8">
+        <nav className="flex items-center gap-8 pl-[180px]">
           {leftLinks.map(({ name, path }) => (
             <Link
               key={name}
@@ -83,7 +83,7 @@ export default function Header() {
             </Link>
           ))}
         </nav>
-        <nav className="flex items-center gap-8">
+        <nav className="flex items-center gap-8 pr-[100px]">
           {rightLinks.map(({ name, path }) => (
             <Link
               key={name}
