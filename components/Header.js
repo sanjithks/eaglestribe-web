@@ -33,17 +33,12 @@ export default function Header() {
       {/* --- Desktop Layout --- */}
       <div className="relative w-full h-full hidden md:block">
         
-        {/* This div acts as a "window" by clipping the oversized SVG */}
+        {/* This div clips the oversized SVG */}
         <div className="absolute inset-0 overflow-hidden z-0">
           <svg
-            /*
-              THE FINAL FIX IS HERE:
-              This combination of classes forces the SVG to be at least 100% width and 100% height
-              of the header, and then perfectly centers it. This is the CSS equivalent of
-              "background-size: cover" for an inline SVG.
-            */
-            className="absolute top-1/2 left-1/2 min-w-full min-h-full -translate-x-1/2 -translate-y-1/2"
-            viewBox="0 0 4000 800"
+            /* This combination of classes locks the SVG's size and centers it */
+            className="absolute top-1/2 left-1/2 h-auto w-[4000px] max-w-none -translate-x-1/2 -translate-y-1/2"
+            viewBox="0 0 4000 800" 
             xmlns="http://www.w3.org/2000/svg"
           >
             <defs>
@@ -113,7 +108,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* --- Mobile Layout (No changes needed here) --- */}
+      {/* --- Mobile Layout (This part is unchanged) --- */}
       <div className="md:hidden relative z-30 w-full flex justify-between items-center h-24 px-6 bg-foreground shadow-md">
         <Link href="/">
           <Image
@@ -140,7 +135,7 @@ export default function Header() {
         </button>
       </div>
 
-      {/* --- Mobile Menu Panel (No changes needed here) --- */}
+      {/* --- Mobile Menu Panel (This part is unchanged) --- */}
       {isMenuOpen && (
         <div className="md:hidden absolute top-24 left-0 w-full bg-foreground z-20 shadow-lg border-t">
           <nav className="flex flex-col items-center gap-1 p-4">
