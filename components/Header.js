@@ -22,22 +22,19 @@ export default function Header() {
 
   const isActive = (path) => pathname === path;
 
-  // Close mobile menu on page change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
   return (
-    <header className="relative w-full h-32 md:h-48 text-dark-charcoal">
-
+    <header className="relative w-full h-32 md:h-48 text-dark-charcoal overflow-hidden">
       {/* --- Desktop Layout --- */}
       <div className="relative w-full h-full hidden md:block">
-        
-        <div className="absolute inset-0 overflow-hidden z-0">
+        {/* SVG Background Centered and Cropped */}
+        <div className="absolute inset-0 overflow-hidden z-0 flex justify-center">
           <svg
-            className="absolute top-1/2 left-1/2 h-auto w-[4000px] max-w-none -translate-x-1/2 -translate-y-1/2"
+            className="w-[4000px] h-full shrink-0"
             viewBox="0 0 4000 800"
-            // This attribute tells the SVG to stretch and listen only to the CSS classes.
             preserveAspectRatio="none"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -55,24 +52,23 @@ export default function Header() {
           </svg>
         </div>
 
-        {/* Logo positioned absolutely in the center */}
+        {/* Logo Centered */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-            <Link href="/">
-                <Image
-                    src="/images/logo.png"
-                    alt="Eagles Tribe MC Logo"
-                    width={100}
-                    height={100}
-                    className="w-24 h-24 md:w-32 md:h-32 object-contain transition-transform hover:scale-110 drop-shadow-lg"
-                    priority
-                />
-            </Link>
+          <Link href="/">
+            <Image
+              src="/images/logo.png"
+              alt="Eagles Tribe MC Logo"
+              width={100}
+              height={100}
+              className="w-24 h-24 md:w-32 md:h-32 object-contain transition-transform hover:scale-110 drop-shadow-lg"
+              priority
+            />
+          </Link>
         </div>
 
-        {/* Nav Links Container */}
+        {/* Navigation Links */}
         <div className="absolute top-0 left-0 w-full h-full z-10">
           <div className="w-full max-w-6xl h-full mx-auto flex justify-between items-center px-8">
-            {/* Left Links */}
             <nav className="flex items-center gap-8">
               {leftLinks.map(({ name, path }) => (
                 <Link
@@ -88,7 +84,6 @@ export default function Header() {
                 </Link>
               ))}
             </nav>
-            {/* Right Links */}
             <nav className="flex items-center gap-8">
               {rightLinks.map(({ name, path }) => (
                 <Link
@@ -108,7 +103,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* --- Mobile Layout (This part is unchanged) --- */}
+      {/* --- Mobile Layout --- */}
       <div className="md:hidden relative z-30 w-full flex justify-between items-center h-24 px-6 bg-foreground shadow-md">
         <Link href="/">
           <Image
@@ -125,7 +120,7 @@ export default function Header() {
           className="text-dark-charcoal focus:outline-none"
           aria-label="Toggle menu"
         >
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {isMenuOpen ? (
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             ) : (
@@ -135,7 +130,7 @@ export default function Header() {
         </button>
       </div>
 
-      {/* --- Mobile Menu Panel (This part is unchanged) --- */}
+      {/* --- Mobile Menu Panel --- */}
       {isMenuOpen && (
         <div className="md:hidden absolute top-24 left-0 w-full bg-foreground z-20 shadow-lg border-t">
           <nav className="flex flex-col items-center gap-1 p-4">
@@ -148,8 +143,6 @@ export default function Header() {
                     ? "text-white bg-primary-red font-bold"
                     : "text-dark-charcoal hover:bg-black/5"
                 }`}
-                // This line was missing in the code you sent before, I've re-added it
-                onClick={() => setIsMenuOpen(false)} 
               >
                 {name}
               </Link>
