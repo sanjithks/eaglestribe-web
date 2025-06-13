@@ -33,14 +33,17 @@ export default function Header() {
       {/* --- Desktop Layout --- */}
       <div className="relative w-full h-full hidden md:block">
         
-        {/* FIX #1: The container that creates the "window" by clipping the oversized SVG */}
+        {/* This div acts as a "window" by clipping the oversized SVG */}
         <div className="absolute inset-0 overflow-hidden z-0">
           <svg
-            // FIX #2: The SVG is set to its native width and then centered
-            className="absolute top-1/2 left-1/2 h-auto w-[4000px] max-w-none -translate-x-1/2 -translate-y-1/2"
-            // FIX #3: The viewBox is updated to match the SVG's native dimensions
-            viewBox="0 0 4000 800" // You can adjust the height (800) to change the vertical view
-            preserveAspectRatio="xMidYMid meet"
+            /*
+              THE FINAL FIX IS HERE:
+              This combination of classes forces the SVG to be at least 100% width and 100% height
+              of the header, and then perfectly centers it. This is the CSS equivalent of
+              "background-size: cover" for an inline SVG.
+            */
+            className="absolute top-1/2 left-1/2 min-w-full min-h-full -translate-x-1/2 -translate-y-1/2"
+            viewBox="0 0 4000 800"
             xmlns="http://www.w3.org/2000/svg"
           >
             <defs>
