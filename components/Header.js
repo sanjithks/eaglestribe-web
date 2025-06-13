@@ -30,7 +30,7 @@ export default function Header() {
     <header className="relative w-full h-[450px] text-dark-charcoal overflow-hidden">
       {/* --- Desktop Layout --- */}
       <div className="relative w-full h-[450px] hidden md:block">
-        {/* Logo Fixed at Top Left */}
+        {/* Logo at top-left */}
         <div className="absolute top-6 left-6 z-30">
           <Link href="/">
             <Image
@@ -44,31 +44,32 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* SVG Background shifted down */}
-        <div className="absolute top-[60px] inset-x-0 h-[450px] overflow-hidden z-0 flex justify-center">
-          <svg
-            className="w-[4000px] h-[450px] shrink-0"
-            viewBox="0 0 4000 800"
-            preserveAspectRatio="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <linearGradient id="goldGradient" x1="0%" y1="50%" x2="100%" y2="50%">
-                <stop offset="0%" stopColor="#b8860b" />
-                <stop offset="50%" stopColor="#ffd700" />
-                <stop offset="100%" stopColor="#b8860b" />
-              </linearGradient>
-            </defs>
-            <path d="M2045 113C2110 41 2102 39 2198 30H4052V0H2195C2084 11 2084 20 2023 89Z" fill="url(#goldGradient)" />
-            <path d="M2101 122C2137 78 2141 78 2200 78H4052V48H2198C2123 51 2123 51 2059 123Z" fill="url(#goldGradient)" />
-            <path d="M1979 143C1922 62 1901 50 1804 48H0V78H1805C1859 77 1873 74 1921 116H1790L1819 144Z" fill="url(#goldGradient)" />
-            <path d="M1894 164C1997 239 2078 173 2131 140H2044C1964 41 1973 0 1835 0H0V30H1835C1937 35 1939 47 2017 162Z" fill="url(#goldGradient)" />
-          </svg>
-        </div>
+        {/* SVG + Navigation in same container */}
+        <div className="absolute top-0 left-0 w-full h-[450px] z-0 overflow-hidden">
+          {/* SVG */}
+          <div className="absolute inset-0 flex justify-center">
+            <svg
+              className="w-[4000px] h-[450px] shrink-0"
+              viewBox="0 0 4000 800"
+              preserveAspectRatio="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient id="goldGradient" x1="0%" y1="50%" x2="100%" y2="50%">
+                  <stop offset="0%" stopColor="#b8860b" />
+                  <stop offset="50%" stopColor="#ffd700" />
+                  <stop offset="100%" stopColor="#b8860b" />
+                </linearGradient>
+              </defs>
+              <path d="M2045 113C2110 41 2102 39 2198 30H4052V0H2195C2084 11 2084 20 2023 89Z" fill="url(#goldGradient)" />
+              <path d="M2101 122C2137 78 2141 78 2200 78H4052V48H2198C2123 51 2123 51 2059 123Z" fill="url(#goldGradient)" />
+              <path d="M1979 143C1922 62 1901 50 1804 48H0V78H1805C1859 77 1873 74 1921 116H1790L1819 144Z" fill="url(#goldGradient)" />
+              <path d="M1894 164C1997 239 2078 173 2131 140H2044C1964 41 1973 0 1835 0H0V30H1835C1937 35 1939 47 2017 162Z" fill="url(#goldGradient)" />
+            </svg>
+          </div>
 
-        {/* Navigation Links inside SVG gap */}
-        <div className="absolute top-[140px] left-0 w-full z-20">
-          <div className="w-full max-w-6xl mx-auto px-8 flex justify-between items-center">
+          {/* Menu inside the SVG container */}
+          <div className="absolute top-[130px] w-full flex justify-between items-center px-8 max-w-6xl mx-auto z-10">
             <nav className="flex items-center gap-8">
               {leftLinks.map(({ name, path }) => (
                 <Link
