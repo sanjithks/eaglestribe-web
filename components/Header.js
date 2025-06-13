@@ -29,7 +29,7 @@ export default function Header() {
   return (
     <header className="relative w-full h-[450px] text-dark-charcoal overflow-hidden">
       {/* --- Desktop Layout --- */}
-      <div className="relative w-full h-[450px] hidden md:block">
+      <div className="relative w-full h-full hidden md:block">
         {/* Logo at top-left */}
         <div className="absolute top-6 left-6 z-30">
           <Link href="/">
@@ -45,11 +45,11 @@ export default function Header() {
         </div>
 
         {/* SVG + Navigation in same container */}
-        <div className="absolute top-5 left-0 w-full h-[450px] z-0 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden">
           {/* SVG */}
           <div className="absolute inset-0 flex justify-center">
             <svg
-              className="w-[4000px] h-[70px] shrink-0"
+              className="w-[4000px] h-[450px] shrink-0"
               viewBox="0 0 4000 800"
               preserveAspectRatio="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +69,7 @@ export default function Header() {
           </div>
 
           {/* Menu inside the SVG container */}
-          <div className="absolute top-[10px] w-full flex justify-between items-center px-8 max-w-6xl mx-auto z-10">
+          <div className="absolute top-[70px] w-full flex justify-between items-center px-8 max-w-6xl mx-auto z-10">
             <nav className="flex items-center gap-8">
               {leftLinks.map(({ name, path }) => (
                 <Link
