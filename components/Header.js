@@ -46,10 +46,10 @@ export default function Header() {
                   <stop offset="100%" stopColor="#b8860b" />
                 </linearGradient>
               </defs>
-              <path d="M1382 75C1425 27 1420 26 1484 19H2720V0H1482C1408 7 1408 13 1367 59Z" fill="url(#goldGradient)" />
-              <path d="M1419 81C1443 52 1446 52 1485 50H2720V30H1484C1434 34 1434 34 1391 82Z" fill="url(#goldGradient)" />
-              <path d="M1338 95C1300 41 1286 33 1221 32H1V50H1222C1258 51 1267 49 1299 77H1212L1231 96Z" fill="url(#goldGradient)" />
-              <path d="M1281 109C1350 159 1404 115 1439 93H1381C1328 27 1334 0 1242 0H1V20H1242C1310 23 1311 31 1363 108Z" fill="url(#goldGradient)" />
+              <path d="M2045 113C2110 41 2102 39 2198 30H4052V0H2195C2084 11 2084 20 2023 89Z" fill="url(#goldGradient)" />
+              <path d="M2101 122C2137 78 2141 78 2200 78H4052V48H2198C2123 51 2123 51 2059 123Z" fill="url(#goldGradient)" />
+              <path d="M1979 143C1922 62 1901 50 1804 48H0V78H1805C1859 77 1873 74 1921 116H1790L1819 144Z" fill="url(#goldGradient)" />
+              <path d="M1894 164C1997 239 2078 173 2131 140H2044C1964 41 1973 0 1835 0H0V30H1835C1937 35 1939 47 2017 162Z" fill="url(#goldGradient)" />
             </svg>
           </div>
         </div>
