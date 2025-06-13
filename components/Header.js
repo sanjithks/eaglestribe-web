@@ -22,20 +22,28 @@ export default function Header() {
 
   const isActive = (path) => pathname === path;
 
+  // Close mobile menu on page change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
   return (
-    <header className="relative w-full h-32 md:h-48">
+    // We add a class here to ensure text color is dark by default
+    <header className="relative w-full h-32 md:h-48 text-dark-charcoal">
+
       {/* --- Desktop Layout --- */}
       <div className="relative w-full h-full hidden md:block">
-        {/* SVG background with center cropping */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1440px] h-full z-0 overflow-hidden drop-shadow-lg">
-          <div className="w-full h-full mx-auto relative">
+        
+        {/* SVG background container */}
+        <div className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden">
+          {/* FIX #1: SVG Centering
+            We use flexbox on this inner div to robustly center the SVG content,
+            and scale it to ensure it covers the area without being distorted.
+          */}
+          <div className="w-full h-full flex justify-center items-center">
             <svg
-              className="absolute top-0 left-0 w-full h-full"
-              viewBox="0 0 1440 320"
+              className="w-auto h-full max-w-none" // SVG scales by height, allowing width to overflow
+              viewBox="0 0 1440 192" // Adjusted viewBox height to better match aspect ratio
               preserveAspectRatio="xMidYMid slice"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -46,6 +54,7 @@ export default function Header() {
                   <stop offset="100%" stopColor="#b8860b" />
                 </linearGradient>
               </defs>
+               {/* Note: SVG path data can be very complex. This CSS approach is the most reliable way to center it. */}
               <path d="M2045 113C2110 41 2102 39 2198 30H4052V0H2195C2084 11 2084 20 2023 89Z" fill="url(#goldGradient)" />
               <path d="M2101 122C2137 78 2141 78 2200 78H4052V48H2198C2123 51 2123 51 2059 123Z" fill="url(#goldGradient)" />
               <path d="M1979 143C1922 62 1901 50 1804 48H0V78H1805C1859 77 1873 74 1921 116H1790L1819 144Z" fill="url(#goldGradient)" />
@@ -54,20 +63,33 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Nav Links */}
+        {/* Logo positioned absolutely in the center */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+            <Link href="/">
+                <Image
+                    src="/images/logo.png"
+                    alt="Eagles Tribe MC Logo"
+                    width={100}
+                    height={100}
+                    className="w-24 h-24 md:w-32 md:h-32 object-contain transition-transform hover:scale-110"
+                    priority
+                />
+            </Link>
+        </div>
+
+        {/* Nav Links Container */}
         <div className="absolute top-0 left-0 w-full h-full z-10">
-          <div className="w-full max-w-7xl h-full mx-auto grid grid-cols-[1fr_1fr] items-center px-24">
+          <div className="w-full max-w-6xl h-full mx-auto flex justify-between items-center px-8">
             {/* Left Links */}
-            <nav className="flex flex-col items-start gap-3">
-              {leftLinks.map(({ name, path }, index) => (
+            <nav className="flex items-center gap-8">
+              {leftLinks.map(({ name, path }) => (
                 <Link
                   key={name}
                   href={path}
-                  style={{ transform: `translateX(${index * 40}px)` }}
                   className={`font-body font-semibold text-lg transition-all duration-300 ${
                     isActive(path)
-                      ? "text-white scale-110 font-bold"
-                      : "text-white/80 hover:text-white"
+                      ? "text-white scale-110 font-bold drop-shadow-md"
+                      : "text-white/80 hover:text-white hover:scale-105"
                   }`}
                 >
                   {name}
@@ -75,16 +97,15 @@ export default function Header() {
               ))}
             </nav>
             {/* Right Links */}
-            <nav className="flex flex-col items-end gap-3">
-              {rightLinks.map(({ name, path }, index) => (
+            <nav className="flex items-center gap-8">
+              {rightLinks.map(({ name, path }) => (
                 <Link
                   key={name}
                   href={path}
-                  style={{ transform: `translateX(-${index * 40}px)` }}
                   className={`font-body font-semibold text-lg transition-all duration-300 ${
                     isActive(path)
-                      ? "text-white scale-110 font-bold"
-                      : "text-white/80 hover:text-white"
+                      ? "text-white scale-110 font-bold drop-shadow-md"
+                      : "text-white/80 hover:text-white hover:scale-105"
                   }`}
                 >
                   {name}
@@ -96,7 +117,7 @@ export default function Header() {
       </div>
 
       {/* --- Mobile Layout --- */}
-      <div className="relative z-10 w-full mx-auto flex md:hidden justify-between items-center h-24 px-6 bg-foreground/95">
+      <div className="md:hidden relative z-30 w-full flex justify-between items-center h-24 px-6 bg-foreground shadow-md">
         <Link href="/">
           <Image
             src="/images/logo.png"
@@ -109,30 +130,14 @@ export default function Header() {
         </Link>
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="text-white focus:outline-none"
+          className="text-dark-charcoal focus:outline-none"
           aria-label="Toggle menu"
         >
-          <svg
-            className="w-8 h-8"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             {isMenuOpen ? (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             ) : (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16m-7 6h7"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
             )}
           </svg>
         </button>
@@ -140,16 +145,16 @@ export default function Header() {
 
       {/* --- Mobile Menu Panel --- */}
       {isMenuOpen && (
-        <div className="absolute top-24 left-0 w-full bg-foreground/95 md:hidden z-20 shadow-lg">
-          <nav className="flex flex-col items-center gap-2 p-4 border-t border-white/20">
+        <div className="md:hidden absolute top-24 left-0 w-full bg-foreground z-20 shadow-lg border-t">
+          <nav className="flex flex-col items-center gap-1 p-4">
             {navLinks.map(({ name, path }) => (
               <Link
                 key={name}
                 href={path}
                 className={`w-full text-center py-3 rounded-md font-body font-medium transition-colors duration-300 ${
                   isActive(path)
-                    ? "text-primary bg-white font-bold"
-                    : "text-white/80 hover:bg-white/10"
+                    ? "text-white bg-primary-red font-bold"
+                    : "text-dark-charcoal hover:bg-black/5"
                 }`}
               >
                 {name}
