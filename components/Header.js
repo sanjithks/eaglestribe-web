@@ -27,7 +27,7 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="relative w-full h-[150px] text-dark-charcoal overflow-visible">
+    <header className="relative w-full h-[120px] text-dark-charcoal overflow-visible">
       {/* Logo floats above header */}
       <div className="absolute top-0 left-6 z-30">
         <Link href="/">
@@ -43,7 +43,7 @@ export default function Header() {
       </div>
 
       {/* SVG background stays on all devices */}
-      <div className="absolute top-0 left-0 w-full h-[450px] z-0 overflow-hidden">
+      <div className="absolute top-5 left-0 w-full h-[450px] z-0 overflow-hidden">
         <div className="absolute inset-0 flex justify-center">
           <svg
             className="w-[4000px] h-[450px] shrink-0"
