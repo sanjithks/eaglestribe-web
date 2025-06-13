@@ -27,13 +27,13 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="relative w-full h-32 md:h-48 text-dark-charcoal overflow-hidden">
+    <header className="relative w-full h-[450px] text-dark-charcoal overflow-hidden">
       {/* --- Desktop Layout --- */}
-      <div className="relative w-full h-full hidden md:block">
+      <div className="relative w-full h-[450px] hidden md:block">
         {/* SVG Background Centered and Cropped */}
-        <div className="absolute inset-0 overflow-hidden z-0 flex justify-center">
+        <div className="absolute inset-0 h-[450px] overflow-hidden z-0 flex justify-center">
           <svg
-            className="w-[4000px] h-full shrink-0"
+            className="w-[4000px] h-[450px] shrink-0"
             viewBox="0 0 4000 800"
             preserveAspectRatio="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +53,7 @@ export default function Header() {
         </div>
 
         {/* Logo Centered */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+        <div className="absolute top-[225px] left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
           <Link href="/">
             <Image
               src="/images/logo.png"
