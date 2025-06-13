@@ -27,7 +27,7 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="relative w-full h-[200px] text-dark-charcoal overflow-visible">
+    <header className="relative w-full h-[150px] text-dark-charcoal overflow-visible">
       {/* Logo floats above header */}
       <div className="absolute top-0 left-6 z-30">
         <Link href="/">
@@ -36,7 +36,7 @@ export default function Header() {
             alt="Eagles Tribe MC Logo"
             width={300}
             height={300}
-            className="w-[150px] h-[150px] md:w-[300px] md:h-[300px] object-contain drop-shadow-lg"
+            className="w-[150px] h-[150px] md:w-[150px] md:h-[150px] object-contain drop-shadow-lg"
             priority
           />
         </Link>
@@ -67,7 +67,7 @@ export default function Header() {
       </div>
 
       {/* Desktop + Tablet Menu */}
-      <div className="hidden md:flex absolute top-[75px] w-full justify-between items-center px-8 max-w-6xl mx-auto z-10">
+      <div className="hidden md:flex absolute top-[40px] w-full justify-between items-center px-8 max-w-6xl mx-auto z-10">
         <nav className="flex items-center gap-8">
           {leftLinks.map(({ name, path }) => (
             <Link
