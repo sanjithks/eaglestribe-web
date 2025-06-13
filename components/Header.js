@@ -69,7 +69,7 @@ export default function Header() {
           </div>
 
           {/* Menu inside the SVG container */}
-          <div className="absolute top-[130px] w-full flex justify-between items-center px-8 max-w-6xl mx-auto z-10">
+          <div className="absolute top-[60px] w-full flex justify-between items-center px-8 max-w-6xl mx-auto z-10">
             <nav className="flex items-center gap-8">
               {leftLinks.map(({ name, path }) => (
                 <Link
