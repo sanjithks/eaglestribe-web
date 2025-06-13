@@ -30,8 +30,22 @@ export default function Header() {
     <header className="relative w-full h-[450px] text-dark-charcoal overflow-hidden">
       {/* --- Desktop Layout --- */}
       <div className="relative w-full h-[450px] hidden md:block">
-        {/* SVG Background Centered and Cropped */}
-        <div className="absolute inset-0 h-[450px] overflow-hidden z-0 flex justify-center">
+        {/* Logo Fixed at Top Left */}
+        <div className="absolute top-6 left-6 z-30">
+          <Link href="/">
+            <Image
+              src="/images/logo.png"
+              alt="Eagles Tribe MC Logo"
+              width={100}
+              height={100}
+              className="w-24 h-24 object-contain drop-shadow-lg"
+              priority
+            />
+          </Link>
+        </div>
+
+        {/* SVG Background shifted down */}
+        <div className="absolute top-[60px] inset-x-0 h-[450px] overflow-hidden z-0 flex justify-center">
           <svg
             className="w-[4000px] h-[450px] shrink-0"
             viewBox="0 0 4000 800"
@@ -52,23 +66,9 @@ export default function Header() {
           </svg>
         </div>
 
-        {/* Logo on the Left */}
-        <div className="absolute top-1/2 left-8 -translate-y-1/2 z-20">
-          <Link href="/">
-            <Image
-              src="/images/logo.png"
-              alt="Eagles Tribe MC Logo"
-              width={100}
-              height={100}
-              className="w-24 h-24 md:w-32 md:h-32 object-contain transition-transform hover:scale-110 drop-shadow-lg"
-              priority
-            />
-          </Link>
-        </div>
-
-        {/* Navigation Links */}
-        <div className="absolute top-0 left-0 w-full h-full z-10">
-          <div className="w-full max-w-6xl h-full mx-auto flex justify-end items-center px-8">
+        {/* Navigation Links inside SVG gap */}
+        <div className="absolute top-[140px] left-0 w-full z-20">
+          <div className="w-full max-w-6xl mx-auto px-8 flex justify-between items-center">
             <nav className="flex items-center gap-8">
               {leftLinks.map(({ name, path }) => (
                 <Link
@@ -83,6 +83,8 @@ export default function Header() {
                   {name}
                 </Link>
               ))}
+            </nav>
+            <nav className="flex items-center gap-8">
               {rightLinks.map(({ name, path }) => (
                 <Link
                   key={name}
