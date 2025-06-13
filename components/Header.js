@@ -27,98 +27,117 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="relative w-full h-[100px] text-dark-charcoal overflow-hidden">
-      {/* --- Desktop Layout --- */}
-      <div className="relative w-full h-full hidden md:block">
-        {/* Logo at top-left */}
-        <div className="absolute top-6 left-6 z-30">
-          <Link href="/">
-            <Image
-              src="/images/logo.png"
-              alt="Eagles Tribe MC Logo"
-              width={200}
-              height={200}
-              className="w-24 h-24 object-contain drop-shadow-lg"
-              priority
-            />
-          </Link>
-        </div>
-
-        {/* SVG + Navigation in same container */}
-        <div className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden">
-          {/* SVG */}
-          <div className="absolute inset-0 flex justify-center">
-            <svg
-              className="w-[4000px] h-[450px] shrink-0"
-              viewBox="0 0 4000 800"
-              preserveAspectRatio="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <linearGradient id="goldGradient" x1="0%" y1="50%" x2="100%" y2="50%">
-                  <stop offset="0%" stopColor="#b8860b" />
-                  <stop offset="50%" stopColor="#ffd700" />
-                  <stop offset="100%" stopColor="#b8860b" />
-                </linearGradient>
-              </defs>
-              <path d="M2045 113C2110 41 2102 39 2198 30H4052V0H2195C2084 11 2084 20 2023 89Z" fill="url(#goldGradient)" />
-              <path d="M2101 122C2137 78 2141 78 2200 78H4052V48H2198C2123 51 2123 51 2059 123Z" fill="url(#goldGradient)" />
-              <path d="M1979 143C1922 62 1901 50 1804 48H0V78H1805C1859 77 1873 74 1921 116H1790L1819 144Z" fill="url(#goldGradient)" />
-              <path d="M1894 164C1997 239 2078 173 2131 140H2044C1964 41 1973 0 1835 0H0V30H1835C1937 35 1939 47 2017 162Z" fill="url(#goldGradient)" />
-            </svg>
-          </div>
-
-          {/* Menu inside the SVG container */}
-          <div className="absolute top-[20px] w-full flex justify-between items-center px-8 max-w-6xl mx-auto z-10">
-            <nav className="flex items-center gap-8">
-              {leftLinks.map(({ name, path }) => (
-                <Link
-                  key={name}
-                  href={path}
-                  className={`font-body font-semibold text-lg transition-all duration-300 ${
-                    isActive(path)
-                      ? "text-white scale-110 font-bold drop-shadow-md"
-                      : "text-white/80 hover:text-white hover:scale-105"
-                  }`}
-                >
-                  {name}
-                </Link>
-              ))}
-            </nav>
-            <nav className="flex items-center gap-8">
-              {rightLinks.map(({ name, path }) => (
-                <Link
-                  key={name}
-                  href={path}
-                  className={`font-body font-semibold text-lg transition-all duration-300 ${
-                    isActive(path)
-                      ? "text-white scale-110 font-bold drop-shadow-md"
-                      : "text-white/80 hover:text-white hover:scale-105"
-                  }`}
-                >
-                  {name}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        </div>
-      </div>
-
-      {/* --- Mobile Layout --- */}
-      <div className="md:hidden relative z-30 w-full flex justify-between items-center h-24 px-6 bg-foreground shadow-md">
+    <header className="relative w-full h-[200px] text-dark-charcoal overflow-visible">
+      {/* Logo floats above header */}
+      <div className="absolute top-0 left-6 z-30">
         <Link href="/">
           <Image
             src="/images/logo.png"
             alt="Eagles Tribe MC Logo"
-            width={64}
-            height={64}
-            className="w-16 h-16 object-contain"
+            width={300}
+            height={300}
+            className="w-[150px] h-[150px] md:w-[300px] md:h-[300px] object-contain drop-shadow-lg"
             priority
           />
         </Link>
+      </div>
+
+      {/* SVG background stays on all devices */}
+      <div className="absolute top-0 left-0 w-full h-[450px] z-0 overflow-hidden">
+        <div className="absolute inset-0 flex justify-center">
+          <svg
+            className="w-[4000px] h-[450px] shrink-0"
+            viewBox="0 0 4000 800"
+            preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <linearGradient id="goldGradient" x1="0%" y1="50%" x2="100%" y2="50%">
+                <stop offset="0%" stopColor="#b8860b" />
+                <stop offset="50%" stopColor="#ffd700" />
+                <stop offset="100%" stopColor="#b8860b" />
+              </linearGradient>
+            </defs>
+            <path d="M2045 113C2110 41 2102 39 2198 30H4052V0H2195C2084 11 2084 20 2023 89Z" fill="url(#goldGradient)" />
+            <path d="M2101 122C2137 78 2141 78 2200 78H4052V48H2198C2123 51 2123 51 2059 123Z" fill="url(#goldGradient)" />
+            <path d="M1979 143C1922 62 1901 50 1804 48H0V78H1805C1859 77 1873 74 1921 116H1790L1819 144Z" fill="url(#goldGradient)" />
+            <path d="M1894 164C1997 239 2078 173 2131 140H2044C1964 41 1973 0 1835 0H0V30H1835C1937 35 1939 47 2017 162Z" fill="url(#goldGradient)" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Desktop + Tablet Menu */}
+      <div className="hidden md:flex absolute top-[75px] w-full justify-between items-center px-8 max-w-6xl mx-auto z-10">
+        <nav className="flex items-center gap-8">
+          {leftLinks.map(({ name, path }) => (
+            <Link
+              key={name}
+              href={path}
+              className={`font-body text-lg font-light transition-all duration-300 ${
+                isActive(path)
+                  ? "text-white font-bold scale-110 drop-shadow-md"
+                  : "text-white/80 hover:text-white hover:scale-105"
+              }`}
+            >
+              {name}
+            </Link>
+          ))}
+        </nav>
+        <nav className="flex items-center gap-8">
+          {rightLinks.map(({ name, path }) => (
+            <Link
+              key={name}
+              href={path}
+              className={`font-body text-lg font-light transition-all duration-300 ${
+                isActive(path)
+                  ? "text-white font-bold scale-110 drop-shadow-md"
+                  : "text-white/80 hover:text-white hover:scale-105"
+              }`}
+            >
+              {name}
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      {/* Mobile Header with SVG and Hamburger */}
+      <div className="md:hidden relative z-30 w-full flex justify-between items-center h-24 px-6">
+        {/* SVG still showing in background */}
+        <div className="absolute inset-0 -top-[60px] z-0">
+          <svg
+            className="w-[4000px] h-[450px] shrink-0"
+            viewBox="0 0 4000 800"
+            preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <linearGradient id="goldGradientMobile" x1="0%" y1="50%" x2="100%" y2="50%">
+                <stop offset="0%" stopColor="#b8860b" />
+                <stop offset="50%" stopColor="#ffd700" />
+                <stop offset="100%" stopColor="#b8860b" />
+              </linearGradient>
+            </defs>
+            <path d="M2045 113C2110 41 2102 39 2198 30H4052V0H2195C2084 11 2084 20 2023 89Z" fill="url(#goldGradientMobile)" />
+            <path d="M2101 122C2137 78 2141 78 2200 78H4052V48H2198C2123 51 2123 51 2059 123Z" fill="url(#goldGradientMobile)" />
+            <path d="M1979 143C1922 62 1901 50 1804 48H0V78H1805C1859 77 1873 74 1921 116H1790L1819 144Z" fill="url(#goldGradientMobile)" />
+            <path d="M1894 164C1997 239 2078 173 2131 140H2044C1964 41 1973 0 1835 0H0V30H1835C1937 35 1939 47 2017 162Z" fill="url(#goldGradientMobile)" />
+          </svg>
+        </div>
+
+        <Link href="/">
+          <Image
+            src="/images/logo.png"
+            alt="Eagles Tribe MC Logo"
+            width={80}
+            height={80}
+            className="w-20 h-20 object-contain relative z-10"
+            priority
+          />
+        </Link>
+
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="text-dark-charcoal focus:outline-none"
+          className="text-dark-charcoal relative z-10 focus:outline-none"
           aria-label="Toggle menu"
         >
           <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,7 +150,7 @@ export default function Header() {
         </button>
       </div>
 
-      {/* --- Mobile Menu Panel --- */}
+      {/* Mobile Menu Panel */}
       {isMenuOpen && (
         <div className="md:hidden absolute top-24 left-0 w-full bg-foreground z-20 shadow-lg border-t">
           <nav className="flex flex-col items-center gap-1 p-4">
@@ -139,7 +158,7 @@ export default function Header() {
               <Link
                 key={name}
                 href={path}
-                className={`w-full text-center py-3 rounded-md font-body font-medium transition-colors duration-300 ${
+                className={`w-full text-center py-3 rounded-md font-body text-lg font-light transition-colors duration-300 ${
                   isActive(path)
                     ? "text-white bg-primary-red font-bold"
                     : "text-dark-charcoal hover:bg-black/5"
