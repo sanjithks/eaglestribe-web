@@ -67,7 +67,7 @@ export default function Header() {
       </div>
 
       {/* Desktop Menu (only >= 1200px) */}
-      <div className="hidden xl:flex absolute top-[20px] w-full px-8 max-w-screen-2xl mx-auto z-10">
+      <div className="hidden xl:flex absolute top-[18px] w-full px-8 max-w-screen-2xl mx-auto z-10">
         {/* Left side links (right of logo) */}
         <nav className="flex items-center gap-8 ml-[180px]">
           {leftLinks.map(({ name, path }) => (
