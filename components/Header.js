@@ -27,15 +27,15 @@ export default function Header() {
   }, [pathname]);
 
   return (
-    <header className="relative w-full h-[180px] text-dark-charcoal overflow-visible">
-      {/* Logo floating top-left */}
-      <div className="absolute top-10 left-6 z-30 hidden md:block">
+    <header className="relative w-full h-[150px] text-dark-charcoal overflow-visible">
+      {/* Logo top-left */}
+      <div className="absolute top-10 left-6 z-30 hidden xl:block">
         <Link href="/">
           <Image
             src="/images/logo.png"
             alt="Eagles Tribe MC Logo"
-            width={150}
-            height={150}
+            width={120}
+            height={120}
             className="object-contain drop-shadow-lg"
             priority
           />
@@ -66,9 +66,9 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Desktop menu layout */}
-      <div className="hidden md:flex absolute top-[20px] w-full px-8 max-w-screen-2xl mx-auto z-10">
-        {/* Left nav: Right of logo */}
+      {/* Desktop Menu (only >= 1200px) */}
+      <div className="hidden xl:flex absolute top-[20px] w-full px-8 max-w-screen-2xl mx-auto z-10">
+        {/* Left side links (right of logo) */}
         <nav className="flex items-center gap-8 ml-[180px]">
           {leftLinks.map(({ name, path }) => (
             <Link
@@ -84,7 +84,8 @@ export default function Header() {
             </Link>
           ))}
         </nav>
-        {/* Right nav: starts after center + 100px */}
+
+        {/* Right side links (starting after 100px from center) */}
         <nav className="flex items-center gap-12 ml-auto pr-8">
           {rightLinks.map(({ name, path }) => (
             <Link
@@ -102,9 +103,9 @@ export default function Header() {
         </nav>
       </div>
 
-      {/* Mobile layout with logo and hamburger */}
-      <div className="md:hidden relative z-30 w-full flex justify-between items-center h-24 px-6">
-        {/* SVG stays in background */}
+      {/* Mobile Layout (< 1200px) */}
+      <div className="xl:hidden relative z-30 w-full flex justify-between items-center h-24 px-6">
+        {/* Keep SVG background visible */}
         <div className="absolute inset-0 -top-[60px] z-0">
           <svg
             className="w-[4000px] h-[450px] shrink-0"
@@ -138,7 +139,7 @@ export default function Header() {
           />
         </Link>
 
-        {/* Hamburger toggle */}
+        {/* Hamburger Menu */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="text-dark-charcoal relative z-10 focus:outline-none"
@@ -154,9 +155,9 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Slideout Menu */}
       {isMenuOpen && (
-        <div className="md:hidden absolute top-24 left-0 w-full bg-foreground z-20 shadow-lg border-t">
+        <div className="xl:hidden absolute top-24 left-0 w-full bg-foreground z-20 shadow-lg border-t">
           <nav className="flex flex-col items-center gap-1 p-4">
             {navLinks.map(({ name, path }) => (
               <Link
