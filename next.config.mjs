@@ -1,8 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['https://eaglestribe-cms.onrender.com'], // e.g., 'cms.eaglestribe.com' or 'localhost'
+    domains: ['eaglestribe-cms.onrender.com'],
+  },
+  experimental: {
+    serverActions: true,
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
