@@ -18,10 +18,10 @@ async function getRides() {
 
 // Tile component
 function RideTile({ ride }) {
-  const { title, short_description, documentId, featured_image } = ride.attributes;
+  const { title, short_description, documentId, featured_image } = ride;
 
-  const imageUrl = featured_image?.data?.attributes?.url
-    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.data.attributes.url}`
+  const featuredImageUrl = featured_image?.url
+    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.url}`
     : null;
 
   return (
@@ -29,17 +29,20 @@ function RideTile({ ride }) {
       href={`/rides/${documentId}`}
       className="block bg-foreground rounded-xl shadow-md p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary"
     >
-      {imageUrl && (
+      {/* Ride image */}
+      {featuredImageUrl && (
         <div className="mb-4">
           <Image
-            src={imageUrl}
+            src={featuredImageUrl}
             alt={title}
             width={600}
-            height={400}
+            height={300}
             className="rounded-lg w-full h-48 object-cover"
           />
         </div>
       )}
+
+      {/* Ride text */}
       <h3 className="text-2xl font-bold text-secondary mb-2">{title}</h3>
       <p className="text-foreground text-opacity-80">{short_description}</p>
       <p className="mt-4 text-primary font-semibold hover:underline">Read More...</p>
@@ -50,7 +53,7 @@ function RideTile({ ride }) {
 // Main rides page
 export default async function RidesPage() {
   const rides = (await getRides()).sort(
-    (a, b) => new Date(b.attributes.ride_date) - new Date(a.attributes.ride_date)
+    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
   );
   const topThreeRides = rides.slice(0, 3);
 
