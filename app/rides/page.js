@@ -4,18 +4,28 @@ import Image from 'next/image';
 export const dynamic = 'force-dynamic';
 
 export default async function RidesPage() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`, {
-    cache: 'no-store',
-  });
-  const data = await res.json();
-  const rides = data?.data || [];
+  let rides = [];
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`, {
+      cache: 'no-store',
+    });
+
+    if (!res.ok) throw new Error('Failed to fetch rides');
+
+    const data = await res.json();
+    rides = data?.data || [];
+
+  } catch (error) {
+    console.error('Error fetching rides:', error);
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground px-6 py-12">
       <h1 className="text-4xl font-bold mb-8 text-center text-primary">Latest Rides</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
         {rides.map((ride) => {
-          const imageUrl = ride.attributes?.featured_image?.data?.attributes?.url;
+          const imageUrl = ride?.attributes?.featured_image?.data?.attributes?.url;
           const fullImageUrl = imageUrl
             ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${imageUrl}`
             : '/placeholder.jpg';
