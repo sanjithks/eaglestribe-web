@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-// This function stays the same
+// This function is correct and fetches your data.
 async function getRides() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`, {
@@ -16,17 +16,28 @@ async function getRides() {
   }
 }
 
-// This component also stays the same
+// ==================================================================
+// =================== FINAL CORRECTED COMPONENT ====================
+// ==================================================================
 function RideTile({ ride }) {
+  // Destructure properties directly from the ride object, which is correct for your API.
   const { title, short_description, documentId, featured_image } = ride;
-  const featuredImageUrl = featured_image?.url || null; // This is still a guess
+
+  // 1. Get the relative path from the API data (e.g., "/uploads/image.jpg").
+  const relativeImagePath = featured_image?.url;
+
+  // 2. Create the full, absolute URL by combining the Strapi URL with the relative path.
+  const featuredImageUrl = relativeImagePath
+    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${relativeImagePath}`
+    : null;
 
   return (
     <Link
       href={`/rides/${documentId}`}
       className="block bg-foreground rounded-xl shadow-md p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary"
     >
-      {featuredImageUrl ? (
+      {/* 3. Use the final, complete URL here. */}
+      {featuredImageUrl && (
         <div className="mb-4">
           <Image
             src={featuredImageUrl}
@@ -36,10 +47,6 @@ function RideTile({ ride }) {
             className="rounded-lg w-full h-48 object-cover"
           />
         </div>
-      ) : (
-        <div className="mb-4 w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-            <p className="text-gray-500">Image not found</p>
-        </div>
       )}
       <h3 className="text-2xl font-bold text-secondary mb-2">{title}</h3>
       <p className="text-foreground text-opacity-80">{short_description}</p>
@@ -48,44 +55,25 @@ function RideTile({ ride }) {
   );
 }
 
-// Main page - THIS IS THE MODIFIED PART
+// This is the main page component, now clean of any debugging code.
 export default async function RidesPage() {
   const rides = await getRides();
 
+  // Sort rides by date. This is correct.
+  const sortedRides = rides.sort(
+    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
+  );
+  
+  const topThreeRides = sortedRides.slice(0, 3);
+
   return (
     <section className="bg-background text-foreground px-6 py-16 min-h-screen">
-
-      {/* ================================================================== */}
-      {/* =================== VISUAL DEBUGGING BOX ======================= */}
-      <div style={{
-        backgroundColor: 'white',
-        color: 'black',
-        padding: '20px',
-        margin: '20px auto',
-        borderRadius: '10px',
-        border: '3px solid red',
-        maxWidth: '1200px'
-      }}>
-        <h2 style={{ color: 'red', fontWeight: 'bold', fontSize: '24px', marginBottom: '10px' }}>
-          DEBUGGING INFORMATION:
-        </h2>
-        <p style={{fontStyle: 'italic'}}>
-          Please copy all the text inside the box below and send it to me.
-        </p>
-        <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' }}>
-          {rides && rides.length > 0 ? JSON.stringify(rides[0], null, 2) : 'ERROR: No ride data found. The API might be returning an empty array or an error.'}
-        </pre>
-      </div>
-      {/* ================================================================== */}
-      {/* ================================================================== */}
-
-
       <div className="max-w-7xl mx-auto">
         <h1 className="text-5xl font-extrabold text-primary text-center mb-16">Latest Rides</h1>
-        
-        {rides.length > 0 ? (
+
+        {topThreeRides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {rides.slice(0, 3).map((ride) => (
+            {topThreeRides.map((ride) => (
               <RideTile key={ride.id} ride={ride} />
             ))}
           </div>
