@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Your Next.js config options go here.
-  // We can leave it empty for now since you are using local images.
+  images: {
+    domains: ['https://eaglestribe-cms.onrender.com'], // e.g., 'cms.eaglestribe.com' or 'localhost'
+  },
 };
 
-// Use 'export default' for .mjs files instead of 'module.exports'
-export default nextConfig;
+module.exports = nextConfig;
