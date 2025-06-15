@@ -1,39 +1,48 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 
+// Generate slugs
 export async function generateStaticParams() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides`, {
-    cache: 'no-store',
-  });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides`);
   const data = await res.json();
-  return data.data.map((ride) => ({ slug: ride.documentId }));
+  return data.data.map((ride) => ({ slug: ride.attributes.documentId }));
 }
 
+// Ride detail page
 export default async function RideDetailPage({ params }) {
   const { slug } = params;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides`, {
-    cache: 'no-store',
-  });
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image,ride_gallery,author`);
   const data = await res.json();
-  const ride = data.data.find((r) => r.documentId === slug);
+
+  const ride = data.data.find((r) => r.attributes.documentId === slug);
 
   if (!ride) notFound();
 
-  const { title, ride_date, detailed_write_up, author, featured_image, ride_gallery } = ride;
+  const {
+    title,
+    ride_date,
+    detailed_write_up,
+    featured_image,
+    ride_gallery,
+    author,
+  } = ride.attributes;
 
-  const featuredImageUrl = featured_image?.url || featured_image?.formats?.large?.url;
+  const featuredImageUrl = featured_image?.data?.attributes?.url
+    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.data.attributes.url}`
+    : null;
+
+  const galleryImages = ride_gallery?.data || [];
 
   return (
-    <div className="bg-background min-h-screen flex flex-col items-center px-6 py-12">
-      <div className="max-w-4xl w-full bg-foreground rounded-lg shadow-lg p-8 relative">
-        {/* Header Section */}
-        <div className="mb-6 border-b border-gray-300 pb-4 sticky top-[130px] bg-foreground z-10">
-          <h1 className="text-4xl font-bold text-primary-red">{title}</h1>
-          {author && (
-            <p className="text-sm text-highlight italic mb-1">
-              By {typeof author === 'object' ? author.name : author}
-            </p>
+    <div className="bg-background text-foreground min-h-screen px-6 py-12">
+      <div className="max-w-4xl mx-auto bg-foreground rounded-xl shadow-lg overflow-hidden">
+        {/* Sticky Title + Author + Date */}
+        <div className="sticky top-24 bg-foreground px-6 pt-6 pb-4 z-10 border-b border-gray-300">
+          <h1 className="text-4xl font-bold text-primary mb-1">{title}</h1>
+          {author?.data?.attributes?.name && (
+            <p className="text-sm text-highlight italic mb-1">By {author.data.attributes.name}</p>
           )}
           <p className="text-sm text-dark-charcoal">
             {new Date(ride_date).toLocaleDateString('en-GB', {
@@ -46,47 +55,45 @@ export default async function RideDetailPage({ params }) {
 
         {/* Featured Image */}
         {featuredImageUrl && (
-          <div className="mb-6">
-            <Image
-              src={featuredImageUrl}
-              alt="Ride Featured"
-              width={800}
-              height={500}
-              className="rounded-lg object-cover w-full max-h-[500px]"
-            />
-          </div>
+          <Image
+            src={featuredImageUrl}
+            alt={title}
+            width={1200}
+            height={500}
+            className="w-full h-auto object-cover"
+          />
         )}
 
-        {/* Detailed Write-up */}
-        <div className="prose prose-lg text-dark-charcoal mb-12">
-          {detailed_write_up.split('\n').map((para, idx) => (
+        {/* Write-up */}
+        <div className="prose prose-lg px-6 py-8 text-dark-charcoal">
+          {detailed_write_up?.split('\n').map((para, idx) => (
             <p key={idx}>{para}</p>
           ))}
         </div>
 
-        {/* Ride Gallery */}
-        {ride_gallery?.length > 0 && (
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold text-secondary mb-6">Ride Gallery</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {ride_gallery.map((img, idx) => (
+        {/* Gallery */}
+        {galleryImages.length > 0 && (
+          <div className="px-6 pb-10">
+            <h2 className="text-2xl font-bold mb-4 text-secondary">Ride Gallery</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {galleryImages.map((img, i) => (
                 <Image
-                  key={idx}
-                  src={img.url}
-                  alt={`Ride gallery image ${idx + 1}`}
-                  width={400}
-                  height={300}
-                  className="rounded-lg object-cover w-full h-64"
+                  key={i}
+                  src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL}${img.attributes.url}`}
+                  alt={`Gallery ${i + 1}`}
+                  width={600}
+                  height={400}
+                  className="rounded-lg shadow-md object-cover w-full h-64"
                 />
               ))}
             </div>
           </div>
         )}
 
-        {/* Back Button */}
-        <div className="mt-12 text-center">
+        {/* Back button */}
+        <div className="px-6 pb-6 text-center border-t border-gray-200">
           <Link href="/rides">
-            <button className="bg-primary-red text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-red-700 transition">
+            <button className="mt-4 bg-primary text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-primary/80 transition">
               ← Back to Rides
             </button>
           </Link>

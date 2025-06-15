@@ -4,7 +4,7 @@ import Image from 'next/image';
 // Fetch ride data from Strapi
 async function getRides() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`, {
       cache: 'no-store',
     });
     if (!res.ok) throw new Error('Failed to fetch rides');
@@ -16,45 +16,41 @@ async function getRides() {
   }
 }
 
-// Tile component with image
+// Tile component
 function RideTile({ ride }) {
-  const { title, short_description, documentId, featured_image } = ride;
-  const imageUrl = featured_image?.url
-    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.url}`
+  const { title, short_description, documentId, featured_image } = ride.attributes;
+
+  const imageUrl = featured_image?.data?.attributes?.url
+    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.data.attributes.url}`
     : null;
 
   return (
     <Link
       href={`/rides/${documentId}`}
-      className="block bg-foreground rounded-xl shadow-md hover:shadow-xl transition-all border border-transparent hover:border-primary overflow-hidden"
+      className="block bg-foreground rounded-xl shadow-md p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary"
     >
-      {/* Image */}
       {imageUrl && (
-        <div className="w-full h-56 relative">
+        <div className="mb-4">
           <Image
             src={imageUrl}
-            alt={`Featured image for ${title}`}
-            fill
-            className="object-cover"
-            priority
+            alt={title}
+            width={600}
+            height={400}
+            className="rounded-lg w-full h-48 object-cover"
           />
         </div>
       )}
-
-      {/* Text Content */}
-      <div className="p-6">
-        <h3 className="text-2xl font-bold text-secondary mb-2">{title}</h3>
-        <p className="text-foreground text-opacity-80">{short_description}</p>
-        <p className="mt-4 text-primary font-semibold hover:underline">Read More...</p>
-      </div>
+      <h3 className="text-2xl font-bold text-secondary mb-2">{title}</h3>
+      <p className="text-foreground text-opacity-80">{short_description}</p>
+      <p className="mt-4 text-primary font-semibold hover:underline">Read More...</p>
     </Link>
   );
 }
 
-// Main Rides Page
+// Main rides page
 export default async function RidesPage() {
   const rides = (await getRides()).sort(
-    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
+    (a, b) => new Date(b.attributes.ride_date) - new Date(a.attributes.ride_date)
   );
   const topThreeRides = rides.slice(0, 3);
 
