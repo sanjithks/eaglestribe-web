@@ -2,26 +2,20 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 
-// Generate slugs based on documentId
-export async function generateStaticParams() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides`);
-  const data = await res.json();
-
-  return data.data.map((ride) => ({
-    slug: ride.documentId,
-  }));
-}
+export const dynamicParams = true;
 
 export default async function RideDetailPage({ params }) {
   const { slug } = params;
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image,ride_gallery,author`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image,ride_gallery,author`, {
+    cache: 'no-store',
+  });
   const data = await res.json();
-  const rides = data.data;
+  const rides = data?.data || [];
 
-  const ride = rides.find((r) => r.documentId === slug);
+  const ride = rides.find((r) => r.attributes?.documentId === slug);
 
-  if (!ride) notFound();
+  if (!ride) return notFound();
 
   const {
     title,
@@ -30,7 +24,7 @@ export default async function RideDetailPage({ params }) {
     featured_image,
     ride_gallery,
     author,
-  } = ride;
+  } = ride.attributes;
 
   const featuredImageUrl = featured_image?.data?.attributes?.url
     ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.data.attributes.url}`
@@ -40,9 +34,8 @@ export default async function RideDetailPage({ params }) {
 
   return (
     <div className="bg-background text-foreground min-h-screen px-6 py-12">
-      <div className="max-w-4xl mx-auto bg-foreground rounded-xl shadow-lg overflow-hidden">
-        {/* Sticky Title */}
-        <div className="sticky top-24 bg-foreground px-6 pt-6 pb-4 z-10 border-b border-gray-300">
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="sticky top-24 bg-white px-6 pt-6 pb-4 z-10 border-b border-gray-300">
           <h1 className="text-4xl font-bold text-primary mb-1">{title}</h1>
           {author?.data?.attributes?.name && (
             <p className="text-sm text-highlight italic mb-1">By {author.data.attributes.name}</p>
@@ -56,7 +49,6 @@ export default async function RideDetailPage({ params }) {
           </p>
         </div>
 
-        {/* Featured Image */}
         {featuredImageUrl && (
           <Image
             src={featuredImageUrl}
@@ -67,12 +59,10 @@ export default async function RideDetailPage({ params }) {
           />
         )}
 
-        {/* Write-up */}
         <div className="prose prose-lg px-6 py-8 text-dark-charcoal whitespace-pre-line">
           {detailed_write_up}
         </div>
 
-        {/* Gallery */}
         {galleryImages.length > 0 && (
           <div className="px-6 pb-10">
             <h2 className="text-2xl font-bold mb-4 text-secondary">Ride Gallery</h2>
@@ -91,7 +81,6 @@ export default async function RideDetailPage({ params }) {
           </div>
         )}
 
-        {/* Back Button */}
         <div className="px-6 pb-6 text-center border-t border-gray-200">
           <Link href="/rides">
             <button className="mt-4 bg-primary text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-primary/80 transition">
