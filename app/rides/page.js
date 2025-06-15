@@ -1,33 +1,25 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Fetch ride data from Strapi
 async function getRides() {
   try {
-    // The fetch call itself remains the same
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`, {
       cache: 'no-store',
     });
     if (!res.ok) throw new Error('Failed to fetch rides');
-    const ridesData = await res.json();
-    // The .data wrapper might still exist for the top-level response
-    return ridesData.data || [];
+    const json = await res.json();
+    return json.data || [];
   } catch (error) {
     console.error('Error fetching rides:', error);
     return [];
   }
 }
 
-// Tile component (Corrected for v5)
 function RideTile({ ride }) {
-  // Destructure all properties directly from the 'ride' object
-  // Note: 'featured_image' might still be nested if it's a populated relation
   const { title, short_description, documentId, featured_image } = ride;
 
-  // The structure of populated relations might still have nesting
-  const imageUrl = featured_image?.url;
-  const featuredImageUrl = imageUrl
-    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${imageUrl}`
+  const imageUrl = featured_image?.url
+    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.url}`
     : null;
 
   return (
@@ -35,10 +27,10 @@ function RideTile({ ride }) {
       href={`/rides/${documentId}`}
       className="block bg-foreground rounded-xl shadow-md p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary"
     >
-      {featuredImageUrl && (
+      {imageUrl && (
         <div className="mb-4">
           <Image
-            src={featuredImageUrl}
+            src={imageUrl}
             alt={title}
             width={600}
             height={300}
@@ -53,30 +45,27 @@ function RideTile({ ride }) {
   );
 }
 
-// Main page (Corrected for v5)
 export default async function RidesPage() {
-  const rides = await getRides();
-
-  // Sort directly on ride properties, not ride.attributes
-  const sortedRides = rides.sort(
+  const rides = (await getRides()).sort(
     (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
   );
-
-  const topThreeRides = sortedRides.slice(0, 3);
+  const topThree = rides.slice(0, 3);
 
   return (
     <section className="bg-background text-foreground px-6 py-16 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-5xl font-extrabold text-primary text-center mb-16">Latest Rides</h1>
-        {topThreeRides.length > 0 ? (
+
+        {topThree.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {topThreeRides.map((ride) => (
+            {topThree.map((ride) => (
               <RideTile key={ride.id} ride={ride} />
             ))}
           </div>
         ) : (
           <p className="text-center text-lg text-dark-charcoal">No rides available right now.</p>
         )}
+
         <div className="mt-20 text-center">
           <h2 className="text-3xl font-bold text-secondary mb-4">Looking for more?</h2>
           <Link
