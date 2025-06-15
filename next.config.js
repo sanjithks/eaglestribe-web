@@ -1,10 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['eaglestribe-cms.onrender.com'],
-  },
-  experimental: {
-    serverActions: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'eaglestribe-cms.onrender.com',
+        port: '',
+        pathname: '/uploads/**',
+      },
+    ],
   },
 };
 
