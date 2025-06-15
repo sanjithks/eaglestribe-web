@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
+// This function fetches the ride data from your Strapi API.
 async function getRides() {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`,
-      { cache: 'no-store' }
-    );
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`, {
+      cache: 'no-store', // Fetches fresh data on each request.
+    });
     if (!res.ok) throw new Error('Failed to fetch rides');
     const ridesData = await res.json();
     return ridesData.data || [];
@@ -16,20 +16,21 @@ async function getRides() {
   }
 }
 
+// This is the final, corrected RideTile component.
 function RideTile({ ride }) {
-  const { title, short_description, attributes } = ride;
-  const documentId = attributes.documentId;
+  // Destructure properties directly from the ride object.
+  const { title, short_description, documentId, featured_image } = ride;
 
-  const featuredImageUrl = attributes.featured_image?.data?.attributes?.url
-    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${attributes.featured_image.data.attributes.url}`
-    : null;
+  // The featured_image.url from your API is now a complete and permanent
+  // URL from Cloudinary. We can use it directly without any changes.
+  const featuredImageUrl = featured_image?.url || null;
 
   return (
     <Link
       href={`/rides/${documentId}`}
       className="block bg-foreground rounded-xl shadow-md p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary"
     >
-      {featuredImageUrl ? (
+      {featuredImageUrl && (
         <div className="mb-4">
           <Image
             src={featuredImageUrl}
@@ -39,12 +40,7 @@ function RideTile({ ride }) {
             className="rounded-lg w-full h-48 object-cover"
           />
         </div>
-      ) : (
-        <div className="mb-4 w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-          <p className="text-gray-500">No Image</p>
-        </div>
       )}
-
       <h3 className="text-2xl font-bold text-secondary mb-2">{title}</h3>
       <p className="text-foreground text-opacity-80">{short_description}</p>
       <p className="mt-4 text-primary font-semibold hover:underline">Read More...</p>
@@ -52,11 +48,16 @@ function RideTile({ ride }) {
   );
 }
 
+// This is the main page component, clean and ready.
 export default async function RidesPage() {
-  const rides = (await getRides()).sort(
-    (a, b) => new Date(b.attributes.ride_date) - new Date(a.attributes.ride_date)
+  const rides = await getRides();
+
+  // Sort rides by date, with the newest first.
+  const sortedRides = rides.sort(
+    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
   );
-  const topThreeRides = rides.slice(0, 3);
+  
+  const topThreeRides = sortedRides.slice(0, 3);
 
   return (
     <section className="bg-background text-foreground px-6 py-16 min-h-screen">
