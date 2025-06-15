@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Fetch ride data from Strapi
 async function getRides() {
@@ -17,16 +18,29 @@ async function getRides() {
 
 // Tile component
 function RideTile({ ride }) {
-  const { title, short_description, documentId } = ride;
+  const { title, short_description, documentId, featured_image } = ride;
+  const imageUrl = featured_image?.url || featured_image?.formats?.medium?.url || null;
 
   return (
     <Link
       href={`/rides/${documentId}`}
-      className="block bg-foreground rounded-xl shadow-md p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary"
+      className="block bg-foreground rounded-xl shadow-md hover:shadow-xl transition-all border border-transparent hover:border-primary overflow-hidden"
     >
-      <h3 className="text-2xl font-bold text-secondary mb-2">{title}</h3>
-      <p className="text-foreground text-opacity-80">{short_description}</p>
-      <p className="mt-4 text-primary font-semibold hover:underline">Read More...</p>
+      {imageUrl && (
+        <div className="w-full h-56 relative">
+          <Image
+            src={imageUrl}
+            alt={`Featured image for ${title}`}
+            fill
+            className="object-cover"
+          />
+        </div>
+      )}
+      <div className="p-6">
+        <h3 className="text-2xl font-bold text-secondary mb-2">{title}</h3>
+        <p className="text-foreground text-opacity-80">{short_description}</p>
+        <p className="mt-4 text-primary font-semibold hover:underline">Read More...</p>
+      </div>
     </Link>
   );
 }
