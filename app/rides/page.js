@@ -1,91 +1,67 @@
-import Image from "next/image";
-import Link from "next/link";
+import Link from 'next/link';
+import Image from 'next/image';
 
-// Fetch rides
-async function getRides() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) throw new Error("Failed to fetch rides");
-    const data = await res.json();
-    return data.data;
-  } catch (err) {
-    console.error("Error fetching rides:", err);
-    return [];
-  }
-}
+export const dynamic = 'force-dynamic';
 
-// RIDE TILE
-function RideTile({ ride }) {
-  const { title, short_description, documentId, featured_image } = ride;
-
-  const imageUrl = featured_image?.formats?.medium?.url || featured_image?.url;
-  const fullUrl = imageUrl ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${imageUrl}` : null;
-
-  return (
-    <Link
-      href={`/rides/${documentId}`}
-      className="block bg-foreground rounded-xl shadow-md p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary"
-    >
-      {fullUrl && (
-        <div className="mb-4 rounded overflow-hidden">
-          <Image
-            src={fullUrl}
-            alt={title}
-            width={400}
-            height={250}
-            className="w-full h-56 object-cover rounded"
-          />
-        </div>
-      )}
-      <h3 className="text-2xl font-bold text-secondary mb-2">{title}</h3>
-      <p className="text-foreground text-opacity-80">{short_description}</p>
-      <p className="mt-4 text-primary font-semibold hover:underline">Read More...</p>
-    </Link>
-  );
-}
-
-// PAGE
 export default async function RidesPage() {
-  const rides = (await getRides()).sort(
-    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
-  );
+  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?sort=ride_date:desc&pagination[limit]=3&populate=featured_image`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch rides');
+  }
 
-  const latestRides = rides.slice(0, 3);
+  const data = await res.json();
+  const rides = data?.data || [];
 
   return (
-    <section className="bg-background text-foreground px-6 py-16 min-h-screen">
+    <div className="bg-background text-foreground min-h-screen py-16 px-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-5xl font-extrabold text-primary text-center mb-16">
-          Latest Rides
-        </h1>
+        <h1 className="text-4xl font-bold text-primary mb-10 text-center">Latest Rides</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          {rides.map((ride) => {
+            const imageUrl = ride.featured_image?.formats?.medium?.url || ride.featured_image?.url;
+            const fullImageUrl = imageUrl ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${imageUrl}` : null;
 
-        {latestRides.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {latestRides.map((ride) => (
-              <RideTile key={ride.id} ride={ride} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-lg text-dark-charcoal">
-            No rides available right now.
-          </p>
-        )}
+            return (
+              <Link
+                key={ride.documentId}
+                href={`/rides/${ride.documentId}`}
+                className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              >
+                {fullImageUrl && (
+                  <Image
+                    src={fullImageUrl}
+                    alt={ride.title}
+                    width={600}
+                    height={400}
+                    className="w-full h-60 object-cover"
+                  />
+                )}
+                <div className="p-5">
+                  <h2 className="text-xl font-semibold text-primary group-hover:underline mb-2">{ride.title}</h2>
+                  <p className="text-sm text-dark-charcoal mb-2">
+                    {new Date(ride.ride_date).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </p>
+                  <p className="text-sm text-highlight">{ride.short_description}</p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
 
-        {/* Archives CTA */}
-        <div className="mt-20 text-center">
-          <h2 className="text-3xl font-bold text-secondary mb-4">
-            Looking for more?
-          </h2>
+        {/* Link to Archives */}
+        <div className="text-center mt-16">
           <Link
             href="/rides/archives"
-            className="inline-block bg-dark-charcoal text-background py-4 px-10 rounded-lg shadow-md hover:bg-primary transition duration-300 text-xl font-bold"
+            className="inline-block bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary/80 transition"
           >
-            View Ride Archives
+            View All Past Rides →
           </Link>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
