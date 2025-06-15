@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Fetch ride data from Strapi
+// This function stays the same
 async function getRides() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`, {
@@ -16,13 +16,10 @@ async function getRides() {
   }
 }
 
-// This RideTile component is a placeholder. 
-// It will likely NOT show the image correctly until we get the console log output.
+// This component also stays the same
 function RideTile({ ride }) {
   const { title, short_description, documentId, featured_image } = ride;
-
-  // This line is a GUESS. The console.log will tell us the CORRECT path.
-  const featuredImageUrl = featured_image?.url || null;
+  const featuredImageUrl = featured_image?.url || null; // This is still a guess
 
   return (
     <Link
@@ -51,33 +48,44 @@ function RideTile({ ride }) {
   );
 }
 
-// Main page
+// Main page - THIS IS THE MODIFIED PART
 export default async function RidesPage() {
   const rides = await getRides();
 
-  // =================================================================
-  // =================== THE IMPORTANT DEBUGGING CODE ================
-  // =================================================================
-  if (rides && rides.length > 0) {
-    console.log("COPY ALL OF THIS >>> RIDE DATA STRUCTURE:", JSON.stringify(rides[0], null, 2));
-  }
-  // =================================================================
-  // =================================================================
-  
-  const sortedRides = rides.sort(
-    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
-  );
-
-  const topThreeRides = sortedRides.slice(0, 3);
-
   return (
     <section className="bg-background text-foreground px-6 py-16 min-h-screen">
+
+      {/* ================================================================== */}
+      {/* =================== VISUAL DEBUGGING BOX ======================= */}
+      <div style={{
+        backgroundColor: 'white',
+        color: 'black',
+        padding: '20px',
+        margin: '20px auto',
+        borderRadius: '10px',
+        border: '3px solid red',
+        maxWidth: '1200px'
+      }}>
+        <h2 style={{ color: 'red', fontWeight: 'bold', fontSize: '24px', marginBottom: '10px' }}>
+          DEBUGGING INFORMATION:
+        </h2>
+        <p style={{fontStyle: 'italic'}}>
+          Please copy all the text inside the box below and send it to me.
+        </p>
+        <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' }}>
+          {rides && rides.length > 0 ? JSON.stringify(rides[0], null, 2) : 'ERROR: No ride data found. The API might be returning an empty array or an error.'}
+        </pre>
+      </div>
+      {/* ================================================================== */}
+      {/* ================================================================== */}
+
+
       <div className="max-w-7xl mx-auto">
         <h1 className="text-5xl font-extrabold text-primary text-center mb-16">Latest Rides</h1>
-
-        {topThreeRides.length > 0 ? (
+        
+        {rides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {topThreeRides.map((ride) => (
+            {rides.slice(0, 3).map((ride) => (
               <RideTile key={ride.id} ride={ride} />
             ))}
           </div>
