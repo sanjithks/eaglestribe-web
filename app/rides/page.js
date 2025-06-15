@@ -1,66 +1,51 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-export const dynamic = 'force-dynamic';
-
 export default async function RidesPage() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?sort=ride_date:desc&pagination[limit]=3&populate=featured_image`);
-  if (!res.ok) {
-    throw new Error('Failed to fetch rides');
-  }
-
+  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`);
   const data = await res.json();
-  const rides = data?.data || [];
+  const rides = data.data;
 
   return (
-    <div className="bg-background text-foreground min-h-screen py-16 px-6">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-primary mb-10 text-center">Latest Rides</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-          {rides.map((ride) => {
-            const imageUrl = ride.featured_image?.formats?.medium?.url || ride.featured_image?.url;
-            const fullImageUrl = imageUrl ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${imageUrl}` : null;
+    <div className="min-h-screen bg-background text-foreground py-12 px-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {rides.map((ride) => {
+          const { id, title, short_description, ride_date, documentId, featured_image } = ride;
+          const imageUrl = featured_image?.data?.attributes?.url
+            ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.data.attributes.url}`
+            : null;
 
-            return (
-              <Link
-                key={ride.documentId}
-                href={`/rides/${ride.documentId}`}
-                className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
-              >
-                {fullImageUrl && (
+          return (
+            <Link href={`/rides/${documentId}`} key={id} className="block group">
+              <div className="rounded-lg overflow-hidden shadow-md bg-white transition transform hover:scale-[1.02]">
+                {imageUrl ? (
                   <Image
-                    src={fullImageUrl}
-                    alt={ride.title}
+                    src={imageUrl}
+                    alt={title}
                     width={600}
                     height={400}
-                    className="w-full h-60 object-cover"
+                    className="object-cover w-full h-60"
                   />
+                ) : (
+                  <div className="bg-gray-200 w-full h-60 flex items-center justify-center text-gray-500">
+                    No Image Available
+                  </div>
                 )}
-                <div className="p-5">
-                  <h2 className="text-xl font-semibold text-primary group-hover:underline mb-2">{ride.title}</h2>
+                <div className="p-4">
+                  <h2 className="text-xl font-bold text-primary mb-1">{title}</h2>
                   <p className="text-sm text-dark-charcoal mb-2">
-                    {new Date(ride.ride_date).toLocaleDateString('en-GB', {
+                    {new Date(ride_date).toLocaleDateString('en-GB', {
                       day: 'numeric',
-                      month: 'long',
+                      month: 'short',
                       year: 'numeric',
                     })}
                   </p>
-                  <p className="text-sm text-highlight">{ride.short_description}</p>
+                  <p className="text-sm text-gray-700">{short_description}</p>
                 </div>
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* Link to Archives */}
-        <div className="text-center mt-16">
-          <Link
-            href="/rides/archives"
-            className="inline-block bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary/80 transition"
-          >
-            View All Past Rides →
-          </Link>
-        </div>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
