@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-// This function is correct and fetches your data.
+// Fetch ride data from Strapi
 async function getRides() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`, {
@@ -9,6 +9,7 @@ async function getRides() {
     });
     if (!res.ok) throw new Error('Failed to fetch rides');
     const ridesData = await res.json();
+    // The .data wrapper still typically exists for the top-level collection response
     return ridesData.data || [];
   } catch (error) {
     console.error('Error fetching rides:', error);
@@ -16,27 +17,20 @@ async function getRides() {
   }
 }
 
-// ==================================================================
-// =================== FINAL CORRECTED COMPONENT ====================
-// ==================================================================
+// Tile component (Corrected for Strapi v5 with absolute URLs)
 function RideTile({ ride }) {
-  // Destructure properties directly from the ride object, which is correct for your API.
+  // Destructure all properties directly from the 'ride' object, as per Strapi v5's flattened structure
   const { title, short_description, documentId, featured_image } = ride;
 
-  // 1. Get the relative path from the API data (e.g., "/uploads/image.jpg").
-  const relativeImagePath = featured_image?.url;
-
-  // 2. Create the full, absolute URL by combining the Strapi URL with the relative path.
-  const featuredImageUrl = relativeImagePath
-    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${relativeImagePath}`
-    : null;
+  // Your Strapi API provides the full, absolute URL for the image.
+  // We use it directly without adding the environment variable to avoid duplication.
+  const featuredImageUrl = featured_image?.url || null;
 
   return (
     <Link
       href={`/rides/${documentId}`}
       className="block bg-foreground rounded-xl shadow-md p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary"
     >
-      {/* 3. Use the final, complete URL here. */}
       {featuredImageUrl && (
         <div className="mb-4">
           <Image
@@ -55,15 +49,15 @@ function RideTile({ ride }) {
   );
 }
 
-// This is the main page component, now clean of any debugging code.
+// Main page (Corrected for Strapi v5)
 export default async function RidesPage() {
   const rides = await getRides();
 
-  // Sort rides by date. This is correct.
+  // Sort directly on ride properties, not ride.attributes
   const sortedRides = rides.sort(
     (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
   );
-  
+
   const topThreeRides = sortedRides.slice(0, 3);
 
   return (
