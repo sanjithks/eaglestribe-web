@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
+// This function is correct and fetches the data well. No changes needed here.
 async function getRide(slug) {
   try {
     const res = await fetch(
@@ -26,13 +27,21 @@ export default async function RidePage({ params }) {
     notFound();
   }
 
-  const { title, ride_date, detailed_write_up, featured_image, ride_gallery, author } = ride.attributes;
+  // --- FIX #1: Remove .attributes ---
+  // We destructure directly from the 'ride' object itself.
+  const { title, ride_date, detailed_write_up, featured_image, ride_gallery, author } = ride;
 
-  const bannerUrl = featured_image?.data?.attributes?.url
-    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.data.attributes.url}`
+  // --- FIX #2: Correctly access the image URLs (without .attributes) ---
+  // The base URL needs to be prepended, as you've correctly done.
+  const bannerUrl = featured_image?.url
+    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.url}`
     : null;
 
+  // The ride_gallery is an array of image objects under a 'data' key, so this is correct.
   const galleryImages = ride_gallery?.data || [];
+  
+  // --- FIX #3: Correctly access the author's name ---
+  const authorName = author?.name || 'Eagles Tribe';
 
   return (
     <main className="bg-background text-foreground min-h-screen">
@@ -54,15 +63,16 @@ export default async function RidePage({ params }) {
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-md shadow-md">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/rides" className="flex items-center gap-2 text-primary hover:underline transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
             Back to Rides
           </Link>
           <div className="text-right">
             <h1 className="text-xl md:text-2xl font-bold text-secondary">{title}</h1>
             <p className="text-xs md:text-sm text-foreground/70">
-              {author?.data?.attributes?.name || 'Eagles Tribe'} on {new Date(ride_date).toLocaleDateString('en-US')}
+              {/* Use the corrected authorName variable */}
+              by {authorName} on {new Date(ride_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
         </div>
@@ -81,15 +91,16 @@ export default async function RidePage({ params }) {
             <h2 className="text-3xl font-bold text-secondary text-center mb-8">Moments From The Ride</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {galleryImages.map((image) => {
-                const imageUrl = image?.attributes?.url
-                  ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${image.attributes.url}`
+                // Access the URL directly from the image object
+                const imageUrl = image?.url
+                  ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${image.url}`
                   : null;
 
                 return imageUrl ? (
                   <div key={image.id} className="relative aspect-square overflow-hidden rounded-lg shadow-lg group">
                     <Image
                       src={imageUrl}
-                      alt={image.attributes?.alternativeText || 'Ride gallery image'}
+                      alt={image.alternativeText || 'Ride gallery image'}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
