@@ -1,14 +1,12 @@
 // app/rides/[slug]/page.js
 
 import Image from "next/image";
-import Link from "next/link"; // Added for the back button
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import Gallery from "@/components/Gallery"; // Assuming you have this component
-
-// --- FIX #1: Correct data fetching in BOTH functions ---
+// We remove the Gallery import because it's not found
+// import Gallery from "@/components/Gallery"; 
 
 async function getRide(slug) {
-  // Use the environment variable for flexibility. Populate all fields.
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?filters[documentId][$eq]=${slug}&populate=*`,
     { cache: "no-store" }
@@ -17,13 +15,12 @@ async function getRide(slug) {
   if (!res.ok) return null;
 
   const data = await res.json();
-  // DO NOT use .attributes. Return the whole object from the data array.
+  // Return the full object, not .attributes
   return data?.data?.[0] || null;
 }
 
 export async function generateMetadata({ params }) {
   const ride = await getRide(params.slug);
-  // Now we access properties directly from the 'ride' object
   return {
     title: ride?.title || "Ride Details",
     description: ride?.short_description || "A ride from Eagles Tribe MC.",
@@ -37,24 +34,14 @@ export default async function RideDetailPage({ params }) {
     notFound();
   }
 
-  // Destructure directly from the 'ride' object because we removed .attributes in getRide
   const { title, ride_date, detailed_write_up, featured_image, ride_gallery } = ride;
-
-  // --- FIX #2: Re-add the base URL to create full image paths ---
 
   const bannerUrl = featured_image?.url
     ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.url}`
     : null;
-
-  // Create full URLs for the gallery images before passing them to the component
-  const galleryImagesWithFullUrls = ride_gallery?.data?.map(img => ({
-    ...img, // Copy all original image data (id, etc.)
-    // Create the full URL for use in the gallery component
-    url: `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${img.url}`,
-    width: img.width,
-    height: img.height,
-    name: img.name
-  })) || [];
+    
+  // The gallery data is an array under the 'data' key
+  const galleryImages = ride_gallery?.data || [];
 
   return (
     <main className="bg-background text-foreground min-h-screen">
@@ -87,16 +74,32 @@ export default async function RideDetailPage({ params }) {
       )}
 
       <div className="max-w-4xl mx-auto px-4 pb-16">
-          {/* --- FIX #3: Use dangerouslySetInnerHTML to render formatted text --- */}
           <article className="prose dark:prose-invert max-w-none">
              <div dangerouslySetInnerHTML={{ __html: detailed_write_up.replace(/\n/g, '<br />') }} />
           </article>
 
-          {galleryImagesWithFullUrls.length > 0 && (
+          {/* This section now contains the gallery code directly */}
+          {galleryImages.length > 0 && (
             <div className="mt-12">
               <h2 className="text-2xl font-bold mb-4 text-secondary">Ride Gallery</h2>
-              {/* This component now receives images with full, working URLs */}
-              <Gallery images={galleryImagesWithFullUrls} />
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {galleryImages.map((image) => {
+                  const imageUrl = image?.url
+                    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${image.url}`
+                    : null;
+
+                  return imageUrl ? (
+                    <div key={image.id} className="relative aspect-square overflow-hidden rounded-lg shadow-lg group">
+                      <Image
+                        src={imageUrl}
+                        alt={image.alternativeText || 'Ride gallery image'}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                  ) : null;
+                })}
+              </div>
             </div>
           )}
       </div>
