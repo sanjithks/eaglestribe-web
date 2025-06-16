@@ -3,8 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-// We remove the Gallery import because it's not found
-// import Gallery from "@/components/Gallery"; 
 
 async function getRide(slug) {
   const res = await fetch(
@@ -36,9 +34,8 @@ export default async function RideDetailPage({ params }) {
 
   const { title, ride_date, detailed_write_up, featured_image, ride_gallery } = ride;
 
-  const bannerUrl = featured_image?.url
-    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.url}`
-    : null;
+  // --- FIX #1: Use the full Cloudinary URL directly for the banner ---
+  const bannerUrl = featured_image?.url || null;
     
   // The gallery data is an array under the 'data' key
   const galleryImages = ride_gallery?.data || [];
@@ -78,15 +75,13 @@ export default async function RideDetailPage({ params }) {
              <div dangerouslySetInnerHTML={{ __html: detailed_write_up.replace(/\n/g, '<br />') }} />
           </article>
 
-          {/* This section now contains the gallery code directly */}
           {galleryImages.length > 0 && (
             <div className="mt-12">
               <h2 className="text-2xl font-bold mb-4 text-secondary">Ride Gallery</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {galleryImages.map((image) => {
-                  const imageUrl = image?.url
-                    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${image.url}`
-                    : null;
+                  // --- FIX #2: Use the full Cloudinary URL directly for gallery images ---
+                  const imageUrl = image?.url || null;
 
                   return imageUrl ? (
                     <div key={image.id} className="relative aspect-square overflow-hidden rounded-lg shadow-lg group">
