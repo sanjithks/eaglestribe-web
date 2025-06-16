@@ -78,28 +78,28 @@ export default async function RideDetailPage({ params }) {
         </article>
 
         {galleryImages.length > 0 && (
-  <div className="mt-12">
-    <h2 className="text-2xl font-bold mb-4 text-secondary">Ride Gallery</h2>
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-      {galleryImages.map((image) => {
-        const imageUrl = image?.attributes?.url || null;
-        const altText = image?.attributes?.alternativeText || 'Ride gallery image';
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold mb-4 text-secondary">Ride Gallery</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {galleryImages.map((image) => {
+                const imageUrl = image?.attributes?.url;
+                const altText = image?.attributes?.alternativeText || 'Ride gallery image';
 
-        return imageUrl ? (
-          <div key={image.id} className="relative aspect-square overflow-hidden rounded-lg shadow-lg group">
-            <Image
-              src={imageUrl}
-              alt={altText}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-            />
+                return imageUrl ? (
+                  <div key={image.id} className="relative aspect-square overflow-hidden rounded-lg shadow-lg group">
+                    <Image
+                      src={imageUrl}
+                      alt={altText}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                ) : null;
+              })}
+            </div>
           </div>
-        ) : null;
-      })}
-    </div>
-  </div>
-)}
- </div>
+        )}
+      </div>
     </main>
   );
 }
