@@ -1,19 +1,19 @@
-// app/rides/[slug]/page.js
-
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 async function getRide(slug) {
+  // --- THE ONLY CHANGE IS IN THIS URL ---
+  // We are making the populate query more explicit to ensure the gallery images are fully loaded.
+  const populateQuery = "populate[featured_image]=*&populate[ride_gallery]=*";
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?filters[documentId][$eq]=${slug}&populate=*`,
+    `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?filters[documentId][$eq]=${slug}&${populateQuery}`,
     { cache: "no-store" }
   );
 
   if (!res.ok) return null;
 
   const data = await res.json();
-  // Return the full object, not .attributes
   return data?.data?.[0] || null;
 }
 
@@ -34,10 +34,8 @@ export default async function RideDetailPage({ params }) {
 
   const { title, ride_date, detailed_write_up, featured_image, ride_gallery } = ride;
 
-  // --- FIX #1: Use the full Cloudinary URL directly for the banner ---
   const bannerUrl = featured_image?.url || null;
     
-  // The gallery data is an array under the 'data' key
   const galleryImages = ride_gallery?.data || [];
 
   return (
@@ -80,7 +78,6 @@ export default async function RideDetailPage({ params }) {
               <h2 className="text-2xl font-bold mb-4 text-secondary">Ride Gallery</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {galleryImages.map((image) => {
-                  // --- FIX #2: Use the full Cloudinary URL directly for gallery images ---
                   const imageUrl = image?.url || null;
 
                   return imageUrl ? (
