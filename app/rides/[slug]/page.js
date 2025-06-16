@@ -1,94 +1,129 @@
-import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
 
-export const dynamicParams = true;
+// Function to fetch a single ride by its slug
+async function getRide(slug) {
+  try {
+    // We filter by 'documentId' and populate the necessary image fields
+    const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?filters[documentId][$eq]=${slug}&populate=featured_image,ride_gallery`, {
+      cache: 'no-store',
+    });
 
-export default async function RideDetailPage({ params }) {
-  const { slug } = params;
+    if (!res.ok) throw new Error('Failed to fetch ride');
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image,ride_gallery,author`, {
-    cache: 'no-store',
-  });
-  const data = await res.json();
-  const rides = data?.data || [];
+    const ridesData = await res.json();
 
-  const ride = rides.find((r) => r.attributes?.documentId === slug);
+    // The filter returns an array, so we take the first result
+    if (ridesData.data && ridesData.data.length > 0) {
+      return ridesData.data[0];
+    }
 
-  if (!ride) return notFound();
+    return null; // Return null if no ride is found
 
-  const {
-    title,
-    ride_date,
-    detailed_write_up,
-    featured_image,
-    ride_gallery,
-    author,
-  } = ride.attributes;
+  } catch (error) {
+    console.error('Error fetching ride:', error);
+    return null;
+  }
+}
 
-  const featuredImageUrl = featured_image?.data?.attributes?.url
-    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.data.attributes.url}`
+// The main page component
+export default async function RidePage({ params }) {
+  const ride = await getRide(params.slug);
+
+  // If no ride is found, show the 404 page
+  if (!ride) {
+    notFound();
+  }
+
+  // Safely access properties from the ride object
+  const { title, author, ride_date, detailed_write_up, featured_image, ride_gallery } = ride;
+
+  const bannerUrl = featured_image?.url
+    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.url}`
     : null;
-
+    
+  // The ride_gallery is an array of image objects under a 'data' key
   const galleryImages = ride_gallery?.data || [];
 
   return (
-    <div className="bg-background text-foreground min-h-screen px-6 py-12">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="sticky top-24 bg-white px-6 pt-6 pb-4 z-10 border-b border-gray-300">
-          <h1 className="text-4xl font-bold text-primary mb-1">{title}</h1>
-          {author?.data?.attributes?.name && (
-            <p className="text-sm text-highlight italic mb-1">By {author.data.attributes.name}</p>
-          )}
-          <p className="text-sm text-dark-charcoal">
-            {new Date(ride_date).toLocaleDateString('en-GB', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            })}
-          </p>
-        </div>
-
-        {featuredImageUrl && (
+    <main className="bg-background text-foreground min-h-screen">
+      
+      {/* --- Banner Image --- */}
+      {bannerUrl && (
+        <div className="relative w-full h-64 md:h-96">
           <Image
-            src={featuredImageUrl}
-            alt={title}
-            width={1200}
-            height={500}
-            className="w-full h-auto object-cover"
+            src={bannerUrl}
+            alt={`${title} banner`}
+            fill
+            className="object-cover"
+            priority // Load the main banner image first
           />
-        )}
-
-        <div className="prose prose-lg px-6 py-8 text-dark-charcoal whitespace-pre-line">
-          {detailed_write_up}
+          {/* Optional: Add a dark overlay for better text contrast if needed */}
+          <div className="absolute inset-0 bg-black/40" />
         </div>
+      )}
 
+      {/* --- Sticky Header --- */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-md shadow-md">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          {/* Back to Rides Link */}
+          <Link href="/rides" className="flex items-center gap-2 text-primary hover:underline transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+            Back to Rides
+          </Link>
+
+          {/* Ride Details */}
+          <div className="text-right">
+            <h1 className="text-xl md:text-2xl font-bold text-secondary">{title}</h1>
+            <p className="text-xs md:text-sm text-foreground/70">
+              by {author} on {new Date(ride_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* --- Scrollable Content --- */}
+      <div className="max-w-4xl mx-auto px-6 py-12 md:py-16">
+        
+        {/* Detailed Write-up */}
+        {/* For production, use a library like 'react-markdown' to safely render this content */}
+        <article className="prose prose-invert prose-lg max-w-none prose-p:text-foreground/80 prose-headings:text-secondary">
+           <div dangerouslySetInnerHTML={{ __html: detailed_write_up.replace(/\n/g, '<br />') }} />
+        </article>
+
+        {/* Ride Gallery */}
         {galleryImages.length > 0 && (
-          <div className="px-6 pb-10">
-            <h2 className="text-2xl font-bold mb-4 text-secondary">Ride Gallery</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {galleryImages.map((img, i) => (
-                <Image
-                  key={i}
-                  src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL}${img.attributes.url}`}
-                  alt={`Gallery ${i + 1}`}
-                  width={600}
-                  height={400}
-                  className="rounded-lg shadow-md object-cover w-full h-64"
-                />
-              ))}
+          <div className="mt-16">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-secondary">Moments From The Ride</h2>
+              {/* Here's an alternative line you could use: */}
+              {/* <p className="text-foreground/60 mt-2">A glimpse into our journey.</p> */}
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {galleryImages.map(image => {
+                const imageUrl = image?.url ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${image.url}` : null;
+                if (!imageUrl) return null;
+
+                return (
+                  <div key={image.id} className="relative aspect-square overflow-hidden rounded-lg shadow-lg group">
+                    <Image
+                      src={imageUrl}
+                      alt={image.alternativeText || 'Ride gallery image'}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
 
-        <div className="px-6 pb-6 text-center border-t border-gray-200">
-          <Link href="/rides">
-            <button className="mt-4 bg-primary text-white py-3 px-6 rounded-lg font-semibold shadow hover:bg-primary/80 transition">
-              ← Back to Rides
-            </button>
-          </Link>
-        </div>
       </div>
-    </div>
+    </main>
   );
 }
