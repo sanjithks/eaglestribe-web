@@ -5,18 +5,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 async function getRide(slug) {
-  // --- FIX #1: Make the 'populate' query more specific ---
-  // We replace 'populate=*' to explicitly ask for both image fields.
-  // This is more reliable and ensures the gallery data is fully loaded.
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?filters[documentId][$eq]=${slug}&populate=featured_image,ride_gallery`,
+    `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?filters[documentId][$eq]=${slug}&populate=*`,
     { cache: "no-store" }
   );
 
   if (!res.ok) return null;
 
   const data = await res.json();
-  // This correctly returns the full object for a flattened Strapi v5 response.
   return data?.data?.[0] || null;
 }
 
@@ -37,10 +33,7 @@ export default async function RideDetailPage({ params }) {
 
   const { title, ride_date, detailed_write_up, featured_image, ride_gallery } = ride;
 
-  // This logic for the banner is correct and works.
   const bannerUrl = featured_image?.url || null;
-    
-  // This correctly gets the array of gallery image data.
   const galleryImages = ride_gallery?.data || [];
 
   return (
@@ -89,10 +82,8 @@ export default async function RideDetailPage({ params }) {
             <h2 className="text-2xl font-bold mb-4 text-secondary">Ride Gallery</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {galleryImages.map((image) => {
-                // --- FIX #2: Access the gallery image URL the same way as the banner ---
-                // We use image.url, NOT image.attributes.url
-                const imageUrl = image?.url || null;
-                const altText = image?.alternativeText || 'Ride gallery image';
+                const imageUrl = image?.attributes?.url;
+                const altText = image?.attributes?.alternativeText || 'Ride gallery image';
 
                 return imageUrl ? (
                   <div key={image.id} className="relative aspect-square overflow-hidden rounded-lg shadow-lg group">
