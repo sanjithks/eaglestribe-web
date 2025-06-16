@@ -1,79 +1,113 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
 
-export default function RideDetailPage() {
-  const { slug } = useParams();
-  const [ride, setRide] = useState(null);
-  const [loading, setLoading] = useState(true);
+// Function to fetch a single ride by its slug
+async function getRide(slug) {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?filters[documentId][$eq]=${slug}&populate[featured_image]=*&populate[ride_gallery]=*`,
+      { cache: 'no-store' }
+    );
 
-  useEffect(() => {
-    const fetchRide = async () => {
-      try {
-        const res = await fetch(`https://your-strapi-url/api/rides?filters[documentId][$eq]=${slug}&populate=featured_image,ride_gallery`);
-        const data = await res.json();
-        const rideData = data.data[0]?.attributes;
-        if (rideData) {
-          setRide(rideData);
-        }
-      } catch (err) {
-        console.error('Failed to fetch ride:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!res.ok) throw new Error('Failed to fetch ride');
 
-    fetchRide();
-  }, [slug]);
+    const ridesData = await res.json();
+    return ridesData.data?.[0] || null;
 
-  if (loading) return <div className="text-center mt-10">Loading...</div>;
-  if (!ride) return <div className="text-center mt-10 text-red-500">Ride not found.</div>;
+  } catch (error) {
+    console.error('Error fetching ride:', error);
+    return null;
+  }
+}
 
-  const { title, ride_date, detailed_write_up, featured_image, ride_gallery } = ride;
+// The main page component
+export default async function RidePage({ params }) {
+  const ride = await getRide(params.slug);
+
+  if (!ride) notFound();
+
+  const {
+    title,
+    author,
+    ride_date,
+    detailed_write_up,
+    featured_image,
+    ride_gallery,
+  } = ride.attributes;
+
+  const bannerUrl = featured_image?.data?.attributes?.url
+    ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${featured_image.data.attributes.url}`
+    : null;
+
+  const galleryImages = ride_gallery?.data || [];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10 text-dark-charcoal">
-      <Link href="/rides" className="text-white bg-dark-charcoal px-4 py-2 rounded hover:bg-black transition mb-8 inline-block">
-        ← Back to Rides
-      </Link>
-
-      <div className="mb-6">
-        <h1 className="text-4xl font-bold mb-2">{title}</h1>
-        <p className="text-lg text-gray-600">{new Date(ride_date).toLocaleDateString()}</p>
-      </div>
-
-      {featured_image?.url && (
-        <div className="mb-8">
-          <img
-            src={featured_image.url}
-            alt={featured_image.name || 'Ride image'}
-            className="w-full h-auto rounded shadow"
+    <main className="bg-background text-foreground min-h-screen">
+      {/* Banner Image */}
+      {bannerUrl && (
+        <div className="relative w-full h-64 md:h-96">
+          <Image
+            src={bannerUrl}
+            alt={`${title} banner`}
+            fill
+            className="object-cover"
+            priority
           />
+          <div className="absolute inset-0 bg-black/40" />
         </div>
       )}
 
-      <div className="prose max-w-none text-lg leading-relaxed whitespace-pre-wrap mb-10">
-        {detailed_write_up}
-      </div>
-
-      {ride_gallery?.length > 0 && (
-        <div>
-          <h2 className="text-2xl font-semibold mb-4">Photo Gallery</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {ride_gallery.map((image) => (
-              <img
-                key={image.id}
-                src={image.url}
-                alt={image.name || 'Gallery image'}
-                className="w-full h-auto rounded shadow"
-              />
-            ))}
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-md shadow-md">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <Link href="/rides" className="flex items-center gap-2 text-primary hover:underline">
+            ← Back to Rides
+          </Link>
+          <div className="text-right">
+            <h1 className="text-xl md:text-2xl font-bold text-secondary">{title}</h1>
+            <p className="text-xs md:text-sm text-foreground/70">
+              {new Date(ride_date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </p>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-6 py-12 md:py-16">
+        <article className="prose prose-invert prose-lg max-w-none prose-p:text-foreground/80 prose-headings:text-secondary">
+          <div dangerouslySetInnerHTML={{ __html: detailed_write_up?.replace(/\n/g, '<br />') }} />
+        </article>
+
+        {/* Gallery */}
+        {galleryImages.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-3xl font-bold text-secondary mb-6 text-center">Ride Gallery</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {galleryImages.map((img) => {
+                const imageUrl = img.attributes?.url
+                  ? `${process.env.NEXT_PUBLIC_STRAPI_API_URL}${img.attributes.url}`
+                  : null;
+
+                return imageUrl ? (
+                  <div key={img.id} className="relative aspect-square overflow-hidden rounded-lg shadow-lg group">
+                    <Image
+                      src={imageUrl}
+                      alt={img.attributes.alternativeText || 'Gallery Image'}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                ) : null;
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
   );
 }
