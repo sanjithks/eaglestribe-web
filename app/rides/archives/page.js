@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Fetch ride data from Strapi
+// This function can be the same one used on your main rides page.
+// For better project structure, consider moving this and RideTile to separate component files.
 async function getRides() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`, {
@@ -9,7 +10,6 @@ async function getRides() {
     });
     if (!res.ok) throw new Error('Failed to fetch rides');
     const ridesData = await res.json();
-    // The .data wrapper still typically exists for the top-level collection response
     return ridesData.data || [];
   } catch (error) {
     console.error('Error fetching rides:', error);
@@ -17,19 +17,15 @@ async function getRides() {
   }
 }
 
-// Tile component (Corrected for Strapi v5 with absolute URLs)
+// You can reuse the exact same RideTile component.
 function RideTile({ ride }) {
-  // Destructure all properties directly from the 'ride' object, as per Strapi v5's flattened structure
-  const { title, short_description, documentId, featured_image } = ride;
-
-  // Your Strapi API provides the full, absolute URL for the image.
-  // We use it directly without adding the environment variable to avoid duplication.
-  const featuredImageUrl = featured_image?.url || null;
+  const { title, short_description, documentId, featured_image } = ride.attributes;
+  const featuredImageUrl = featured_image?.data?.attributes?.url || null;
 
   return (
     <Link
       href={`/rides/${documentId}`}
-      className="block bg-foreground rounded-xl shadow-md p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary"
+      className="block bg-card rounded-xl shadow-md p-6 hover:shadow-xl transition-all border border-transparent hover:border-primary"
     >
       {featuredImageUrl && (
         <div className="mb-4">
@@ -43,47 +39,45 @@ function RideTile({ ride }) {
         </div>
       )}
       <h3 className="text-2xl font-bold text-secondary mb-2">{title}</h3>
-      <p className="text-foreground text-opacity-80">{short_description}</p>
+      <p className="text-card-foreground text-opacity-80">{short_description}</p>
       <p className="mt-4 text-primary font-semibold hover:underline">Read More...</p>
     </Link>
   );
 }
 
-// Main page (Corrected for Strapi v5)
-export default async function RidesPage() {
+
+// This is the main page component for the archives.
+export default async function ArchivesPage() {
   const rides = await getRides();
 
-  // Sort directly on ride properties, not ride.attributes
+  // 1. Sort rides by date, with the newest first (same as before).
   const sortedRides = rides.sort(
-    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
+    (a, b) => new Date(b.attributes.ride_date) - new Date(a.attributes.ride_date)
   );
-
-  const topThreeRides = sortedRides.slice(0, 3);
+  
+  // 2. THIS IS THE KEY CHANGE: Get all rides *after* the first three.
+  const archivedRides = sortedRides.slice(3);
 
   return (
     <section className="bg-background text-foreground px-6 py-16 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-5xl font-extrabold text-primary text-center mb-16">Latest Rides</h1>
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-extrabold text-primary">Ride Archives</h1>
+          <p className="mt-4 text-lg text-foreground/80">A look back at our past journeys.</p>
+          <Link href="/rides" className="mt-6 inline-block text-secondary hover:underline">
+            &larr; Back to Latest Rides
+          </Link>
+        </div>
 
-        {topThreeRides.length > 0 ? (
+        {archivedRides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {topThreeRides.map((ride) => (
+            {archivedRides.map((ride) => (
               <RideTile key={ride.id} ride={ride} />
             ))}
           </div>
         ) : (
-          <p className="text-center text-lg text-dark-charcoal">No rides available right now.</p>
+          <p className="text-center text-lg text-foreground/70">No older rides in the archives yet.</p>
         )}
-
-        <div className="mt-20 text-center">
-          <h2 className="text-3xl font-bold text-secondary mb-4">Looking for more?</h2>
-          <Link
-            href="/rides/archives"
-            className="inline-block bg-dark-charcoal text-background py-4 px-10 rounded-lg shadow-md hover:bg-primary transition duration-300 text-xl font-bold"
-          >
-            View Ride Archives
-          </Link>
-        </div>
       </div>
     </section>
   );
