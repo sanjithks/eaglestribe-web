@@ -19,7 +19,7 @@ async function getRide(slug) {
 export async function generateMetadata({ params }) {
   const ride = await getRide(params.slug);
   return {
-    title: ride?.title || "Ride Details",
+    title: ride?.title || "rich_text_markdown",
     description: ride?.short_description || "A ride from Eagles Tribe MC.",
   };
 }
@@ -31,9 +31,9 @@ export default async function RideDetailPage({ params }) {
     notFound();
   }
 
-  const { title, ride_date, detailed_write_up, featured_image, ride_gallery } = ride;
+  const { title, ride_date, rich_text_markdown, slug_cover, ride_gallery } = ride;
 
-  const bannerUrl = featured_image?.url || null;
+  const bannerUrl = slug_cover?.url || null;
   const galleryImages = ride_gallery?.data || [];
 
   return (
@@ -63,9 +63,9 @@ export default async function RideDetailPage({ params }) {
         <div className="relative my-6 max-w-5xl mx-auto">
           <Image
             src={bannerUrl}
-            alt={featured_image.name || title}
-            width={featured_image.width || 1200}
-            height={featured_image.height || 675}
+            alt={slug_cover.name || title}
+            width={slug_cover.width || 1200}
+            height={slug_cover.height || 675}
             className="rounded-md object-cover w-full"
             priority
           />
@@ -74,7 +74,7 @@ export default async function RideDetailPage({ params }) {
 
       <div className="max-w-4xl mx-auto px-4 pb-16">
         <article className="prose dark:prose-invert max-w-none">
-          <div dangerouslySetInnerHTML={{ __html: detailed_write_up.replace(/\n/g, '<br />') }} />
+          <div dangerouslySetInnerHTML={{ __html: rich_text_markdown.replace(/\n/g, '<br />') }} />
         </article>
 
         {galleryImages.length > 0 && (
