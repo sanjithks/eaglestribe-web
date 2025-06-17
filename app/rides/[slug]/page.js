@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from 'react-markdown';
-import { getRide } from '../../lib/data';
+import { getRide } from '@/lib/data';
 
 // This function generates dynamic metadata for SEO
 export async function generateMetadata({ params }) {
