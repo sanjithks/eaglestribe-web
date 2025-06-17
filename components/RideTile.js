@@ -2,12 +2,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export default function RideTile({ ride }) {
-  // Destructure properties from ride.attributes for Strapi v4.
-  const { title, short_description, documentId, featured_image } = ride.attributes;
+  // ✅ FIX: Destructure directly from the 'ride' object, NOT ride.attributes.
+  const { title, short_description, documentId, featured_image } = ride;
 
-  // Access the image URL correctly from the populated data.
-  const featuredImageUrl = featured_image?.data?.attributes?.url || null;
-  const imageAlt = featured_image?.data?.attributes?.alternativeText || title;
+  // Access the image URL directly.
+  const featuredImageUrl = featured_image?.url || null;
+  const imageAlt = featured_image?.alternativeText || title;
 
   return (
     <Link

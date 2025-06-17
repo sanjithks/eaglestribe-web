@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { getRides } from '@/lib/data'; // Using absolute path
-import RideTile from '@/components/RideTile'; // Using absolute path
+import { getRides } from '@/lib/data';
+import RideTile from '@/components/RideTile';
 
 export const metadata = {
   title: 'Ride Archives | Eagles Tribe MC',
@@ -10,12 +10,10 @@ export const metadata = {
 export default async function ArchivesPage() {
   const rides = await getRides();
 
-  // ✅ DEFENSIVE FIX APPLIED HERE ✅
-  const validRides = rides.filter(ride => ride && ride.attributes && ride.attributes.ride_date);
-  
-  // Now, sort the filtered array.
+  // ✅ FIX: Filter and sort directly on the ride object.
+  const validRides = rides.filter(ride => ride && ride.ride_date);
   const sortedRides = validRides.sort(
-    (a, b) => new Date(b.attributes.ride_date) - new Date(a.attributes.ride_date)
+    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
   );
   
   const archivedRides = sortedRides.slice(3);
@@ -27,7 +25,7 @@ export default async function ArchivesPage() {
           <h1 className="text-5xl font-extrabold text-primary">Ride Archives</h1>
           <p className="mt-4 text-lg text-foreground/80">A look back at our past journeys.</p>
         </div>
-
+        
         {archivedRides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {archivedRides.map((ride) => (
