@@ -19,7 +19,7 @@ async function getRide(slug) {
 export async function generateMetadata({ params }) {
   const ride = await getRide(params.slug);
   return {
-    title: ride?.title || "Ride Details",
+    title: ride?.title || "rich_text_markdown",
     description: ride?.short_description || "A ride from Eagles Tribe MC.",
   };
 }
@@ -31,39 +31,10 @@ export default async function RideDetailPage({ params }) {
     notFound();
   }
 
-  const {
-    title,
-    ride_date,
-    detailed_write_up,
-    slug_cover,
-    gallery_1,
-    gallery_2,
-    gallery_3,
-    gallery_4,
-    gallery_5,
-    gallery_6,
-    gallery_7,
-    gallery_8,
-    gallery_9,
-    gallery_10,
-    gallery_11,
-  } = ride;
+  const { title, ride_date, rich_text_markdown, slug_cover, ride_gallery } = ride;
 
   const bannerUrl = slug_cover?.url || null;
-
-  const galleryImages = [
-    gallery_1,
-    gallery_2,
-    gallery_3,
-    gallery_4,
-    gallery_5,
-    gallery_6,
-    gallery_7,
-    gallery_8,
-    gallery_9,
-    gallery_10,
-    gallery_11,
-  ].filter(Boolean); // Only keep defined entries
+  const galleryImages = ride_gallery?.data || [];
 
   return (
     <main className="bg-background text-foreground min-h-screen">
@@ -92,9 +63,9 @@ export default async function RideDetailPage({ params }) {
         <div className="relative my-6 max-w-5xl mx-auto">
           <Image
             src={bannerUrl}
-            alt={slug_cover?.name || title}
-            width={slug_cover?.width || 1200}
-            height={slug_cover?.height || 675}
+            alt={slug_cover.name || title}
+            width={slug_cover.width || 1200}
+            height={slug_cover.height || 675}
             className="rounded-md object-cover w-full"
             priority
           />
@@ -103,19 +74,19 @@ export default async function RideDetailPage({ params }) {
 
       <div className="max-w-4xl mx-auto px-4 pb-16">
         <article className="prose dark:prose-invert max-w-none">
-          <div dangerouslySetInnerHTML={{ __html: detailed_write_up.replace(/\n/g, '<br />') }} />
+          <div dangerouslySetInnerHTML={{ __html: rich_text_markdown.replace(/\n/g, '<br />') }} />
         </article>
 
         {galleryImages.length > 0 && (
           <div className="mt-12">
             <h2 className="text-2xl font-bold mb-4 text-secondary">Ride Gallery</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {galleryImages.map((img, index) => {
-                const imageUrl = img?.url;
-                const altText = img?.alternativeText || `Gallery image ${index + 1}`;
+              {galleryImages.map((image) => {
+                const imageUrl = image?.attributes?.url;
+                const altText = image?.attributes?.alternativeText || 'Ride gallery image';
 
                 return imageUrl ? (
-                  <div key={index} className="relative aspect-square overflow-hidden rounded-lg shadow-lg group">
+                  <div key={image.id} className="relative aspect-square overflow-hidden rounded-lg shadow-lg group">
                     <Image
                       src={imageUrl}
                       alt={altText}
