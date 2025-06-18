@@ -1,20 +1,19 @@
 // app/gallery/page.js
-
-// ✅ We now import RideTile instead of ProtectedCanvasImage
-import Link from 'next/link'; // Still needed for the main link at the bottom
+import Link from 'next/link';
 import RideTile from '@/components/RideTile';
 
-// Data fetching logic is kept within this file as requested
+// This data fetcher now MUST also flatten the data.
 async function getAllRidesForGallery() {
-  const url = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`;
+  const url = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image&fields=title,documentId,ride_date`;
   try {
     const res = await fetch(url, { next: { revalidate: 3600 } });
-    if (!res.ok) {
-        console.error("API fetch error for gallery page:", await res.text());
-        return [];
-    }
-    const data = await res.json();
-    return data.data || [];
+    if (!res.ok) return [];
+    const json = await res.json();
+    const nestedRides = json.data || [];
+    
+    // ✅ FIX: Flatten the data here so it matches the rest of the site.
+    return nestedRides.map(ride => ({ id: ride.id, ...ride.attributes }));
+
   } catch (error) {
     console.error("Error fetching rides for gallery:", error);
     return [];
@@ -29,6 +28,7 @@ export const metadata = {
 export default async function GalleryPage() {
   const rides = await getAllRidesForGallery();
 
+  // The sorting can now safely use the flat properties
   const sortedRides = rides.sort(
     (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
   );
@@ -44,13 +44,11 @@ export default async function GalleryPage() {
         {sortedRides.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {sortedRides.map((ride) => (
-              // ✅ This is the change. We now use the smart RideTile component.
+              // This will now work correctly because the `ride` object is flat
               <RideTile
                 key={ride.id}
                 ride={ride}
-                // We tell it where to link to
                 href={`/gallery/${ride.documentId}`}
-                // We tell it to use the compact version (no description/read more)
                 displayMode="compact"
               />
             ))}
