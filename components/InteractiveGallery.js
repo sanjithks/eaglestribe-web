@@ -2,14 +2,12 @@
 
 import { useState, useRef, useEffect } from 'react';
 
-// This is a "dumb" sub-component. Its only job is to display one image
-// and update its blur based on the `reveal` prop passed from its parent.
+// This is the "dumb" slide component. It is correct and does not need changes.
 function GallerySlide({ image, reveal, isRevealing }) {
   const canvasRef = useRef(null);
   const imageRef = useRef(null);
   const MAX_BLUR = 16;
 
-  // Effect 1: Draw the initial blurred image once
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !image.url) return;
@@ -26,8 +24,6 @@ function GallerySlide({ image, reveal, isRevealing }) {
     img.src = image.url;
   }, [image.url]);
 
-  // ✅ FIX #3: This effect listens for changes to the REVEAL PROP from the parent
-  // and redraws the canvas with the new blur amount. This makes all images reveal at once.
   useEffect(() => {
     const canvas = canvasRef.current;
     const img = imageRef.current;
@@ -40,7 +36,6 @@ function GallerySlide({ image, reveal, isRevealing }) {
     context.drawImage(img, 0, 0);
   }, [reveal]);
 
-  // Right-click protection
   const handleContextMenu = (e) => {
     e.preventDefault();
     const canvas = canvasRef.current;
@@ -77,10 +72,9 @@ export default function InteractiveGallery({ images }) {
   const startXRef = useRef(0);
   const audioRef = useRef(null);
 
-  // Initialize audio, making sure it only plays once
   useEffect(() => {
     audioRef.current = new Audio('/sounds/engine-rev.mp3');
-    // ✅ FIX #2: The loop property is false by default, so sound only plays once.
+    // Sound plays once by default
   }, []);
 
   const handlePressStart = (e) => {
@@ -88,7 +82,7 @@ export default function InteractiveGallery({ images }) {
     setIsDragging(true);
     startXRef.current = e.clientX || e.touches[0].clientX;
     if (audioRef.current) {
-      audioRef.current.currentTime = 0; // Reset before playing
+      audioRef.current.currentTime = 0;
       audioRef.current.play();
     }
   };
@@ -131,11 +125,11 @@ export default function InteractiveGallery({ images }) {
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
         {images.map((image) => (
+          // ✅ FIX: The problematic `pointer-events-none` class has been removed from this div.
           <div
             key={image.id || image.url}
-            className="w-full aspect-video rounded-lg shadow-lg overflow-hidden bg-black/10 pointer-events-none" // pointer-events-none on children
+            className="w-full aspect-video rounded-lg shadow-lg overflow-hidden bg-black/10"
           >
-            {/* The shared state is passed down to each slide */}
             <GallerySlide 
               image={image} 
               reveal={reveal} 
