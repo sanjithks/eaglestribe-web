@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getRide } from '@/lib/data';
-import InteractiveImage from '@/components/InteractiveImage'; // ✅ Import the new, corrected component
+import InteractiveGrid from '@/components/InteractiveGrid'; // ✅ Import the new grid component
 
 export async function generateMetadata({ params }) {
   const ride = await getRide(params.slug);
@@ -42,20 +42,10 @@ export default async function GalleryDetailPage({ params }) {
         </div>
       </div>
 
-      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl w-full mx-auto">
         {galleryImages.length > 0 ? (
-          // ✅ FIX: A simple, reliable CSS grid layout. No more carousel.
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-            {galleryImages.map((image, index) => (
-              // This container defines the shape of each grid item.
-              <div
-                key={image.id || index}
-                className="w-full aspect-video rounded-lg shadow-lg overflow-hidden bg-black/10"
-              >
-                <InteractiveImage image={image} />
-              </div>
-            ))}
-          </div>
+          // ✅ Use the new "smart" grid component here
+          <InteractiveGrid images={galleryImages} />
         ) : (
           <div className="w-full h-full flex items-center justify-center py-20">
             <p className="text-center text-lg text-foreground/70">This ride does not have a photo gallery.</p>
