@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getRide } from '@/lib/data'; // Uses your existing function from lib/data.js
-import ProtectedCanvasImage from '@/components/ProtectedCanvasImage'; // The new protected component
+import { getRide } from '@/lib/data';
+import ProtectedCanvasImage from '@/components/ProtectedCanvasImage';
 
 export async function generateMetadata({ params }) {
   const ride = await getRide(params.slug);
@@ -15,7 +15,6 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function GalleryDetailPage({ params }) {
-  // Use your existing getRide function to fetch all data for this ride
   const ride = await getRide(params.slug);
 
   if (!ride) {

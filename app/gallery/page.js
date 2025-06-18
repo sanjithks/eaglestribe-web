@@ -1,24 +1,8 @@
 // app/gallery/page.js
 import Link from 'next/link';
 import RideTile from '@/components/RideTile';
-
-// This data fetcher now MUST also flatten the data.
-async function getAllRidesForGallery() {
-  const url = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image&fields=title,documentId,ride_date`;
-  try {
-    const res = await fetch(url, { next: { revalidate: 3600 } });
-    if (!res.ok) return [];
-    const json = await res.json();
-    const nestedRides = json.data || [];
-    
-    // ✅ FIX: Flatten the data here so it matches the rest of the site.
-    return nestedRides.map(ride => ({ id: ride.id, ...ride.attributes }));
-
-  } catch (error) {
-    console.error("Error fetching rides for gallery:", error);
-    return [];
-  }
-}
+// ✅ Import the functions from your central data library
+import { getRecentRides, getArchivedRides } from '@/lib/data';
 
 export const metadata = {
   title: 'Ride Galleries | Eagles Tribe MC',
@@ -26,13 +10,13 @@ export const metadata = {
 };
 
 export default async function GalleryPage() {
-  const rides = await getAllRidesForGallery();
+  // ✅ Fetch all rides by combining the recent and archived lists
+  const recentRides = await getRecentRides();
+  const archivedRides = await getArchivedRides();
+  const allRides = [...recentRides, ...archivedRides];
 
-  // The sorting can now safely use the flat properties
-  const sortedRides = rides.sort(
-    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
-  );
-
+  // The rides are already sorted by date from the source functions
+  
   return (
     <section className="bg-background text-foreground px-6 py-16 min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -41,14 +25,16 @@ export default async function GalleryPage() {
           <p className="mt-4 text-lg text-foreground/80">A visual look back at our journeys.</p>
         </div>
         
-        {sortedRides.length > 0 ? (
+        {allRides.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {sortedRides.map((ride) => (
-              // This will now work correctly because the `ride` object is flat
+            {allRides.map((ride) => (
+              // Use the smart RideTile component
               <RideTile
                 key={ride.id}
                 ride={ride}
+                // Tell it to link to the gallery detail page
                 href={`/gallery/${ride.documentId}`}
+                // Tell it to use the compact version (no description)
                 displayMode="compact"
               />
             ))}

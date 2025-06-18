@@ -1,6 +1,7 @@
 // app/rides/archives/page.js
 import Link from 'next/link';
-import { getArchivedRides } from '@/lib/data'; // ✅ Use the new, simple function
+// ✅ We now import both functions to reconstruct the full sorted list
+import { getRecentRides, getArchivedRides } from '@/lib/data';
 import RideTile from '@/components/RideTile';
 
 export const metadata = {
@@ -9,7 +10,7 @@ export const metadata = {
 };
 
 export default async function ArchivesPage() {
-  // One clean function call gets you the exact data needed.
+  // We fetch the archived rides as intended
   const archivedRides = await getArchivedRides();
 
   return (
@@ -23,8 +24,14 @@ export default async function ArchivesPage() {
         {archivedRides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {archivedRides.map((ride) => (
-              // Remember to pass the `isArchive` prop to fix the "Back" button!
-              <RideTile key={ride.id} ride={ride} isArchive={true} />
+              // ✅ FIX: We now pass the 'href' prop with the correct URL structure
+              // for the archives detail page, including the '?from=archives' parameter.
+              <RideTile
+                key={ride.id}
+                ride={ride}
+                href={`/rides/${ride.documentId}?from=archives`}
+                displayMode="full"
+              />
             ))}
           </div>
         ) : (
