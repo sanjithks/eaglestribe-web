@@ -1,5 +1,7 @@
+// app/rides/archives/page.js
+
 import Link from 'next/link';
-import { getRides } from '@/lib/data';
+import { getArchivedRides } from '@/lib/data';
 import RideTile from '@/components/RideTile';
 
 export const metadata = {
@@ -8,15 +10,8 @@ export const metadata = {
 };
 
 export default async function ArchivesPage() {
-  const rides = await getRides();
-
-  // ✅ FIX: Filter and sort directly on the ride object.
-  const validRides = rides.filter(ride => ride && ride.ride_date);
-  const sortedRides = validRides.sort(
-    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
-  );
-  
-  const archivedRides = sortedRides.slice(3);
+  // This page also gets the exact data it needs with one call.
+  const archivedRides = await getArchivedRides();
 
   return (
     <section className="bg-background text-foreground px-6 py-16 min-h-screen">
@@ -29,7 +24,8 @@ export default async function ArchivesPage() {
         {archivedRides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {archivedRides.map((ride) => (
-              <RideTile key={ride.id} ride={ride} />
+              // Pass the `isArchive` prop to handle the correct link structure
+              <RideTile key={ride.id} ride={ride} isArchive={true} />
             ))}
           </div>
         ) : (

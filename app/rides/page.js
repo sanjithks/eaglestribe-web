@@ -1,5 +1,7 @@
+// app/rides/page.js
+
 import Link from 'next/link';
-import { getRides } from '@/lib/data';
+import { getRecentRides } from '@/lib/data';
 import RideTile from '@/components/RideTile';
 
 export const metadata = {
@@ -8,24 +10,21 @@ export const metadata = {
 };
 
 export default async function RidesPage() {
-  const rides = await getRides();
-  
-  // ✅ FIX: Filter and sort directly on the ride object.
-  const validRides = rides.filter(ride => ride && ride.ride_date);
-  const sortedRides = validRides.sort(
-    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
-  );
-  
-  const topThreeRides = sortedRides.slice(0, 3);
+  // This page now only needs one clean function call.
+  const topThreeRides = await getRecentRides();
 
   return (
     <section className="bg-background text-foreground px-6 py-16 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-5xl font-extrabold text-primary text-center mb-16">Latest Rides</h1>
+        <div className="text-center mb-16">
+           <h1 className="text-5xl font-extrabold text-primary">Latest Rides</h1>
+           <p className="mt-4 text-lg text-foreground/80">Our most recent adventures on the open road.</p>
+        </div>
         
         {topThreeRides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {topThreeRides.map((ride) => (
+              // This tile will link to /rides/[slug]
               <RideTile key={ride.id} ride={ride} />
             ))}
           </div>
