@@ -16,11 +16,10 @@ function InteractiveSlide({ image }) {
 
   // --- Initialize Image & Audio ---
   useEffect(() => {
-    // Initialize the Audio object once
+    // This effect runs once to set up the image and audio
     audioRef.current = new Audio('/sounds/engine-rev.mp3');
     audioRef.current.loop = true;
 
-    // Draw the image onto the canvas
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     const img = new window.Image();
@@ -28,21 +27,36 @@ function InteractiveSlide({ image }) {
     img.onload = () => {
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
-      // ✅ FIX: Initially draw the image blurred
+      imageRef.current = img;
+      // Initially draw the image blurred
       context.filter = `blur(${MAX_BLUR}px)`;
       context.drawImage(img, 0, 0);
-      imageRef.current = img;
     };
     img.src = image.url;
   }, [image.url]);
+  
+  // ✅ FIX #3: A new effect to redraw the image whenever `reveal` changes
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const img = imageRef.current;
+    if (!canvas || !img) return;
+
+    const context = canvas.getContext('2d');
+    const blurAmount = MAX_BLUR * (1 - reveal / 100);
+    
+    // Set the blur filter based on the current reveal state
+    context.filter = `blur(${blurAmount}px)`;
+    // Redraw the image with the new filter
+    context.drawImage(img, 0, 0);
+
+  }, [reveal]);
+
 
   // --- Event Handlers for Drag & Sound ---
   const handlePressStart = (e) => {
     e.preventDefault();
     setIsDragging(true);
     startXRef.current = e.clientX || e.touches[0].clientX;
-
-    // ✅ FIX: Only play sound on user interaction
     if (audioRef.current) {
       audioRef.current.play();
     }
@@ -51,9 +65,7 @@ function InteractiveSlide({ image }) {
   const handlePressEnd = () => {
     if (!isDragging) return;
     setIsDragging(false);
-    setReveal(0); // Reset reveal, which will re-blur the image
-
-    // ✅ FIX: Stop sound on release
+    setReveal(0); // Reset reveal, which will re-blur the image via the effect above
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -67,7 +79,6 @@ function InteractiveSlide({ image }) {
     const percentage = Math.min(100, Math.max(0, (deltaX / 150) * 100));
     setReveal(percentage);
 
-    // Dynamically change audio pitch and volume
     if (audioRef.current) {
       audioRef.current.volume = 0.2 + (percentage / 100) * 0.6;
       audioRef.current.playbackRate = 0.8 + (percentage / 100) * 1.7;
@@ -83,19 +94,6 @@ function InteractiveSlide({ image }) {
     context.fillRect(0, 0, canvas.width, canvas.height);
   };
 
-  const handleMouseLeave = () => {
-    // If the user drags off and releases, end the interaction
-    if (isDragging) {
-      handlePressEnd();
-    }
-    // Restore the image if it was blanked by right-click
-    const img = imageRef.current;
-    if (!canvasRef.current || !img) return;
-    const context = canvasRef.current.getContext('2d');
-    context.filter = `blur(${blurAmount}px)`; // Keep it blurred
-    context.drawImage(img, 0, 0);
-  };
-  
   // Add global listeners while dragging for a smooth experience
   useEffect(() => {
     if (isDragging) {
@@ -112,32 +110,21 @@ function InteractiveSlide({ image }) {
     };
   }, [isDragging]);
 
-
-  // Calculate blur amount based on the reveal percentage
-  const blurAmount = MAX_BLUR * (1 - reveal / 100);
-  // Calculate rev meter needle angle
   const needleAngle = -90 + (reveal / 100) * 180;
 
   return (
     <div
-      className="flex-shrink-0 w-[90vw] md:w-[80vw] h-full flex items-center justify-center snap-center relative px-4 cursor-grab"
+      className="w-full h-full flex items-center justify-center cursor-grab relative"
       onMouseDown={handlePressStart}
       onTouchStart={handlePressStart}
       onContextMenu={handleContextMenu}
-      onMouseLeave={handleMouseLeave}
     >
       <canvas
         ref={canvasRef}
         className="max-w-full max-h-full object-contain unselectable"
-        style={{
-          transition: isDragging ? 'none' : 'filter 0.4s ease-out',
-          filter: `blur(${blurAmount}px)`,
-        }}
       />
-
-      {/* ✅ FIX: Rev Meter with z-index to ensure it's visible */}
       <div 
-        className="absolute bottom-3 right-6 transition-opacity duration-300 pointer-events-none z-10"
+        className="absolute bottom-3 right-3 transition-opacity duration-300 pointer-events-none z-10"
         style={{ opacity: isDragging || reveal > 0 ? 1 : 0.6 }}
       >
         <svg width="60" height="30" viewBox="0 0 100 50">
@@ -153,11 +140,18 @@ function InteractiveSlide({ image }) {
 // --- Main Carousel Component ---
 export default function InteractiveGallery({ images }) {
   return (
-    // ✅ FIX: The container that creates the horizontal carousel
+    // ✅ FIX #1 & #2: This container creates the working horizontal carousel.
+    // `flex` lays out children in a row. `overflow-x-auto` allows scrolling.
     <div className="w-full h-full flex items-center overflow-x-auto snap-x snap-mandatory no-scrollbar py-8">
       <div className="flex-shrink-0 w-[5vw] md:w-[10vw] h-full snap-center"></div>
       {images.map((image, index) => (
-        <InteractiveSlide key={image.id || index} image={image} />
+         // Each image is a "slide" that takes up a large portion of the viewport width
+        <div 
+          key={image.id || index} 
+          className="flex-shrink-0 w-[90vw] md:w-[80vw] h-full flex items-center justify-center snap-center relative px-4"
+        >
+          <InteractiveSlide image={image} />
+        </div>
       ))}
       <div className="flex-shrink-0 w-[5vw] md:w-[10vw] h-full snap-center"></div>
     </div>

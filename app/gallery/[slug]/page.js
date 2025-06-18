@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getRide } from '@/lib/data';
-import InteractiveGallery from '@/components/InteractiveGallery'; // ✅ Import the new all-in-one component
+import InteractiveGallery from '@/components/InteractiveGallery';
 
 export async function generateMetadata({ params }) {
   const ride = await getRide(params.slug);
@@ -38,14 +38,12 @@ export default async function GalleryDetailPage({ params }) {
           <div className="text-right">
             <h1 className="text-xl md:text-2xl font-semibold text-secondary">{ride.title}</h1>
             <p className="text-xs md:text-sm text-foreground/70">Photo Gallery</p>
-
           </div>
         </div>
       </div>
 
       <div className="flex-grow w-full overflow-hidden">
         {galleryImages.length > 0 ? (
-          // ✅ Use the new component here
           <InteractiveGallery images={galleryImages} />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
