@@ -1,7 +1,8 @@
 // app/rides/page.js
 import Link from 'next/link';
-import { getRides } from '@/lib/data';
-import RideTile from '@/components/RideTile'; // Ensure this is your trusted RideTile component
+// ✅ FIX 1: Import the correct function, 'getRecentRides'.
+import { getRecentRides } from '@/lib/data';
+import RideTile from '@/components/RideTile';
 
 export const metadata = {
   title: 'Latest Rides | Eagles Tribe MC',
@@ -9,16 +10,9 @@ export const metadata = {
 };
 
 export default async function RidesPage() {
-  // This now gets all the necessary data, including documentId
-  const rides = await getRides();
-  
-  // Your original, trusted logic for filtering and sorting
-  const validRides = rides.filter(ride => ride && ride.ride_date);
-  const sortedRides = validRides.sort(
-    (a, b) => new Date(b.ride_date) - new Date(a.ride_date)
-  );
-  
-  const topThreeRides = sortedRides.slice(0, 3);
+  // ✅ FIX 2: Call the correct function. All the sorting and filtering
+  // is now handled inside getRecentRides(), so we can remove that logic from this page.
+  const topThreeRides = await getRecentRides();
 
   return (
     <section className="bg-background text-foreground px-6 py-16 min-h-screen">
@@ -28,8 +22,13 @@ export default async function RidesPage() {
         {topThreeRides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {topThreeRides.map((ride) => (
-              // This will now receive the documentId and create a working link
-              <RideTile key={ride.id} ride={ride} />
+              // Your RideTile component is already set up to work with this.
+              // Make sure it uses the `href` prop.
+              <RideTile 
+                key={ride.id} 
+                ride={ride} 
+                href={`/rides/${ride.documentId}`}
+              />
             ))}
           </div>
         ) : (
