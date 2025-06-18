@@ -26,8 +26,9 @@ export default async function GalleryDetailPage({ params }) {
   }
 
   return (
-    <main className="bg-background text-foreground h-screen flex flex-col overflow-hidden">
-      <div className="flex-shrink-0 z-40 bg-background/80 backdrop-blur-md shadow-sm border-b border-white/10">
+    // ✅ FIX: Simplified flexbox layout for the page
+    <main className="bg-background text-foreground h-screen flex flex-col">
+      <div className="flex-shrink-0 z-20 bg-background/80 backdrop-blur-md shadow-sm border-b border-white/10">
         <div className="max-w-7xl w-full mx-auto px-4 py-3 flex justify-between items-center">
           <Link href="/gallery" className="flex items-center gap-2 text-primary hover:underline transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -42,7 +43,8 @@ export default async function GalleryDetailPage({ params }) {
         </div>
       </div>
 
-      <div className="flex-grow w-full overflow-hidden">
+      {/* ✅ FIX: The carousel component now grows to fill the remaining space */}
+      <div className="flex-grow w-full min-h-0">
         {galleryImages.length > 0 ? (
           <InteractiveGallery images={galleryImages} />
         ) : (

@@ -2,23 +2,18 @@
 
 import { useState, useRef, useEffect } from 'react';
 
-// A self-contained "Slide" component that handles all interactions for a single image.
 function InteractiveSlide({ image }) {
   const canvasRef = useRef(null);
   const imageRef = useRef(null);
   const audioRef = useRef(null);
-
   const [isDragging, setIsDragging] = useState(false);
-  const [reveal, setReveal] = useState(0); // 0-100 reveal percentage
+  const [reveal, setReveal] = useState(0);
   const startXRef = useRef(0);
+  const MAX_BLUR = 16;
 
-  const MAX_BLUR = 16; // px
-
-  // --- Initialize Image & Audio ---
   useEffect(() => {
     audioRef.current = new Audio('/sounds/engine-rev.mp3');
     audioRef.current.loop = true;
-
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     const img = new window.Image();
@@ -27,29 +22,22 @@ function InteractiveSlide({ image }) {
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
       imageRef.current = img;
-      // Initially draw the image blurred
       context.filter = `blur(${MAX_BLUR}px)`;
       context.drawImage(img, 0, 0);
     };
     img.src = image.url;
   }, [image.url]);
 
-  // ✅ FIX #3: This new effect redraws the image whenever the `reveal` state changes.
   useEffect(() => {
     const canvas = canvasRef.current;
     const img = imageRef.current;
     if (!canvas || !img) return;
-
     const context = canvas.getContext('2d');
     const blurAmount = MAX_BLUR * (1 - reveal / 100);
-    
-    // Set the blur filter based on the current reveal state
     context.filter = `blur(${blurAmount}px)`;
-    // Redraw the image with the new filter applied
     context.drawImage(img, 0, 0);
-  }, [reveal]); // This effect runs every time `reveal` is updated.
+  }, [reveal]);
 
-  // --- Event Handlers for Drag & Sound ---
   const handlePressStart = (e) => {
     e.preventDefault();
     setIsDragging(true);
@@ -73,14 +61,22 @@ function InteractiveSlide({ image }) {
     const deltaX = currentX - startXRef.current;
     const percentage = Math.min(100, Math.max(0, (deltaX / 150) * 100));
     setReveal(percentage);
-
     if (audioRef.current) {
       audioRef.current.volume = 0.2 + (percentage / 100) * 0.6;
       audioRef.current.playbackRate = 0.8 + (percentage / 100) * 1.7;
     }
   };
   
-  // Add global listeners while dragging for a smooth experience
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext('2d');
+    context.filter = 'none';
+    context.fillStyle = 'white';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+  };
+  
   useEffect(() => {
     if (isDragging) {
       window.addEventListener('mousemove', handleMove);
@@ -96,21 +92,11 @@ function InteractiveSlide({ image }) {
     };
   }, [isDragging]);
 
-  // --- Right-Click Protection ---
-  const handleContextMenu = (e) => {
-    e.preventDefault(); // Also prevent the menu from appearing
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const context = canvas.getContext('2d');
-    context.filter = 'none'; // Ensure the blank canvas isn't blurry
-    context.fillStyle = 'white';
-    context.fillRect(0, 0, canvas.width, canvas.height);
-  };
-
   const needleAngle = -90 + (reveal / 100) * 180;
 
   return (
-    // ✅ FIX #4: This container is now `relative` to correctly position the rev meter.
+    // ✅ FIX #4: This is the container for a SINGLE slide.
+    // It's `relative` so the rev meter is positioned inside it.
     <div
       className="w-full h-full flex items-center justify-center cursor-grab relative unselectable"
       onMouseDown={handlePressStart}
@@ -136,25 +122,20 @@ function InteractiveSlide({ image }) {
 
 
 // --- Main Carousel Component ---
-export default function InteractiveGallery({ images }) {
+export default function InteractiveGallery({ images, className }) {
   return (
     // ✅ FIX #1 & #2: This container creates the working horizontal carousel.
-    // It fills the available height and allows horizontal scrolling.
-    <div className="w-full h-full flex items-center overflow-x-auto snap-x snap-mandatory no-scrollbar py-4">
-      {/* Padding at the start for better snapping of the first image */}
+    // It takes the full height and allows horizontal scrolling.
+    <div className={`w-full h-full flex items-center overflow-x-auto snap-x snap-mandatory no-scrollbar ${className}`}>
       <div className="flex-shrink-0 w-[5vw] md:w-[10vw] h-full snap-center"></div>
-      
       {images.map((image, index) => (
-        // Each slide is a flex item that does not shrink and takes up most of the viewport width
         <div 
           key={image.id || index} 
-          className="flex-shrink-0 w-[90vw] md:w-[80vw] h-full flex items-center justify-center snap-center p-2"
+          className="flex-shrink-0 w-[90vw] md:w-[80vw] h-full flex items-center justify-center snap-center p-4"
         >
           <InteractiveSlide image={image} />
         </div>
       ))}
-
-      {/* Padding at the end for better snapping of the last image */}
       <div className="flex-shrink-0 w-[5vw] md:w-[10vw] h-full snap-center"></div>
     </div>
   );
