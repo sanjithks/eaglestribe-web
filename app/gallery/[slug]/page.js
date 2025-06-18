@@ -3,20 +3,26 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getRide } from '@/lib/data';
-import ProtectedCanvasImage from '@/components/ProtectedCanvasImage';
+import ThrottleImage from '@/components/ThrottleImage'; // Import the new "throttle" component
 
+// This function generates dynamic metadata for the page SEO
 export async function generateMetadata({ params }) {
   const ride = await getRide(params.slug);
-  if (!ride) return { title: "Gallery Not Found" };
+  if (!ride) {
+    return { title: "Gallery Not Found" };
+  }
   return {
     title: `Gallery: ${ride.title} | Eagles Tribe MC`,
     description: `Photo gallery for the ride: ${ride.title}`,
   };
 }
 
+// This is the main page component
 export default async function GalleryDetailPage({ params }) {
+  // Use your existing getRide function to fetch all data for this ride
   const ride = await getRide(params.slug);
 
+  // If no ride is found for the given slug, show a 404 page
   if (!ride) {
     notFound();
   }
@@ -24,6 +30,7 @@ export default async function GalleryDetailPage({ params }) {
   // Create an array of only the gallery images from the ride data
   const galleryImages = [];
   for (let i = 1; i <= 11; i++) {
+    // Check for properties like ride['gallery_1'], ride['gallery_2'], etc.
     if (ride[`gallery_${i}`]) {
       galleryImages.push(ride[`gallery_${i}`]);
     }
@@ -31,6 +38,7 @@ export default async function GalleryDetailPage({ params }) {
 
   return (
     <main className="bg-background text-foreground min-h-screen">
+      {/* --- Sticky Header with Back Button --- */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-md shadow-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
           <Link href="/gallery" className="flex items-center gap-2 text-primary hover:underline transition-colors">
@@ -46,24 +54,30 @@ export default async function GalleryDetailPage({ params }) {
         </div>
       </div>
 
+      {/* --- Gallery Grid --- */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {galleryImages.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {galleryImages.map((image, index) => (
               <div
                 key={image.id || index}
-                className="relative w-full h-full aspect-[4/3] rounded-lg shadow-lg bg-foreground/10 flex items-center justify-center"
+                className="relative w-full aspect-[4/3] rounded-lg shadow-lg overflow-hidden"
               >
-                <ProtectedCanvasImage
+                {/* Use the new ThrottleImage component for each gallery picture */}
+                <ThrottleImage
                   src={image.url}
                   alt={image.alternativeText || `Gallery image ${index + 1}`}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  priority={index < 3} // Prioritize loading the first few images
                 />
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-center text-lg text-foreground/70">This ride does not have a photo gallery.</p>
+          <div className="text-center py-20">
+            <p className="text-lg text-foreground/70">This ride does not have a photo gallery.</p>
+          </div>
         )}
       </div>
     </main>
