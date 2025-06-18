@@ -1,18 +1,19 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import InteractiveImage from './InteractiveImage'; // We will import the dumb image component
+import InteractiveImage from './InteractiveImage';
 
 export default function InteractiveGrid({ images }) {
   const [isDragging, setIsDragging] = useState(false);
-  const [reveal, setReveal] = useState(0); // The SHARED reveal state for all images
+  const [reveal, setReveal] = useState(0);
   const startXRef = useRef(0);
   const audioRef = useRef(null);
 
   // Initialize the single audio object for the whole grid
   useEffect(() => {
     audioRef.current = new Audio('/sounds/engine-rev.mp3');
-    audioRef.current.loop = true;
+    // ✅ FIX: The line `audioRef.current.loop = true;` is now removed.
+    // By default, audio will play only once.
   }, []);
 
   // --- Event Handlers for the ENTIRE grid area ---
@@ -20,7 +21,11 @@ export default function InteractiveGrid({ images }) {
     e.preventDefault();
     setIsDragging(true);
     startXRef.current = e.clientX || e.touches[0].clientX;
-    if (audioRef.current) audioRef.current.play();
+    if (audioRef.current) {
+      // ✅ FIX: Reset the sound to the beginning before playing.
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    }
   };
 
   const handlePressEnd = () => {
@@ -28,6 +33,8 @@ export default function InteractiveGrid({ images }) {
     setIsDragging(false);
     setReveal(0);
     if (audioRef.current) {
+      // Optional: Stop the sound immediately on release. If you want the rev
+      // sound to finish playing out, you can comment out these two lines.
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
@@ -41,7 +48,7 @@ export default function InteractiveGrid({ images }) {
     setReveal(percentage);
 
     if (audioRef.current) {
-      audioRef.current.volume = 0.2 + (percentage / 100) * 0.6;
+      audioRef.current.volume = 0.4 + (percentage / 100) * 0.6;
       audioRef.current.playbackRate = 0.8 + (percentage / 100) * 1.7;
     }
   };
@@ -74,7 +81,6 @@ export default function InteractiveGrid({ images }) {
             key={image.id || image.url}
             className="w-full aspect-video rounded-lg shadow-lg overflow-hidden bg-black/10"
           >
-            {/* Pass the shared state down to each image */}
             <InteractiveImage 
               image={image} 
               reveal={reveal} 
