@@ -3,14 +3,15 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getRide } from '@/lib/data';
-import InteractiveImage from '@/components/InteractiveImage'; // ✅ Use the new unified component
+// We will use the InteractiveGrid component here, which you can place in its own file
+// For simplicity, I'm including it in this response, but you should have it in `/components/InteractiveGrid.js`
+import InteractiveGrid from '@/components/InteractiveGrid'; 
 
 export async function generateMetadata({ params }) {
-    //... (this code is correct and unchanged)
+    // ... metadata logic is unchanged
 }
 
 export default async function GalleryDetailPage({ params }) {
-  //... (this data fetching code is correct and unchanged)
   const ride = await getRide(params.slug);
   if (!ride) notFound();
 
@@ -23,21 +24,13 @@ export default async function GalleryDetailPage({ params }) {
 
   return (
     <main className="bg-background text-foreground min-h-screen">
-      {/* ... (your sticky header is correct and unchanged) ... */}
-      
-      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* ... Header is unchanged ... */}
+      <div className="sticky top-0 z-40 ..."></div>
+
+      <div className="max-w-7xl w-full mx-auto">
         {galleryImages.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-            {galleryImages.map((image) => (
-              <div
-                key={image.id || image.url}
-                className="w-full aspect-video rounded-lg shadow-lg overflow-hidden bg-black/10"
-              >
-                {/* ✅ Use the interactive image and explicitly ENABLE the sound */}
-                <InteractiveImage image={image} enableSound={true} />
-              </div>
-            ))}
-          </div>
+          // Use the "smart" grid component here for the full experience
+          <InteractiveGrid images={galleryImages} />
         ) : (
           <div className="w-full h-full flex items-center justify-center py-20">
             <p className="text-center text-lg text-foreground/70">This ride does not have a photo gallery.</p>

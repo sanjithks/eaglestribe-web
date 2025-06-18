@@ -1,16 +1,24 @@
 // components/RideTile.js
 import Link from 'next/link';
-import InteractiveImage from '@/components/InteractiveImage'; // ✅ Use the new unified component
+// ✅ Use the new, simple ProtectedImage component
+import ProtectedImage from '@/components/ProtectedImage';
 
 export default function RideTile({ ride, href, displayMode = 'full' }) {
   const { title, short_description, featured_image } = ride;
 
+  const featuredImageUrl = featured_image?.url || null;
+  const imageAlt = featured_image?.alternativeText || title;
+
   return (
     <Link href={href || '#'} className="group block">
       <div className="relative aspect-video w-full bg-foreground/10 rounded-xl shadow-md overflow-hidden flex items-center justify-center">
-        {featured_image?.url ? (
-          // This will now be the interactive canvas, but silent by default.
-          <InteractiveImage image={featured_image} />
+        {featuredImageUrl ? (
+          // This now renders a non-interactive, protected image
+          <ProtectedImage
+            src={featuredImageUrl}
+            alt={imageAlt}
+            className="w-full h-full object-cover"
+          />
         ) : (
           <p className="text-foreground/50">No Image</p>
         )}
