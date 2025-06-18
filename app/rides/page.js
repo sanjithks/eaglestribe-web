@@ -1,7 +1,6 @@
 // app/rides/page.js
-
 import Link from 'next/link';
-import { getRecentRides } from '@/lib/data';
+import { getRecentRides } from '@/lib/data'; // ✅ Use the new, simple function
 import RideTile from '@/components/RideTile';
 
 export const metadata = {
@@ -10,21 +9,17 @@ export const metadata = {
 };
 
 export default async function RidesPage() {
-  // This page now only needs one clean function call.
+  // Just one line to get the exact data you need!
   const topThreeRides = await getRecentRides();
 
   return (
     <section className="bg-background text-foreground px-6 py-16 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-           <h1 className="text-5xl font-extrabold text-primary">Latest Rides</h1>
-           <p className="mt-4 text-lg text-foreground/80">Our most recent adventures on the open road.</p>
-        </div>
+        <h1 className="text-5xl font-extrabold text-primary text-center mb-16">Latest Rides</h1>
         
         {topThreeRides.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {topThreeRides.map((ride) => (
-              // This tile will link to /rides/[slug]
               <RideTile key={ride.id} ride={ride} />
             ))}
           </div>

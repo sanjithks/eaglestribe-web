@@ -1,17 +1,23 @@
+// components/RideTile.js
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function RideTile({ ride }) {
-  // ✅ FIX: Destructure directly from the 'ride' object, NOT ride.attributes.
+// Accept the new `isArchive` prop, defaulting to false
+export default function RideTile({ ride, isArchive = false }) {
   const { title, short_description, documentId, featured_image } = ride;
 
-  // Access the image URL directly.
   const featuredImageUrl = featured_image?.url || null;
   const imageAlt = featured_image?.alternativeText || title;
 
+  // ✅ FIX: Build the link dynamically. If it's an archive tile, add the search param.
+  const href = isArchive 
+    ? `/rides/${documentId}?from=archives` 
+    : `/rides/${documentId}`;
+
   return (
+    // Use the dynamic `href` variable here
     <Link
-      href={`/rides/${documentId}`}
+      href={href}
       className="block bg-card rounded-xl shadow-lg p-6 hover:shadow-primary/20 transition-all border border-transparent hover:border-primary/50"
     >
       {featuredImageUrl && (
