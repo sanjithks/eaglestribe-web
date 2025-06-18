@@ -2,18 +2,17 @@
 import Link from 'next/link';
 import ProtectedCanvasImage from '@/components/ProtectedCanvasImage';
 
-// ✅ The component now accepts `href` and `displayMode` props
 export default function RideTile({ ride, href, displayMode = 'full' }) {
-  // We get all the data from the ride object
-  const { title, short_description, featured_image } = ride;
+  // Now we can be confident these properties exist because of our flattening logic
+  const { title, short_description, documentId, featured_image } = ride;
 
   const featuredImageUrl = featured_image?.url || null;
   const imageAlt = featured_image?.alternativeText || title;
 
   return (
-    // The Link now uses the `href` prop passed to it
+    // The Link now uses the specific `href` prop passed to it from the page
     <Link
-      href={href || '#'} // Fallback to '#' if no href is provided
+      href={href || '#'}
       className="group block"
     >
       <div className="relative aspect-[4/3] w-full bg-foreground/10 rounded-xl shadow-md overflow-hidden flex items-center justify-center">
@@ -21,7 +20,7 @@ export default function RideTile({ ride, href, displayMode = 'full' }) {
           <ProtectedCanvasImage
             src={featuredImageUrl}
             alt={imageAlt}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-cover"
           />
         ) : (
           <p className="text-foreground/50">No Image</p>
@@ -32,7 +31,6 @@ export default function RideTile({ ride, href, displayMode = 'full' }) {
         {title}
       </h3>
 
-      {/* ✅ This is the magic! This section only renders if displayMode is 'full' */}
       {displayMode === 'full' && (
         <div className="text-left mt-4 p-6 bg-card rounded-xl shadow-lg">
           <p className="text-card-foreground/80 line-clamp-3">{short_description}</p>
