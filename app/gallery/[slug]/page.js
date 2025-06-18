@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getRide } from '@/lib/data';
-import InteractiveGallery from '@/components/InteractiveGallery';
+import InteractiveImage from '@/components/InteractiveImage'; // ✅ Import the new, corrected component
 
 export async function generateMetadata({ params }) {
   const ride = await getRide(params.slug);
@@ -26,9 +26,8 @@ export default async function GalleryDetailPage({ params }) {
   }
 
   return (
-    // ✅ FIX: Simplified flexbox layout for the page
-    <main className="bg-background text-foreground h-screen flex flex-col">
-      <div className="flex-shrink-0 z-20 bg-background/80 backdrop-blur-md shadow-sm border-b border-white/10">
+    <main className="bg-background text-foreground min-h-screen">
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-md shadow-sm border-b border-white/10">
         <div className="max-w-7xl w-full mx-auto px-4 py-3 flex justify-between items-center">
           <Link href="/gallery" className="flex items-center gap-2 text-primary hover:underline transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -43,12 +42,22 @@ export default async function GalleryDetailPage({ params }) {
         </div>
       </div>
 
-      {/* ✅ FIX: The carousel component now grows to fill the remaining space */}
-      <div className="flex-grow w-full min-h-0">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {galleryImages.length > 0 ? (
-          <InteractiveGallery images={galleryImages} />
+          // ✅ FIX: A simple, reliable CSS grid layout. No more carousel.
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            {galleryImages.map((image, index) => (
+              // This container defines the shape of each grid item.
+              <div
+                key={image.id || index}
+                className="w-full aspect-video rounded-lg shadow-lg overflow-hidden bg-black/10"
+              >
+                <InteractiveImage image={image} />
+              </div>
+            ))}
+          </div>
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
+          <div className="w-full h-full flex items-center justify-center py-20">
             <p className="text-center text-lg text-foreground/70">This ride does not have a photo gallery.</p>
           </div>
         )}
