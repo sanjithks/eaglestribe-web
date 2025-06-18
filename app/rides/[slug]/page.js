@@ -3,9 +3,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import { getRide } from '@/lib/data';
-// We no longer need the standard Image component here
-// import Image from "next/image";
-import ProtectedCanvasImage from '@/components/ProtectedCanvasImage'; // ✅ Import the protected component
+// ✅ FIX: Import the new, unified component instead of the old one.
+import InteractiveImage from '@/components/InteractiveImage';
 
 export async function generateMetadata({ params }) {
   const ride = await getRide(params.slug);
@@ -39,19 +38,29 @@ export default async function RideDetailPage({ params, searchParams }) {
 
   return (
     <main className="bg-background text-foreground min-h-screen">
-      {/* ... (Sticky header with back button is unchanged) ... */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-md shadow-sm border-b border-white/10">
-         {/* ... (content of header) ... */}
+        <div className="max-w-7xl w-full mx-auto px-4 py-3 flex justify-between items-center">
+            <Link href={backHref} className="flex items-center gap-2 text-primary hover:underline transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+                Back
+            </Link>
+            <div className="text-right">
+                <h1 className="text-xl md:text-2xl font-semibold text-secondary">{title}</h1>
+                <p className="text-xs md:text-sm text-foreground/70">
+                    {new Date(ride_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    {author && <span className="italic"> by {author}</span>}
+                </p>
+            </div>
+        </div>
       </div>
 
-      {bannerUrl && (
-        <div className="relative my-6 max-w-5xl mx-auto px-4 aspect-[16/9] bg-foreground/10 rounded-lg flex items-center justify-center">
-          {/* ✅ Use ProtectedCanvasImage for the main banner image */}
-          <ProtectedCanvasImage
-            src={bannerUrl}
-            alt={bannerAlt}
-            className="w-full h-full object-cover rounded-lg"
-            priority // You can still pass props like priority
+      {slug_cover && (
+        <div className="relative my-6 max-w-5xl mx-auto px-4 aspect-video bg-foreground/10 rounded-lg flex items-center justify-center overflow-hidden">
+          {/* ✅ FIX: Use the new InteractiveImage component for the main banner image */}
+          {/* We pass enableSound={true} to activate the effect on this detail page */}
+          <InteractiveImage
+            image={slug_cover}
+            enableSound={true}
           />
         </div>
       )}
@@ -65,16 +74,15 @@ export default async function RideDetailPage({ params, searchParams }) {
           <div className="mt-16">
             <h2 className="text-3xl font-bold mb-6 text-secondary border-b border-primary/20 pb-2">Ride Gallery</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {galleryImages.map((image, index) => (
+              {galleryImages.map((image) => (
                 <div 
-                  key={image.id || index}
-                  className="relative w-full h-full aspect-[4/3] rounded-lg shadow-lg bg-foreground/10 flex items-center justify-center"
+                  key={image.id || image.url}
+                  className="w-full aspect-video rounded-lg shadow-lg overflow-hidden bg-black/10"
                 >
-                  {/* ✅ Use ProtectedCanvasImage for the gallery images here too */}
-                  <ProtectedCanvasImage
-                    src={image.url}
-                    alt={image.alternativeText || `Gallery image ${index + 1}`}
-                    className="w-full h-full object-cover"
+                  {/* ✅ FIX: Use the InteractiveImage component here too */}
+                  <InteractiveImage
+                    image={image}
+                    enableSound={true}
                   />
                 </div>
               ))}
