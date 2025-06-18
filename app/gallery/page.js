@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-// Data fetching logic is kept within this file to avoid changing lib/data.js
+// Data fetching logic is kept within this file to honor the request
+// not to modify lib/data.js for this page's specific needs.
 async function getAllRidesForGallery() {
   const url = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/rides?populate=featured_image`;
   try {
@@ -49,7 +50,7 @@ export default async function GalleryPage() {
               const imageUrl = featured_image?.url || null;
 
               return (
-                // Each tile now links to its dedicated gallery detail page
+                // Each tile links to its dedicated gallery detail page
                 <Link href={`/gallery/${documentId}`} key={ride.id} className="group block text-center">
                   <div className="relative aspect-[4/3] w-full bg-foreground/10 rounded-xl shadow-md overflow-hidden">
                     {imageUrl ? (
