@@ -1,27 +1,16 @@
 // components/RideTile.js
 import Link from 'next/link';
-import ProtectedCanvasImage from '@/components/ProtectedCanvasImage';
+import InteractiveImage from '@/components/InteractiveImage'; // ✅ Use the new unified component
 
 export default function RideTile({ ride, href, displayMode = 'full' }) {
-  // Now we can be confident these properties exist because of our flattening logic
-  const { title, short_description, documentId, featured_image } = ride;
-
-  const featuredImageUrl = featured_image?.url || null;
-  const imageAlt = featured_image?.alternativeText || title;
+  const { title, short_description, featured_image } = ride;
 
   return (
-    // The Link now uses the specific `href` prop passed to it from the page
-    <Link
-      href={href || '#'}
-      className="group block"
-    >
-      <div className="relative aspect-[4/3] w-full bg-foreground/10 rounded-xl shadow-md overflow-hidden flex items-center justify-center">
-        {featuredImageUrl ? (
-          <ProtectedCanvasImage
-            src={featuredImageUrl}
-            alt={imageAlt}
-            className="w-full h-full object-cover"
-          />
+    <Link href={href || '#'} className="group block">
+      <div className="relative aspect-video w-full bg-foreground/10 rounded-xl shadow-md overflow-hidden flex items-center justify-center">
+        {featured_image?.url ? (
+          // This will now be the interactive canvas, but silent by default.
+          <InteractiveImage image={featured_image} />
         ) : (
           <p className="text-foreground/50">No Image</p>
         )}
