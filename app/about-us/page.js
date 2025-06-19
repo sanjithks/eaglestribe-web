@@ -11,7 +11,7 @@ export default function AboutUsPage() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 text-lg leading-relaxed">
             <p>
-              <strong className="text-primary">Eagles Tribe MC</strong> was born from a desire to create a true brotherhood — a haven for like-minded men who share an unwavering passion for motorcycles and the open road. Officially founded in April 2024, our club may be new, but our bonds are forged from years of riding together, navigating life’s twists and turns as a united front.
+              <strong className="text-primary">Eagles Tribe MC</strong> was born OUT OF a desire to create a true brotherhood — a haven for like-minded men who share an unwavering passion for motorcycles and the open road. Officially founded in April 2024, our club may be new, but our bonds are forged from years of riding together, navigating life’s twists and turns as a united front.
             </p>
             <p>
               We are a non-political, independent club that stands for freedom, honor, and mutual respect. We are not a 1% club, but a family-oriented group of men who value loyalty and integrity above all else. Our patches symbolize our commitment to this brotherhood and the principles we uphold.
