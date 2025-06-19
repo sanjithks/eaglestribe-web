@@ -1,3 +1,4 @@
+@/components/Header.js
 "use client";
 import Link from "next/link";
 import Image from "next/image";
@@ -35,151 +36,90 @@ export default function Header() {
       document.body.style.overflow = 'auto';
     }
     return () => {
-      document.body.style.overflow = 'auto'; // Cleanup on component unmount
+      document.body.style.overflow = 'auto';
     };
   }, [isMenuOpen]);
 
   return (
-    // ✅ FIX: Added `z-40` to ensure the entire header renders on top of page content.
-    <header className="relative w-full h-[150px] text-dark-charcoal z-40">
-      {/* Logo top-left */}
-      <div className="absolute top-10 left-6 z-30 hidden xl:block">
-        <Link href="/">
-          <Image
-            src="/images/logo.png"
-            alt="Eagles Tribe MC Logo"
-            width={120}
-            height={120}
-            className="object-contain drop-shadow-lg"
-            priority
-          />
-        </Link>
-      </div>
+    // ✅ FIX: The header is now a "container" which allows child elements
+    // to respond to its size instead of the whole viewport.
+    <header className="relative w-full h-24 container-type-size z-40">
+      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
+        
+        {/* --- Desktop Menu (Content-Aware) --- */}
+        {/* This entire block will be hidden if the container is narrower than 1100px */}
+        <nav className="hidden @[1100px]:flex h-full w-full items-center justify-between">
+          {/* Left Links */}
+          <div className="flex items-center gap-x-5"> {/* min 20px gap */}
+            {leftLinks.map(({ name, path }) => (
+              <Link key={name} href={path} className={`transition-colors hover:text-primary ${isActive(path) ? 'font-bold text-primary' : 'text-foreground'}`}>
+                {name}
+              </Link>
+            ))}
+          </div>
 
-      {/* SVG background always visible */}
-      <div className="absolute top-5 left-0 w-full h-[450px] z-0 overflow-hidden">
-        <div className="absolute inset-0 flex justify-center">
-          <svg
-            className="w-[4000px] h-[450px] shrink-0"
-            viewBox="0 0 4000 800"
-            preserveAspectRatio="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <linearGradient id="goldGradient" x1="0%" y1="50%" x2="100%" y2="50%">
-                <stop offset="0%" stopColor="#b8860b" />
-                <stop offset="50%" stopColor="#ffd700" />
-                <stop offset="100%" stopColor="#b8860b" />
-              </linearGradient>
-            </defs>
-            <path d="M2045 113C2110 41 2102 39 2198 30H4052V0H2195C2084 11 2084 20 2023 89Z" fill="url(#goldGradient)" />
-            <path d="M2101 122C2137 78 2141 78 2200 78H4052V48H2198C2123 51 2123 51 2059 123Z" fill="url(#goldGradient)" />
-            <path d="M1979 143C1922 62 1901 50 1804 48H0V78H1805C1859 77 1873 74 1921 116H1790L1819 144Z" fill="url(#goldGradient)" />
-            <path d="M1894 164C1997 239 2078 173 2131 140H2044C1964 41 1973 0 1835 0H0V30H1835C1937 35 1939 47 2017 162Z" fill="url(#goldGradient)" />
-          </svg>
-        </div>
-      </div>
-
-      {/* Desktop Menu (only >= 1200px) */}
-      <div className="hidden xl:flex absolute top-[18px] w-full px-8 max-w-screen-2xl mx-auto z-10">
-        {/* Left side links (right of logo) */}
-        <nav className="flex items-center gap-8 ml-[180px]">
-          {leftLinks.map(({ name, path }) => (
-            <Link
-              key={name}
-              href={path}
-              className={`font-body text-lg font-light transition-all duration-300 ${
-                isActive(path)
-                  ? "text-white font-bold scale-110 drop-shadow-md"
-                  : "text-white/80 hover:text-white hover:scale-105"
-              }`}
-            >
-              {name}
+          {/* Center Logo - This creates the gap */}
+          <div className="h-full w-[220px] shrink-0">
+            <Link href="/" className="flex h-full items-center justify-center">
+              <Image
+                src="/images/logo.png"
+                alt="Eagles Tribe MC Logo"
+                width={100}
+                height={100}
+                className="object-contain"
+                priority
+              />
             </Link>
-          ))}
+          </div>
+          
+          {/* Right Links */}
+          <div className="flex items-center gap-x-5"> {/* min 20px gap */}
+            {rightLinks.map(({ name, path }) => (
+              <Link key={name} href={path} className={`transition-colors hover:text-primary ${isActive(path) ? 'font-bold text-primary' : 'text-foreground'}`}>
+                {name}
+              </Link>
+            ))}
+          </div>
         </nav>
 
-        {/* Right side links (starting after 100px from center) */}
-        <nav className="flex items-center gap-12 ml-auto pr-8">
-          {rightLinks.map(({ name, path }) => (
-            <Link
-              key={name}
-              href={path}
-              className={`font-body text-lg font-light transition-all duration-300 ${
-                isActive(path)
-                  ? "text-white font-bold scale-110 drop-shadow-md"
-                  : "text-white/80 hover:text-white hover:scale-105"
-              }`}
-            >
-              {name}
-            </Link>
-          ))}
-        </nav>
-      </div>
+        {/* --- Mobile Menu (Content-Aware) --- */}
+        {/* This entire block is visible ONLY IF the container is narrower than 1100px */}
+        <div className="flex w-full items-center justify-between @[1100px]:hidden">
+          {/* Mobile Logo */}
+          <Link href="/">
+            <Image
+              src="/images/logo.png"
+              alt="Eagles Tribe MC Logo"
+              width={80}
+              height={80}
+              className="object-contain"
+            />
+          </Link>
 
-      {/* Mobile Layout (< 1200px) */}
-      <div className="xl:hidden relative z-30 w-full flex justify-between items-center h-24 px-6">
-        {/* Keep SVG background visible */}
-        <div className="absolute inset-0 -top-[60px] z-0">
-          <svg
-            className="w-[4000px] h-[450px] shrink-0"
-            viewBox="0 0 4000 800"
-            preserveAspectRatio="none"
-            xmlns="http://www.w3.org/2000/svg"
+          {/* Hamburger Button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="focus:outline-none"
+            aria-label="Toggle menu"
           >
-            <defs>
-              <linearGradient id="goldGradientMobile" x1="0%" y1="50%" x2="100%" y2="50%">
-                <stop offset="0%" stopColor="#b8860b" />
-                <stop offset="50%" stopColor="#ffd700" />
-                <stop offset="100%" stopColor="#b8860b" />
-              </linearGradient>
-            </defs>
-            <path d="M2045 113C2110 41 2102 39 2198 30H4052V0H2195C2084 11 2084 20 2023 89Z" fill="url(#goldGradientMobile)" />
-            <path d="M2101 122C2137 78 2141 78 2200 78H4052V48H2198C2123 51 2123 51 2059 123Z" fill="url(#goldGradientMobile)" />
-            <path d="M1979 143C1922 62 1901 50 1804 48H0V78H1805C1859 77 1873 74 1921 116H1790L1819 144Z" fill="url(#goldGradientMobile)" />
-            <path d="M1894 164C1997 239 2078 173 2131 140H2044C1964 41 1973 0 1835 0H0V30H1835C1937 35 1939 47 2017 162Z" fill="url(#goldGradientMobile)" />
-          </svg>
+            <svg className="h-8 w-8 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"} />
+            </svg>
+          </button>
         </div>
-
-        {/* Mobile Logo */}
-        <Link href="/">
-          <Image
-            src="/images/logo.png"
-            alt="Eagles Tribe MC Logo"
-            width={120}
-            height={120}
-            className="w-20 h-20 object-contain relative z-10"
-            priority
-          />
-        </Link>
-
-        {/* Hamburger Menu */}
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="text-dark-charcoal relative z-10 focus:outline-none"
-          aria-label="Toggle menu"
-        >
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            {isMenuOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-            )}
-          </svg>
-        </button>
       </div>
-
-      {/* Mobile Slideout Menu */}
+      
+      {/* Mobile Slideout Menu (Logic is unchanged, but now appears based on the container query) */}
       {isMenuOpen && (
-        <div className="xl:hidden absolute top-24 left-0 w-full bg-[var(--color-background)] z-50 shadow-lg border-t border-black/10">
-          <nav className="flex flex-col items-center gap-1 p-4">
+        <div className="absolute left-0 top-full w-full bg-[var(--color-background)] shadow-lg @[1100px]:hidden">
+           <nav className="flex flex-col items-center gap-1 p-4">
             {navLinks.map(({ name, path }) => (
               <Link
                 key={name}
                 href={path}
                 className={`w-full text-center py-3 rounded-md font-body text-lg font-medium transition-colors duration-300 ${
                   isActive(path)
-                    ? "text-white bg-[var(--color-primary)] font-bold"
+                    ? "text-white bg-[var(--color-primary)]"
                     : "text-[var(--color-foreground)] hover:bg-black/5"
                 }`}
               >
