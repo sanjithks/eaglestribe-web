@@ -21,7 +21,8 @@ export default function RootLayout({ children }) {
       </head>
       <body className="bg-[--color-background] text-[--color-foreground] font-[var(--font-body)] flex flex-col min-h-screen">
         <Header />
-        <main className="flex-grow">{children}</main>
+        {/* ✅ FIX: Add `overflow-hidden` here to contain the horizontal scroll */}
+        <main className="flex-grow overflow-hidden">{children}</main>
         <Footer />
         <ViewportSize /> {/* 👈 Remove this once you're done checking viewport size */}
       </body>

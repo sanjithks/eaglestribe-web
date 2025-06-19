@@ -23,8 +23,6 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-body);
-    /* ✅ FIX: Add this line to hide horizontal overflow for the entire page */
-    overflow-x: hidden;
   }
 
   h1, h2, h3, h4 {
@@ -57,7 +55,7 @@
  * You can still use your custom utility classes.
  */
 @layer utilities {
-  /* You can still create helper classes for your colors if you wish */
+  /* Helper classes for your colors */
   .bg-primary {
     background-color: var(--color-primary);
   }
@@ -88,7 +86,7 @@
     scrollbar-width: none;  /* Firefox */
   }
 
-  /* Prevent text selection during drag */
+  /* ✅ NEW: Add this to prevent text selection during drag */
   .unselectable {
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10+ */
