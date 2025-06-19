@@ -1,4 +1,4 @@
-@/components/Header.js
+// @/components/Header.js
 "use client";
 import Link from "next/link";
 import Image from "next/image";
