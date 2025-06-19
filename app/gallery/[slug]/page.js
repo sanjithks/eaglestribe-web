@@ -1,5 +1,4 @@
-// app/gallery/[slug]/page.js
-
+// @/app/gallery/[slug]/page.js
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getRide } from '@/lib/data';

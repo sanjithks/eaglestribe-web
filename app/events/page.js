@@ -1,3 +1,4 @@
+// @/app/events/page.js
 export default function EventsPage() {
   return (
     <section className="bg-background text-foreground min-h-screen px-6 py-24 text-center">

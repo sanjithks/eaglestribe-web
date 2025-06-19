@@ -1,5 +1,5 @@
+// @/app/about-us/page.js
 import Image from 'next/image';
-
 export default function AboutUsPage() {
   return (
     <section className="bg-background text-foreground min-h-screen px-6 py-20">

@@ -1,3 +1,4 @@
+// @/app/contact/page.js
 export default function ContactPage() {
   return (
     <section className="bg-background text-foreground min-h-screen px-6 py-20">

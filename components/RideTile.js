@@ -1,4 +1,4 @@
-// components/RideTile.js
+// @/components/RideTile.js
 import Link from 'next/link';
 // ✅ Use the new, simple ProtectedImage component
 import ProtectedImage from '@/components/ProtectedImage';

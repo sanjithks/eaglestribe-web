@@ -1,3 +1,4 @@
+// @/app/page.js
 export default function HomePage() {
   return (
     <section className="bg-background text-foreground min-h-screen flex flex-col items-center justify-center text-center px-6 py-20">

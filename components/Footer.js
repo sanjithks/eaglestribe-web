@@ -1,3 +1,4 @@
+// @/components/Footer.js
 export default function Footer() {
   return (
     <footer className="bg-dark-charcoal text-foreground py-6 mt-12">

@@ -1,4 +1,4 @@
-// app/rides/archives/page.js
+// @/app/rides/archives/page.js
 import Link from 'next/link';
 // ✅ We now import both functions to reconstruct the full sorted list
 import { getRecentRides, getArchivedRides } from '@/lib/data';

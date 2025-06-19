@@ -1,4 +1,4 @@
-// app/layout.js
+// @/app/layout.js
 import "../styles/output.css"; // Tailwind CSS output
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";

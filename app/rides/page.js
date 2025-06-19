@@ -1,4 +1,4 @@
-// app/rides/page.js
+// @/app/rides/page.js
 import Link from 'next/link';
 // ✅ FIX 1: Import the correct function, 'getRecentRides'.
 import { getRecentRides } from '@/lib/data';

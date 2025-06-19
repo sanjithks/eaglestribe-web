@@ -1,3 +1,4 @@
+// @/app/membership/page.js
 export default function MembershipPage() {
   return (
     <section className="bg-background text-foreground px-6 py-16 min-h-screen">

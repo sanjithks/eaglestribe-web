@@ -1,4 +1,4 @@
-// app/gallery/page.js
+// @/app/gallery/page.js
 import Link from 'next/link';
 import RideTile from '@/components/RideTile';
 // ✅ Import the functions from your central data library
