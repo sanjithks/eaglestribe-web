@@ -1,37 +1,35 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-// Your Resend client initialization is correct and does not need to change
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, email, message } = body;
+    // ✅ Receive the new fields from the form
+    const { name, email, message, countryCode, mobileNumber } = body;
 
-    if (!name || !email || !message) {
+    // A more complete validation
+    if (!name || !email || !message || !countryCode || !mobileNumber) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const { data, error } = await resend.emails.send({
-      // ✅ FIX 1: Change the 'from' address to use your verified domain.
-      // The name "Website Inquiry" is what the recipient sees.
-      from: 'Website Inquiry <noreply@eaglestribemc.com>',
+    // Combine the country code and number for the email
+    const fullPhoneNumber = `${countryCode} ${mobileNumber}`;
 
-      // ✅ FIX 2: Change the 'to' address to your desired admin inbox.
+    const { data, error } = await resend.emails.send({
+      from: 'Website Inquiry <noreply@eaglestribemc.com>',
       to: ['admin@eaglestribemc.com'],
-      
-      // This correctly sets the "Reply-To" header so when you click "Reply"
-      // in your email client, it will reply to the person who filled out the form.
       reply_to: email, 
-      
       subject: `New Message from ${name} via Website`,
+      // ✅ Add the phone number to the HTML email body
       html: `
         <p>You have a new message from your website contact form:</p>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+        <p><strong>Phone:</strong> ${fullPhoneNumber}</p>
         <p><strong>Message:</strong></p>
-        <p>${message}</p>
+        <p>${message.replace(/\n/g, "<br>")}</p>
       `,
     });
 
