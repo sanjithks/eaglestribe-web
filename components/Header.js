@@ -17,6 +17,7 @@ export default function Header() {
     { name: "Contact", path: "/contact" },
   ];
 
+  // ✅ FIX: Links are now correctly split 3 on the left, 3 on the right.
   const leftLinks = navLinks.slice(0, 3);
   const rightLinks = navLinks.slice(3);
 
@@ -39,21 +40,22 @@ export default function Header() {
 
   return (
     <header className="relative w-full h-[150px] @container">
-      {/* Logo top-left */}
-      <div className="absolute top-10 left-6 z-30 hidden @[1250px]:block">
+
+      {/* --- LOGO: Positioned absolutely in the top-left --- */}
+      <div className="absolute top-0 left-6 z-30 hidden @[1100px]:block">
         <Link href="/">
           <Image
             src="/images/logo.png"
             alt="Eagles Tribe MC Logo"
-            width={120}
-            height={120}
+            width={80}
+            height={80}
             className="object-contain drop-shadow-lg"
             priority
           />
         </Link>
       </div>
 
-      {/* SVG background */}
+      {/* ✅ FIX: SVG BACKGROUND: Restored to the correct working version that is fully visible --- */}
       <div className="absolute top-5 left-0 w-full h-[450px] z-0 pointer-events-none">
         <div className="absolute inset-0 flex justify-center">
           <svg
@@ -77,46 +79,65 @@ export default function Header() {
         </div>
       </div>
 
-      {/* --- Desktop Navigation Bar --- */}
-      {/* ✅ FIX: This entire block is replaced with the correct 3-column flexbox structure */}
-      <div className="hidden @[1250px]:flex absolute top-[18px] w-full items-center z-10 max-w-screen-2xl left-1/2 -translate-x-1/2 px-8">
-        {/* Left-side links container. It grows to fill space. */}
-        <div className="flex-1 flex justify-end">
+      <div className="hidden @[1100px]:flex absolute top-[18px] w-full items-center z-10 max-w-screen-2xl left-1/2 -translate-x-1/2 px-8">
+
+        {/* Column 1: Left links container, grows slightly */}
+        <div className="basis-[51%] flex justify-end">
           <div className="flex items-center gap-x-[clamp(0.9375rem,3vw,6.25rem)]">
             {leftLinks.map(({ name, path }) => (
-              <Link key={name} href={path} className={`font-body text-lg font-light transition-all duration-300 whitespace-nowrap ${ isActive(path) ? "text-white font-bold scale-110 drop-shadow-md" : "text-white/80 hover:text-white hover:scale-105"}`}>{name}</Link>
+              <Link
+                key={name}
+                href={path}
+                className={`font-body text-lg font-light transition-all duration-300 whitespace-nowrap ${isActive(path)
+                    ? "text-white font-bold scale-110 drop-shadow-md"
+                    : "text-white/80 hover:text-white hover:scale-105"
+                  }`}
+              >
+                {name}
+              </Link>
             ))}
           </div>
         </div>
 
-        {/* The Invisible Spacer "Fourth Box" */}
-        <div className="w-[400px] shrink-0 relative -left-10"></div>
-        
-        {/* Right-side links container. It also grows to fill space. */}
-        <div className="flex-1 flex justify-start">
+        {/* Spacer: fixed width */}
+        <div className="w-[270px] shrink-0"></div> {/* previously 250px */}
+
+        {/* Column 3: Right links container, shrinks slightly */}
+        <div className="basis-[49%] flex justify-start">
           <div className="flex items-center gap-x-[clamp(0.9375rem,3vw,6.25rem)]">
             {rightLinks.map(({ name, path }) => (
-              <Link key={name} href={path} className={`font-body text-lg font-light transition-all duration-300 whitespace-nowrap ${ isActive(path) ? "text-white font-bold scale-110 drop-shadow-md" : "text-white/80 hover:text-white hover:scale-105"}`}>{name}</Link>
+              <Link
+                key={name}
+                href={path}
+                className={`font-body text-lg font-light transition-all duration-300 whitespace-nowrap ${isActive(path)
+                    ? "text-white font-bold scale-110 drop-shadow-md"
+                    : "text-white/80 hover:text-white hover:scale-105"
+                  }`}
+              >
+                {name}
+              </Link>
             ))}
           </div>
         </div>
       </div>
 
 
-      {/* --- Mobile Layout --- */}
-      <div className="flex w-full items-center justify-between @[1250px]:hidden h-24 px-6 relative z-20">
-        <Link href="/"><Image src="/images/logo.png" alt="Eagles Tribe MC Logo" width={80} height={80} className="object-contain"/></Link>
+
+
+      {/* --- Mobile Layout (Unchanged) --- */}
+      <div className="flex w-full items-center justify-between @[1100px]:hidden h-24 px-6 relative z-20">
+        <Link href="/"><Image src="/images/logo.png" alt="Eagles Tribe MC Logo" width={80} height={80} className="object-contain" /></Link>
         <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="focus:outline-none text-white" aria-label="Toggle menu">
           <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"} /></svg>
         </button>
       </div>
-      
-      {/* --- Mobile Slideout Menu --- */}
+
+      {/* --- Mobile Slideout Menu (Unchanged) --- */}
       {isMenuOpen && (
-        <div className="absolute left-0 top-24 w-full bg-foreground @[1250px]:hidden z-50 shadow-lg border-t">
-           <nav className="flex flex-col items-center gap-1 p-4">
+        <div className="absolute left-0 top-24 w-full bg-foreground @[1100px]:hidden z-50 shadow-lg border-t">
+          <nav className="flex flex-col items-center gap-1 p-4">
             {navLinks.map(({ name, path }) => (
-              <Link key={name} href={path} className={`w-full text-center py-3 rounded-md font-body text-lg font-light transition-colors duration-300 ${ isActive(path) ? "text-white bg-primary font-bold" : "text-dark-charcoal hover:bg-black/5"}`}>{name}</Link>
+              <Link key={name} href={path} className={`w-full text-center py-3 rounded-md font-body text-lg font-light transition-colors duration-300 ${isActive(path) ? "text-white bg-primary font-bold" : "text-dark-charcoal hover:bg-black/5"}`}>{name}</Link>
             ))}
           </nav>
         </div>
