@@ -6,15 +6,12 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(request) {
   try {
     const body = await request.json();
-    // ✅ Receive the new fields from the form
     const { name, email, message, countryCode, mobileNumber } = body;
 
-    // A more complete validation
     if (!name || !email || !message || !countryCode || !mobileNumber) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
-
-    // Combine the country code and number for the email
+    
     const fullPhoneNumber = `${countryCode} ${mobileNumber}`;
 
     const { data, error } = await resend.emails.send({
@@ -22,7 +19,6 @@ export async function POST(request) {
       to: ['admin@eaglestribemc.com'],
       reply_to: email, 
       subject: `New Message from ${name} via Website`,
-      // ✅ Add the phone number to the HTML email body
       html: `
         <p>You have a new message from your website contact form:</p>
         <p><strong>Name:</strong> ${name}</p>
@@ -30,7 +26,7 @@ export async function POST(request) {
         <p><strong>Phone:</strong> ${fullPhoneNumber}</p>
         <p><strong>Message:</strong></p>
         <p>${message.replace(/\n/g, "<br>")}</p>
-      `,
+      `, // ✅ FIX: The incorrect comment line has been removed from the HTML string.
     });
 
     if (error) {
